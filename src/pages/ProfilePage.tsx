@@ -6,6 +6,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useNotifications, useUnreadCount } from "@/hooks/useNotifications";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useBookings } from "@/hooks/useBookings";
+import PlaceCard from "@/components/PlaceCard";
 import { toast } from "sonner";
 
 const ProfilePage = () => {
@@ -89,6 +90,17 @@ const ProfilePage = () => {
           ))}
         </div>
       </div>
+
+      {favorites.length > 0 && (
+        <div className="px-4 mt-6">
+          <h2 className="text-lg font-semibold text-foreground mb-3">Favorites</h2>
+          <div className="space-y-3">
+            {favorites.map((fav: any) => fav.business_card && (
+              <PlaceCard key={fav.business_card.id} place={fav.business_card} variant="horizontal" />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="px-4 mt-4">
         <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-destructive/10 text-destructive text-sm font-medium">
