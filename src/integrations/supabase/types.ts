@@ -14,7 +14,285 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          business_card_id: string
+          cost: number
+          created_at: string
+          date_time: string
+          id: string
+          status: Database["public"]["Enums"]["booking_status"]
+          user_id: string
+        }
+        Insert: {
+          business_card_id: string
+          cost?: number
+          created_at?: string
+          date_time: string
+          id?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          user_id: string
+        }
+        Update: {
+          business_card_id?: string
+          cost?: number
+          created_at?: string
+          date_time?: string
+          id?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_business_card_id_fkey"
+            columns: ["business_card_id"]
+            isOneToOne: false
+            referencedRelation: "business_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_cards: {
+        Row: {
+          address: string | null
+          booking_price: number
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image: string | null
+          name: string
+          rating: number
+          tags: string[] | null
+          type: Database["public"]["Enums"]["business_card_type"]
+        }
+        Insert: {
+          address?: string | null
+          booking_price?: number
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          name: string
+          rating?: number
+          tags?: string[] | null
+          type?: Database["public"]["Enums"]["business_card_type"]
+        }
+        Update: {
+          address?: string | null
+          booking_price?: number
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          name?: string
+          rating?: number
+          tags?: string[] | null
+          type?: Database["public"]["Enums"]["business_card_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_cards_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cart_items: {
+        Row: {
+          business_card_id: string
+          cost: number
+          created_at: string
+          date_time: string
+          id: string
+          status: Database["public"]["Enums"]["cart_item_status"]
+          user_id: string
+        }
+        Insert: {
+          business_card_id: string
+          cost?: number
+          created_at?: string
+          date_time: string
+          id?: string
+          status?: Database["public"]["Enums"]["cart_item_status"]
+          user_id: string
+        }
+        Update: {
+          business_card_id?: string
+          cost?: number
+          created_at?: string
+          date_time?: string
+          id?: string
+          status?: Database["public"]["Enums"]["cart_item_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_business_card_id_fkey"
+            columns: ["business_card_id"]
+            isOneToOne: false
+            referencedRelation: "business_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          business_cards_count: number
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          business_cards_count?: number
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          business_cards_count?: number
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      favorites: {
+        Row: {
+          business_card_id: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          business_card_id: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          business_card_id?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_business_card_id_fkey"
+            columns: ["business_card_id"]
+            isOneToOne: false
+            referencedRelation: "business_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          business_card_id: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          text: string
+          user_id: string
+        }
+        Insert: {
+          business_card_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          text: string
+          user_id: string
+        }
+        Update: {
+          business_card_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          text?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_business_card_id_fkey"
+            columns: ["business_card_id"]
+            isOneToOne: false
+            referencedRelation: "business_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          is_verified: boolean
+          last_name: string
+          phone: string | null
+          promo_codes: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id: string
+          is_verified?: boolean
+          last_name?: string
+          phone?: string | null
+          promo_codes?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          is_verified?: boolean
+          last_name?: string
+          phone?: string | null
+          promo_codes?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          business_card_id: string
+          created_at: string
+          description: string | null
+          id: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          business_card_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          business_card_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_business_card_id_fkey"
+            columns: ["business_card_id"]
+            isOneToOne: false
+            referencedRelation: "business_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +301,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      booking_status: "upcoming" | "completed" | "expired"
+      business_card_type: "featured" | "recommended"
+      cart_item_status: "created" | "paid" | "expired"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +430,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      booking_status: ["upcoming", "completed", "expired"],
+      business_card_type: ["featured", "recommended"],
+      cart_item_status: ["created", "paid", "expired"],
+    },
   },
 } as const
