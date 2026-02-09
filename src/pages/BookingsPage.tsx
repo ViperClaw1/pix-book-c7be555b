@@ -12,7 +12,7 @@ const BookingsPage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <header className="px-4 pt-4 pb-2 safe-top">
-        <h1 className="text-2xl font-display font-bold text-foreground">My Bookings</h1>
+        <h1 className="text-2xl font-bold text-foreground">My Bookings</h1>
       </header>
 
       {/* Tabs */}

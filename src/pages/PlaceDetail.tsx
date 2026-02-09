@@ -36,7 +36,7 @@ const PlaceDetail = () => {
         <div className="bg-card rounded-2xl p-5 shadow-elevated">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-xl font-display font-bold text-card-foreground">{place.name}</h1>
+              <h1 className="text-xl font-bold text-card-foreground">{place.name}</h1>
               <div className="flex items-center gap-2 mt-1">
                 <div className="flex items-center gap-1">
                   <Star className="w-4 h-4 fill-gold text-gold" />
@@ -87,7 +87,7 @@ const PlaceDetail = () => {
 
         {/* Reviews preview */}
         <div className="mt-4 bg-card rounded-2xl p-5 shadow-card">
-          <h2 className="text-base font-display font-semibold text-card-foreground mb-3">Reviews</h2>
+          <h2 className="text-base font-semibold text-card-foreground mb-3">Reviews</h2>
           <div className="space-y-3">
             {[
               { name: "Alex K.", text: "Amazing experience! Will definitely come back.", rating: 5 },

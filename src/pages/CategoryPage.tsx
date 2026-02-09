@@ -16,7 +16,7 @@ const CategoryPage = () => {
         <button onClick={() => navigate(-1)} className="p-2 -ml-2">
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
-        <h1 className="text-lg font-display font-semibold text-foreground">
+        <h1 className="text-lg font-semibold text-foreground">
           {category?.icon} {category?.label}
         </h1>
       </header>

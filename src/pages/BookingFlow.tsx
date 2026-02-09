@@ -56,7 +56,7 @@ const BookingFlow = () => {
           <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
             <Check className="w-10 h-10 text-success" />
           </div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Booking Confirmed!</h1>
+          <h1 className="text-2xl font-bold text-foreground">Booking Confirmed!</h1>
           <p className="text-muted-foreground mt-2 text-sm">{place.name}</p>
           <p className="text-foreground font-medium mt-1">
             {selectedDate.toLocaleDateString("en", { month: "long", day: "numeric" })} at {selectedTime}
@@ -78,7 +78,7 @@ const BookingFlow = () => {
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
           <div>
-            <h1 className="text-lg font-display font-semibold text-foreground">Book {place.name}</h1>
+            <h1 className="text-lg font-semibold text-foreground">Book {place.name}</h1>
             <p className="text-xs text-muted-foreground">Step {step + 1} of {totalSteps + 1}</p>
           </div>
         </div>
@@ -101,7 +101,7 @@ const BookingFlow = () => {
           {/* Beauty: specialist selection */}
           {isBeauty && step === 0 && (
             <div>
-              <h2 className="text-base font-display font-semibold text-foreground mb-3">Choose a Specialist</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Choose a Specialist</h2>
               <div className="space-y-2">
                 {specialists.map((s) => (
                   <button
@@ -126,7 +126,7 @@ const BookingFlow = () => {
           {/* Beauty: service selection */}
           {isBeauty && step === 1 && (
             <div>
-              <h2 className="text-base font-display font-semibold text-foreground mb-3">Choose a Service</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Choose a Service</h2>
               <div className="space-y-2">
                 {services.map((s) => (
                   <button
@@ -150,7 +150,7 @@ const BookingFlow = () => {
           {/* Restaurant: guests */}
           {!isBeauty && step === 0 && (
             <div>
-              <h2 className="text-base font-display font-semibold text-foreground mb-3">Number of Guests</h2>
+              <h2 className="text-base font-semibold text-foreground mb-3">Number of Guests</h2>
               <div className="flex items-center justify-center gap-6 py-8">
                 <button
                   onClick={() => setGuests(Math.max(1, guests - 1))}
@@ -158,7 +158,7 @@ const BookingFlow = () => {
                 >
                   <Minus className="w-5 h-5 text-secondary-foreground" />
                 </button>
-                <span className="text-5xl font-display font-bold text-foreground w-16 text-center">{guests}</span>
+                <span className="text-5xl font-bold text-foreground w-16 text-center">{guests}</span>
                 <button
                   onClick={() => setGuests(Math.min(20, guests + 1))}
                   className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center"
@@ -172,7 +172,7 @@ const BookingFlow = () => {
           {/* Date & time for both */}
           {((isBeauty && step === 2) || (!isBeauty && step === 1)) && (
             <div>
-              <h2 className="text-base font-display font-semibold text-foreground mb-3">
+              <h2 className="text-base font-semibold text-foreground mb-3">
                 <CalendarDays className="w-4 h-4 inline mr-1" /> Select Date & Time
               </h2>
               {/* Date picker */}
@@ -213,7 +213,7 @@ const BookingFlow = () => {
           {/* Confirmation step */}
           {step === totalSteps && (
             <div>
-              <h2 className="text-base font-display font-semibold text-foreground mb-4">Confirm Your Booking</h2>
+              <h2 className="text-base font-semibold text-foreground mb-4">Confirm Your Booking</h2>
               <div className="bg-card rounded-2xl p-4 shadow-card space-y-3">
                 <div className="flex items-center gap-3">
                   <img src={place.image} alt={place.name} className="w-16 h-16 rounded-xl object-cover" />

@@ -14,7 +14,7 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <header className="px-4 pt-4 pb-6 safe-top">
-        <h1 className="text-2xl font-display font-bold text-foreground">Profile</h1>
+        <h1 className="text-2xl font-bold text-foreground">Profile</h1>
       </header>
 
       {/* User card */}
@@ -47,7 +47,7 @@ const ProfilePage = () => {
             transition={{ delay: i * 0.08 }}
             className="bg-card rounded-xl p-3 text-center shadow-card"
           >
-            <p className="text-xl font-display font-bold text-foreground">{stat.value}</p>
+            <p className="text-xl font-bold text-foreground">{stat.value}</p>
             <p className="text-xs text-muted-foreground">{stat.label}</p>
           </motion.div>
         ))}
