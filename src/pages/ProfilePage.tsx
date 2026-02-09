@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { User, Settings, Gift, LogOut, ChevronRight, Star, Bell, Shield, HelpCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -17,7 +16,6 @@ const ProfilePage = () => {
   const unreadCount = useUnreadCount();
   const { data: favorites = [] } = useFavorites();
   const { data: bookings = [] } = useBookings();
-  const [showFavorites, setShowFavorites] = useState(false);
 
   const menuItems = [
     { icon: Bell, label: "Notifications", badge: unreadCount > 0 ? String(unreadCount) : undefined },
@@ -79,7 +77,7 @@ const ProfilePage = () => {
       <div className="px-4 mt-6">
         <div className="bg-card rounded-2xl shadow-card overflow-hidden">
           {menuItems.map((item) => (
-            <button key={item.label} onClick={() => { if (item.label === "Favorites") setShowFavorites(!showFavorites); if (item.label === "Settings") navigate("/profile/edit"); }} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-border last:border-0 text-left">
+            <button key={item.label} onClick={() => { if (item.label === "Favorites") navigate("/favorites"); if (item.label === "Settings") navigate("/profile/edit"); }} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-border last:border-0 text-left">
               <item.icon className="w-5 h-5 text-muted-foreground" />
               <span className="flex-1 text-sm font-medium text-card-foreground">{item.label}</span>
               {item.badge && (
@@ -93,7 +91,7 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {showFavorites && favorites.length > 0 && (
+      {favorites.length > 0 && (
         <div className="px-4 mt-6">
           <h2 className="text-lg font-semibold text-foreground mb-3">Favorites</h2>
           <div className="space-y-3">
