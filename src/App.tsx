@@ -12,6 +12,7 @@ import CategoryPage from "./pages/CategoryPage";
 import PlaceDetail from "./pages/PlaceDetail";
 import BookingFlow from "./pages/BookingFlow";
 import BookingsPage from "./pages/BookingsPage";
+import CartPage from "./pages/CartPage";
 import ProfilePage from "./pages/ProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
 import FavoritesPage from "./pages/FavoritesPage";
@@ -38,6 +39,7 @@ const App = () => (
               <Route path="/place/:id" element={<PlaceDetail />} />
               <Route path="/book/:id" element={<ProtectedRoute><BookingFlow /></ProtectedRoute>} />
               <Route path="/bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
+              <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
               <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { ArrowLeft, Check, Minus, Plus, CalendarDays } from "lucide-react";
+import { ArrowLeft, Minus, Plus, CalendarDays } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBusinessCard } from "@/hooks/useBusinessCards";
-import { useCreateBooking } from "@/hooks/useBookings";
+import { useCreateCartItem } from "@/hooks/useCartItems";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -18,13 +18,13 @@ const BookingFlow = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { data: place } = useBusinessCard(id || "");
-  const createBooking = useCreateBooking();
+  const createCartItem = useCreateCartItem();
 
   const [step, setStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date>(dates[0]);
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [guests, setGuests] = useState(2);
-  const [confirmed, setConfirmed] = useState(false);
+  
 
   if (!place) return null;
 
@@ -42,40 +42,21 @@ const BookingFlow = () => {
     dateTime.setHours(h, m, 0, 0);
 
     try {
-      await createBooking.mutateAsync({
+      await createCartItem.mutateAsync({
         business_card_id: place.id,
         date_time: dateTime.toISOString(),
         cost: Number(place.booking_price),
       });
-      setConfirmed(true);
+      toast.success("Added to cart!");
+      navigate("/cart");
     } catch {
-      toast.error("Failed to create booking");
+      toast.error("Failed to add to cart");
     }
   };
 
   const dayName = (d: Date) => d.toLocaleDateString("en", { weekday: "short" });
   const dayNum = (d: Date) => d.getDate();
 
-  if (confirmed) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
-          <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
-            <Check className="w-10 h-10 text-success" />
-          </div>
-          <h1 className="text-2xl font-bold text-foreground">Booking Confirmed!</h1>
-          <p className="text-muted-foreground mt-2 text-sm">{place.name}</p>
-          <p className="text-foreground font-medium mt-1">
-            {selectedDate.toLocaleDateString("en", { month: "long", day: "numeric" })} at {selectedTime}
-          </p>
-          <p className="text-muted-foreground text-sm">{guests} guests</p>
-          <Button onClick={() => navigate("/")} className="mt-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl">
-            Back to Home
-          </Button>
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background pb-28">
@@ -184,11 +165,11 @@ const BookingFlow = () => {
 
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
         <Button
-          disabled={!canProceed() || createBooking.isPending}
+          disabled={!canProceed() || createCartItem.isPending}
           onClick={() => (step < totalSteps ? setStep(step + 1) : handleConfirm())}
           className="w-full h-12 text-base font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-40"
         >
-          {createBooking.isPending ? "Creating..." : step < totalSteps ? "Continue" : "Confirm Booking"}
+          {createCartItem.isPending ? "Adding..." : step < totalSteps ? "Continue" : "Add to Cart"}
         </Button>
       </div>
     </div>
