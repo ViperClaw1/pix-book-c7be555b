@@ -13,6 +13,8 @@ import PlaceDetail from "./pages/PlaceDetail";
 import BookingFlow from "./pages/BookingFlow";
 import BookingsPage from "./pages/BookingsPage";
 import ProfilePage from "./pages/ProfilePage";
+import EditProfilePage from "./pages/EditProfilePage";
+import FavoritesPage from "./pages/FavoritesPage";
 import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
@@ -37,6 +39,8 @@ const App = () => (
               <Route path="/book/:id" element={<ProtectedRoute><BookingFlow /></ProtectedRoute>} />
               <Route path="/bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+              <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <BottomNav />
