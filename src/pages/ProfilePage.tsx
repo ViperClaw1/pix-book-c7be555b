@@ -49,7 +49,7 @@ const ProfilePage = () => {
             </h2>
             <p className="text-sm text-muted-foreground">{profile?.email}</p>
           </div>
-          <button className="p-2 bg-secondary rounded-full">
+          <button onClick={() => navigate("/profile/edit")} className="p-2 bg-secondary rounded-full">
             <Settings className="w-4 h-4 text-secondary-foreground" />
           </button>
         </motion.div>
@@ -77,7 +77,7 @@ const ProfilePage = () => {
       <div className="px-4 mt-6">
         <div className="bg-card rounded-2xl shadow-card overflow-hidden">
           {menuItems.map((item) => (
-            <button key={item.label} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-border last:border-0 text-left">
+            <button key={item.label} onClick={() => { if (item.label === "Favorites") navigate("/favorites"); if (item.label === "Settings") navigate("/profile/edit"); }} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-border last:border-0 text-left">
               <item.icon className="w-5 h-5 text-muted-foreground" />
               <span className="flex-1 text-sm font-medium text-card-foreground">{item.label}</span>
               {item.badge && (
