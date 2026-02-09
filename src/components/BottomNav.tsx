@@ -1,4 +1,4 @@
-import { Home, Search, ShoppingCart, User } from "lucide-react";
+import { Home, Search, ShoppingCart, CalendarDays, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -6,6 +6,7 @@ const tabs = [
   { path: "/", icon: Home, label: "Home" },
   { path: "/search", icon: Search, label: "Search" },
   { path: "/cart", icon: ShoppingCart, label: "Cart" },
+  { path: "/bookings", icon: CalendarDays, label: "Bookings" },
   { path: "/profile", icon: User, label: "Profile" },
 ];
 
