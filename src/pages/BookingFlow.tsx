@@ -2,8 +2,10 @@ import { useState } from "react";
 import { ArrowLeft, Check, Minus, Plus, CalendarDays } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { places, specialists, services } from "@/data/mockData";
+import { useBusinessCard } from "@/hooks/useBusinessCards";
+import { useCreateBooking } from "@/hooks/useBookings";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const timeSlots = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
 const dates = Array.from({ length: 7 }, (_, i) => {
@@ -15,39 +17,44 @@ const dates = Array.from({ length: 7 }, (_, i) => {
 const BookingFlow = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const place = places.find((p) => p.id === id);
-  const isBeauty = place?.category === "beauty";
+  const { data: place } = useBusinessCard(id || "");
+  const createBooking = useCreateBooking();
 
   const [step, setStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState<Date>(dates[0]);
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [guests, setGuests] = useState(2);
-  const [selectedSpecialist, setSelectedSpecialist] = useState<string>("");
-  const [selectedService, setSelectedService] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
 
   if (!place) return null;
 
-  const dayName = (d: Date) => d.toLocaleDateString("en", { weekday: "short" });
-  const dayNum = (d: Date) => d.getDate();
+  const totalSteps = 2;
 
   const canProceed = () => {
-    if (isBeauty) {
-      if (step === 0) return !!selectedSpecialist;
-      if (step === 1) return !!selectedService;
-      if (step === 2) return !!selectedTime;
-    } else {
-      if (step === 0) return guests > 0;
-      if (step === 1) return !!selectedTime;
-    }
+    if (step === 0) return guests > 0;
+    if (step === 1) return !!selectedTime;
     return true;
   };
 
-  const totalSteps = isBeauty ? 3 : 2;
+  const handleConfirm = async () => {
+    const dateTime = new Date(selectedDate);
+    const [h, m] = selectedTime.split(":").map(Number);
+    dateTime.setHours(h, m, 0, 0);
 
-  const handleConfirm = () => {
-    setConfirmed(true);
+    try {
+      await createBooking.mutateAsync({
+        business_card_id: place.id,
+        date_time: dateTime.toISOString(),
+        cost: Number(place.booking_price),
+      });
+      setConfirmed(true);
+    } catch {
+      toast.error("Failed to create booking");
+    }
   };
+
+  const dayName = (d: Date) => d.toLocaleDateString("en", { weekday: "short" });
+  const dayNum = (d: Date) => d.getDate();
 
   if (confirmed) {
     return (
@@ -61,7 +68,7 @@ const BookingFlow = () => {
           <p className="text-foreground font-medium mt-1">
             {selectedDate.toLocaleDateString("en", { month: "long", day: "numeric" })} at {selectedTime}
           </p>
-          {!isBeauty && <p className="text-muted-foreground text-sm">{guests} guests</p>}
+          <p className="text-muted-foreground text-sm">{guests} guests</p>
           <Button onClick={() => navigate("/")} className="mt-6 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl">
             Back to Home
           </Button>
@@ -82,7 +89,6 @@ const BookingFlow = () => {
             <p className="text-xs text-muted-foreground">Step {step + 1} of {totalSteps + 1}</p>
           </div>
         </div>
-        {/* Progress bar */}
         <div className="flex gap-1 mt-3">
           {Array.from({ length: totalSteps + 1 }).map((_, i) => (
             <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i <= step ? "bg-primary" : "bg-secondary"}`} />
@@ -91,98 +97,32 @@ const BookingFlow = () => {
       </header>
 
       <AnimatePresence mode="wait">
-        <motion.main
-          key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          className="px-4 pt-4"
-        >
-          {/* Beauty: specialist selection */}
-          {isBeauty && step === 0 && (
-            <div>
-              <h2 className="text-base font-semibold text-foreground mb-3">Choose a Specialist</h2>
-              <div className="space-y-2">
-                {specialists.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setSelectedSpecialist(s.id)}
-                    className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-colors ${
-                      selectedSpecialist === s.id ? "border-primary bg-primary/5" : "border-border bg-card"
-                    }`}
-                  >
-                    <span className="text-3xl">{s.image}</span>
-                    <div className="text-left flex-1">
-                      <p className="font-medium text-card-foreground">{s.name}</p>
-                      <p className="text-xs text-muted-foreground">{s.role}</p>
-                    </div>
-                    <span className="text-sm font-medium text-gold">★ {s.rating}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Beauty: service selection */}
-          {isBeauty && step === 1 && (
-            <div>
-              <h2 className="text-base font-semibold text-foreground mb-3">Choose a Service</h2>
-              <div className="space-y-2">
-                {services.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setSelectedService(s.id)}
-                    className={`w-full flex items-center justify-between p-4 rounded-xl border transition-colors ${
-                      selectedService === s.id ? "border-primary bg-primary/5" : "border-border bg-card"
-                    }`}
-                  >
-                    <div className="text-left">
-                      <p className="font-medium text-card-foreground">{s.name}</p>
-                      <p className="text-xs text-muted-foreground">{s.duration}</p>
-                    </div>
-                    <span className="font-semibold text-sm text-foreground">{s.price}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Restaurant: guests */}
-          {!isBeauty && step === 0 && (
+        <motion.main key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="px-4 pt-4">
+          {step === 0 && (
             <div>
               <h2 className="text-base font-semibold text-foreground mb-3">Number of Guests</h2>
               <div className="flex items-center justify-center gap-6 py-8">
-                <button
-                  onClick={() => setGuests(Math.max(1, guests - 1))}
-                  className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center"
-                >
+                <button onClick={() => setGuests(Math.max(1, guests - 1))} className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
                   <Minus className="w-5 h-5 text-secondary-foreground" />
                 </button>
                 <span className="text-5xl font-bold text-foreground w-16 text-center">{guests}</span>
-                <button
-                  onClick={() => setGuests(Math.min(20, guests + 1))}
-                  className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center"
-                >
+                <button onClick={() => setGuests(Math.min(20, guests + 1))} className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
                   <Plus className="w-5 h-5 text-secondary-foreground" />
                 </button>
               </div>
             </div>
           )}
 
-          {/* Date & time for both */}
-          {((isBeauty && step === 2) || (!isBeauty && step === 1)) && (
+          {step === 1 && (
             <div>
               <h2 className="text-base font-semibold text-foreground mb-3">
                 <CalendarDays className="w-4 h-4 inline mr-1" /> Select Date & Time
               </h2>
-              {/* Date picker */}
               <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                 {dates.map((d) => {
                   const isSelected = d.toDateString() === selectedDate.toDateString();
                   return (
-                    <button
-                      key={d.toISOString()}
-                      onClick={() => setSelectedDate(d)}
+                    <button key={d.toISOString()} onClick={() => setSelectedDate(d)}
                       className={`flex flex-col items-center px-3 py-2 rounded-xl min-w-[52px] transition-colors ${
                         isSelected ? "bg-primary text-primary-foreground" : "bg-card text-card-foreground border border-border"
                       }`}
@@ -193,12 +133,9 @@ const BookingFlow = () => {
                   );
                 })}
               </div>
-              {/* Time slots */}
               <div className="grid grid-cols-4 gap-2 mt-4">
                 {timeSlots.map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setSelectedTime(t)}
+                  <button key={t} onClick={() => setSelectedTime(t)}
                     className={`py-2.5 rounded-xl text-sm font-medium transition-colors ${
                       selectedTime === t ? "bg-primary text-primary-foreground" : "bg-card text-card-foreground border border-border"
                     }`}
@@ -210,7 +147,6 @@ const BookingFlow = () => {
             </div>
           )}
 
-          {/* Confirmation step */}
           {step === totalSteps && (
             <div>
               <h2 className="text-base font-semibold text-foreground mb-4">Confirm Your Booking</h2>
@@ -225,36 +161,20 @@ const BookingFlow = () => {
                 <div className="border-t border-border pt-3 space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Date</span>
-                    <span className="font-medium text-card-foreground">
-                      {selectedDate.toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })}
-                    </span>
+                    <span className="font-medium text-card-foreground">{selectedDate.toLocaleDateString("en", { month: "long", day: "numeric", year: "numeric" })}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Time</span>
                     <span className="font-medium text-card-foreground">{selectedTime}</span>
                   </div>
-                  {!isBeauty && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Guests</span>
-                      <span className="font-medium text-card-foreground">{guests}</span>
-                    </div>
-                  )}
-                  {isBeauty && selectedSpecialist && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Specialist</span>
-                      <span className="font-medium text-card-foreground">
-                        {specialists.find((s) => s.id === selectedSpecialist)?.name}
-                      </span>
-                    </div>
-                  )}
-                  {isBeauty && selectedService && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Service</span>
-                      <span className="font-medium text-card-foreground">
-                        {services.find((s) => s.id === selectedService)?.name}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Guests</span>
+                    <span className="font-medium text-card-foreground">{guests}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Cost</span>
+                    <span className="font-medium text-card-foreground">{Number(place.booking_price).toLocaleString()} ₸</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -262,14 +182,13 @@ const BookingFlow = () => {
         </motion.main>
       </AnimatePresence>
 
-      {/* Bottom action */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
         <Button
-          disabled={!canProceed()}
+          disabled={!canProceed() || createBooking.isPending}
           onClick={() => (step < totalSteps ? setStep(step + 1) : handleConfirm())}
           className="w-full h-12 text-base font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-40"
         >
-          {step < totalSteps ? "Continue" : "Confirm Booking"}
+          {createBooking.isPending ? "Creating..." : step < totalSteps ? "Continue" : "Confirm Booking"}
         </Button>
       </div>
     </div>

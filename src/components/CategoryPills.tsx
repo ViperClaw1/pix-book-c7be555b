@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { categories } from "@/data/mockData";
+import { useCategories } from "@/hooks/useCategories";
 
 const CategoryPills = () => {
   const navigate = useNavigate();
+  const { data: categories = [] } = useCategories();
 
   return (
     <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
@@ -19,8 +20,8 @@ const CategoryPills = () => {
         >
           <span className="text-2xl">{cat.icon}</span>
           <div className="text-left">
-            <p className="text-sm font-semibold text-card-foreground">{cat.label}</p>
-            <p className="text-[10px] text-muted-foreground">{cat.count} places</p>
+            <p className="text-sm font-semibold text-card-foreground">{cat.name}</p>
+            <p className="text-[10px] text-muted-foreground">{cat.business_cards_count} places</p>
           </div>
         </motion.button>
       ))}
