@@ -3,15 +3,18 @@ import { ArrowLeft, Search, SlidersHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import PlaceCard from "@/components/PlaceCard";
-import { places, categories, type Category } from "@/data/mockData";
+import { useBusinessCards } from "@/hooks/useBusinessCards";
+import { useCategories } from "@/hooks/useCategories";
 
 const SearchPage = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<Category | "all">("all");
+  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const { data: allPlaces = [] } = useBusinessCards();
+  const { data: categories = [] } = useCategories();
 
-  const filtered = places.filter((p) => {
-    const matchCategory = activeFilter === "all" || p.category === activeFilter;
+  const filtered = allPlaces.filter((p) => {
+    const matchCategory = activeFilter === "all" || p.category_id === activeFilter;
     const matchQuery = !query || p.name.toLowerCase().includes(query.toLowerCase()) || p.tags.some((t) => t.toLowerCase().includes(query.toLowerCase()));
     return matchCategory && matchQuery;
   });
@@ -37,7 +40,6 @@ const SearchPage = () => {
             <SlidersHorizontal className="w-4 h-4 text-foreground" />
           </button>
         </div>
-        {/* Filter chips */}
         <div className="flex gap-2 mt-3 overflow-x-auto scrollbar-hide">
           <button
             onClick={() => setActiveFilter("all")}
@@ -55,7 +57,7 @@ const SearchPage = () => {
                 activeFilter === cat.id ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
               }`}
             >
-              {cat.icon} {cat.label}
+              {cat.icon} {cat.name}
             </button>
           ))}
         </div>

@@ -1,31 +1,52 @@
 import { User, Settings, Gift, LogOut, ChevronRight, Star, Bell, Shield, HelpCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-
-const menuItems = [
-  { icon: Bell, label: "Notifications", badge: "3" },
-  { icon: Gift, label: "Promo Codes" },
-  { icon: Star, label: "Favorites" },
-  { icon: Shield, label: "Privacy & Security" },
-  { icon: Settings, label: "Settings" },
-  { icon: HelpCircle, label: "Help & Support" },
-];
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
+import { useNotifications, useUnreadCount } from "@/hooks/useNotifications";
+import { useFavorites } from "@/hooks/useFavorites";
+import { useBookings } from "@/hooks/useBookings";
+import { toast } from "sonner";
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+  const { data: profile } = useProfile();
+  const unreadCount = useUnreadCount();
+  const { data: favorites = [] } = useFavorites();
+  const { data: bookings = [] } = useBookings();
+
+  const menuItems = [
+    { icon: Bell, label: "Notifications", badge: unreadCount > 0 ? String(unreadCount) : undefined },
+    { icon: Gift, label: "Promo Codes" },
+    { icon: Star, label: "Favorites", badge: favorites.length > 0 ? String(favorites.length) : undefined },
+    { icon: Shield, label: "Privacy & Security" },
+    { icon: Settings, label: "Settings" },
+    { icon: HelpCircle, label: "Help & Support" },
+  ];
+
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("Logged out successfully");
+    navigate("/auth");
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <header className="px-4 pt-4 pb-6 safe-top">
         <h1 className="text-2xl font-bold text-foreground">Profile</h1>
       </header>
 
-      {/* User card */}
       <div className="px-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl p-5 shadow-card flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
             <User className="w-7 h-7 text-primary" />
           </div>
           <div className="flex-1">
-            <h2 className="text-lg font-semibold text-card-foreground">Alex Johnson</h2>
-            <p className="text-sm text-muted-foreground">alex@example.com</p>
+            <h2 className="text-lg font-semibold text-card-foreground">
+              {profile ? `${profile.first_name} ${profile.last_name}` : "Loading..."}
+            </h2>
+            <p className="text-sm text-muted-foreground">{profile?.email}</p>
           </div>
           <button className="p-2 bg-secondary rounded-full">
             <Settings className="w-4 h-4 text-secondary-foreground" />
@@ -33,12 +54,11 @@ const ProfilePage = () => {
         </motion.div>
       </div>
 
-      {/* Stats */}
       <div className="px-4 mt-4 grid grid-cols-3 gap-3">
         {[
-          { label: "Bookings", value: "12" },
-          { label: "Reviews", value: "8" },
-          { label: "Favorites", value: "5" },
+          { label: "Bookings", value: String(bookings.length) },
+          { label: "Reviews", value: "0" },
+          { label: "Favorites", value: String(favorites.length) },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -53,10 +73,9 @@ const ProfilePage = () => {
         ))}
       </div>
 
-      {/* Menu */}
       <div className="px-4 mt-6">
         <div className="bg-card rounded-2xl shadow-card overflow-hidden">
-          {menuItems.map((item, i) => (
+          {menuItems.map((item) => (
             <button key={item.label} className="w-full flex items-center gap-3 px-4 py-3.5 border-b border-border last:border-0 text-left">
               <item.icon className="w-5 h-5 text-muted-foreground" />
               <span className="flex-1 text-sm font-medium text-card-foreground">{item.label}</span>
@@ -71,9 +90,8 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Logout */}
       <div className="px-4 mt-4">
-        <button className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-destructive/10 text-destructive text-sm font-medium">
+        <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-destructive/10 text-destructive text-sm font-medium">
           <LogOut className="w-4 h-4" />
           Log Out
         </button>
