@@ -62,6 +62,7 @@ export type Database = {
           id: string
           image: string | null
           name: string
+          phone: string
           rating: number
           tags: string[] | null
           type: Database["public"]["Enums"]["business_card_type"]
@@ -75,6 +76,7 @@ export type Database = {
           id?: string
           image?: string | null
           name: string
+          phone?: string
           rating?: number
           tags?: string[] | null
           type?: Database["public"]["Enums"]["business_card_type"]
@@ -88,6 +90,7 @@ export type Database = {
           id?: string
           image?: string | null
           name?: string
+          phone?: string
           rating?: number
           tags?: string[] | null
           type?: Database["public"]["Enums"]["business_card_type"]
