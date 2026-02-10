@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -53,7 +53,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         emailRedirectTo: window.location.origin,
       },
     });
-    return { error: error?.message ?? null };
+
+    if (error) return { error: error.message };
+
+    // Supabase returns a user with an empty identities array when
+    // the email is already registered and verified -- no error is thrown.
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      return { error: "User already registered" };
+    }
+
+    return { error: null };
   };
 
   const signIn = async (email: string, password: string): Promise<SignInResult> => {
