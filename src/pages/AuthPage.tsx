@@ -486,7 +486,7 @@ const AuthPage = () => {
                   )}
                 </button>
               </div>
-              {mode === "signup" && renderPasswordPolicy()}
+              {mode === "signup" && password.length > 0 && renderPasswordPolicy()}
               {renderFieldError("password")}
             </div>
           )}
