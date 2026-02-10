@@ -117,6 +117,7 @@ const ResetPasswordPage = () => {
               </button>
             </div>
             {/* Password policy checklist */}
+            {password.length > 0 && (
             <ul className="mt-2 ml-1 space-y-1">
               {[
                 { met: checks.minLength, label: "At least 8 characters" },
@@ -136,6 +137,7 @@ const ResetPasswordPage = () => {
                 </li>
               ))}
             </ul>
+            )}
             {fieldErrors.password && (
               <p id="password-error" role="alert" className="text-xs text-destructive mt-1 ml-1">
                 {fieldErrors.password}
