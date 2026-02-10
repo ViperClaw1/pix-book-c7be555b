@@ -27,7 +27,7 @@ serve(async (req) => {
     });
   }
 
-  const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(address)}`;
+  const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_DIRECTIONS}&q=${encodeURIComponent(address)}`;
 
   return new Response(JSON.stringify({ embedUrl }), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
