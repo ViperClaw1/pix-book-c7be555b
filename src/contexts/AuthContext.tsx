@@ -2,15 +2,23 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 
+interface SignInResult {
+  error: string | null;
+  /** True when login failed because the user's email is not yet verified */
+  isUnverified?: boolean;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
   signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<{ error: string | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<SignInResult>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
   updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
+  /** Resend the signup verification email. Returns an error string on failure. */
+  resendVerification: (email: string) => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,9 +56,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error: error?.message ?? null };
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string): Promise<SignInResult> => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
+    if (!error) return { error: null };
+
+    const msg = error.message ?? "";
+
+    // Supabase returns "Email not confirmed" when the account exists but is unverified
+    if (msg.toLowerCase().includes("email not confirmed")) {
+      return { error: msg, isUnverified: true };
+    }
+
+    return { error: msg };
   };
 
   const signOut = async () => {
@@ -69,8 +86,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error: error?.message ?? null };
   };
 
+  const resendVerification = async (email: string) => {
+    const { error } = await supabase.auth.resend({ type: "signup", email });
+    return { error: error?.message ?? null };
+  };
+
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut, resetPassword, updatePassword }}>
+    <AuthContext.Provider
+      value={{ user, session, loading, signUp, signIn, signOut, resetPassword, updatePassword, resendVerification }}
+    >
       {children}
     </AuthContext.Provider>
   );
