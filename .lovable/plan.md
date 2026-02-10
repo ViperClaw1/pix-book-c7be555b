@@ -1,61 +1,63 @@
 
 
-## Fix: "User Already Registered" Detection in Signup
+## Plan: Call Button + Directions Modal
 
-### Root Cause
+### 1. Database: Add `phone` column to `business_cards`
 
-Supabase's `signUp()` does **not** return an error when signing up with an already-used email. Instead:
+- Run a migration to add a `phone text default ''` column to `business_cards`.
+- Populate all 6 existing records with mock phone numbers from the `mockData.ts` file.
 
-- **Email exists + verified**: Returns status 200 with a `user` object where `user.identities` is an empty array `[]`. No error is thrown.
-- **Email exists + unverified**: Returns status 200 and re-triggers the signup flow (a "repeated signup"). Again, no error.
+### 2. Update `BusinessCard` TypeScript interface
 
-The current `signUp` method in `AuthContext.tsx` only checks for `error` and treats no-error as success, which is why the duplicate goes through silently.
+**File: `src/hooks/useBusinessCards.ts`**
 
-### Solution
+- Add `phone: string` to the `BusinessCard` interface.
 
-Modify the `signUp` function in `src/contexts/AuthContext.tsx` to inspect the response data after a successful call:
+### 3. Call Button -- `tel:` link
 
-1. If `data.user.identities` is an empty array -- the email belongs to an already-verified account. Return a "User already registered" error.
-2. If `data.user` exists and `data.session` is null but identities are present -- this is either a fresh signup or a repeated signup for an unverified user. For the repeated-signup case, we still want to show the verify-notice screen (which already happens since no error is returned).
+**File: `src/pages/PlaceDetail.tsx`**
+
+- Wire the existing "Call" button to open the native phone dialer using `window.open("tel:" + place.phone)`.
+- If `phone` is empty, show a toast saying "Phone number not available".
+
+### 4. Directions Button -- Full-screen Sheet
+
+**File: `src/pages/PlaceDetail.tsx`**
+
+- Add state `showDirections` to toggle a Drawer/Sheet.
+- Clicking "Directions" opens the sheet.
+
+**New file: `src/components/DirectionsSheet.tsx`**
+
+A bottom sheet (using the existing `vaul` Drawer component) containing:
+
+- **Header** with the place name, address, and a close button.
+- **An embedded Google Maps iframe** showing the destination location using the place address (no API key required for simple embed).
+- **Route options** -- three buttons for driving, transit, and walking that open Google Maps in a new tab with the correct `travelmode` parameter:
+  `https://www.google.com/maps/dir/?api=1&destination={encoded_address}&travelmode=driving|transit|walking`
+- **"Open in Google Maps" button** -- opens the full Google Maps directions page externally.
+
+This approach uses no API key and no Directions API. It works by:
+- Embedding a Google Maps `embed` iframe for the visual map preview.
+- Linking out to Google Maps with URL parameters for actual route building.
+
+This is the most practical approach because:
+- Google Directions API requires billing and an API key.
+- The embedded iframe + external links give users the full routing experience in Google Maps itself.
+- No cost, no key management.
 
 ### Files Changed
 
-**`src/contexts/AuthContext.tsx`** (only file changed)
+| File | Change |
+|------|--------|
+| Migration SQL | Add `phone` column + populate mock data |
+| `src/hooks/useBusinessCards.ts` | Add `phone` to interface |
+| `src/pages/PlaceDetail.tsx` | Wire Call button with `tel:`, add Directions sheet toggle |
+| `src/components/DirectionsSheet.tsx` | New component: Drawer with map embed + route option links |
 
-Update the `signUp` method:
+### Technical Details
 
-```typescript
-const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { first_name: firstName, last_name: lastName },
-      emailRedirectTo: window.location.origin,
-    },
-  });
-
-  if (error) return { error: error.message };
-
-  // Supabase returns a user with an empty identities array when
-  // the email is already registered and verified -- no error is thrown.
-  if (data.user && data.user.identities && data.user.identities.length === 0) {
-    return { error: "User already registered" };
-  }
-
-  return { error: null };
-};
-```
-
-This is the only change needed. The existing `mapAuthError` function in `AuthPage.tsx` already maps `"User already registered"` to the friendly message: *"An account with this email already exists. Try signing in instead."*
-
-### Why This Works
-
-- **Verified duplicate**: Caught by the empty `identities` check -- user sees "An account with this email already exists."
-- **Unverified duplicate (repeated signup)**: Supabase re-sends the verification email and returns a user with non-empty identities. The flow proceeds to the verify-notice screen as intended, which is correct behavior.
-- **Fresh signup**: Normal path, identities array has one entry, no error returned.
-
-### No Other Files Affected
-
-`AuthPage.tsx` already has the error mapping and verify-notice mode. This is purely a data-inspection fix in the context layer.
+- The Google Maps embed URL format: `https://www.google.com/maps/embed/v1/place?key=...&q={address}` requires an API key. Instead, we'll use the free `maps.google.com/maps?q={address}&output=embed` format inside an iframe.
+- Route links use the universal Google Maps URL scheme: `https://www.google.com/maps/dir/?api=1&destination={address}&travelmode={mode}` -- this opens in the user's browser/Google Maps app with no API key needed.
+- The Drawer component from `vaul` is already installed and available at `src/components/ui/drawer.tsx`.
 
