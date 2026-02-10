@@ -52,7 +52,7 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col overflow-hidden">
       <header className="px-4 pt-4 safe-top">
         {mode !== "login" && (
           <button onClick={() => setMode("login")} className="p-2 -ml-2">
