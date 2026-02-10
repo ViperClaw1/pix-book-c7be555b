@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Car, Footprints, Train, ExternalLink, X, MapPin } from "lucide-react";
 import {
   Drawer,
@@ -8,6 +9,7 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DirectionsSheetProps {
   open: boolean;
@@ -24,7 +26,32 @@ const travelModes = [
 
 const DirectionsSheet = ({ open, onOpenChange, placeName, address }: DirectionsSheetProps) => {
   const encoded = encodeURIComponent(address);
-  const mapEmbedUrl = `https://maps.google.com/maps?q=${encoded}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+  const [mapEmbedUrl, setMapEmbedUrl] = useState(
+    `https://maps.google.com/maps?q=${encoded}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+  );
+
+  useEffect(() => {
+    if (!open) return;
+    const fetchEmbedUrl = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/maps-embed?address=${encoded}`,
+          {
+            headers: {
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+          }
+        );
+        if (res.ok) {
+          const json = await res.json();
+          if (json.embedUrl) setMapEmbedUrl(json.embedUrl);
+        }
+      } catch {
+        // fallback to free embed already set
+      }
+    };
+    fetchEmbedUrl();
+  }, [open, encoded]);
 
   const openRoute = (mode: string) => {
     window.open(
