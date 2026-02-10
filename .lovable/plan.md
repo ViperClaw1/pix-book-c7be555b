@@ -1,95 +1,61 @@
 
 
-## Auth Flow Hardening Plan
+## Fix: "User Already Registered" Detection in Signup
 
-### Weaknesses Identified
+### Root Cause
 
-1. **No unverified email detection** -- Login returns raw backend error ("Invalid login credentials") for unverified users; no differentiation or guidance.
-2. **No password policy** beyond 6-char minimum -- no digit/special-char requirements, no inline feedback.
-3. **Validation only on submit** -- password mismatch and weak password only shown as toasts after clicking, not inline.
-4. **No post-signup confirmation state** -- after signup, user is switched to login mode with a toast; easy to miss the "check your email" message.
-5. **No resend verification email** capability.
-6. **Raw backend errors** passed directly to users (e.g., "User already registered").
-7. **No field-level error messages** -- all errors are toasts only.
-8. **No aria-labels** on icon-only buttons (eye toggle, back arrow).
+Supabase's `signUp()` does **not** return an error when signing up with an already-used email. Instead:
 
-### What Will Change
+- **Email exists + verified**: Returns status 200 with a `user` object where `user.identities` is an empty array `[]`. No error is thrown.
+- **Email exists + unverified**: Returns status 200 and re-triggers the signup flow (a "repeated signup"). Again, no error.
 
-Only 2 files will be modified:
+The current `signUp` method in `AuthContext.tsx` only checks for `error` and treats no-error as success, which is why the duplicate goes through silently.
 
-- **`src/contexts/AuthContext.tsx`** -- enhance `signIn` to detect unverified users and add a `resendVerification` method.
-- **`src/pages/AuthPage.tsx`** -- the bulk of the work: inline validation, password policy, post-signup confirmation screen, resend flow, human-readable error mapping, accessibility.
+### Solution
 
-No other files or auth mechanics will be touched.
+Modify the `signUp` function in `src/contexts/AuthContext.tsx` to inspect the response data after a successful call:
 
----
+1. If `data.user.identities` is an empty array -- the email belongs to an already-verified account. Return a "User already registered" error.
+2. If `data.user` exists and `data.session` is null but identities are present -- this is either a fresh signup or a repeated signup for an unverified user. For the repeated-signup case, we still want to show the verify-notice screen (which already happens since no error is returned).
 
-### Detailed Changes
+### Files Changed
 
-#### A. `src/contexts/AuthContext.tsx`
+**`src/contexts/AuthContext.tsx`** (only file changed)
 
-1. **Detect unverified email on login failure**
-   - After `signInWithPassword` fails, check if the error message indicates invalid credentials.
-   - Attempt a "shadow" signup with the same email to see if backend returns "User already registered" -- if so, the user exists but is unverified.
-   - Return a structured result: `{ error, isUnverified }` instead of just `{ error }`.
+Update the `signUp` method:
 
-2. **Add `resendVerification(email)` method**
-   - Calls `supabase.auth.resend({ type: 'signup', email })`.
-   - Returns `{ error }`.
-   - Expose via context.
+```typescript
+const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { first_name: firstName, last_name: lastName },
+      emailRedirectTo: window.location.origin,
+    },
+  });
 
-3. **Update `AuthContextType` interface** to include the new method and updated return types.
+  if (error) return { error: error.message };
 
-#### B. `src/pages/AuthPage.tsx`
+  // Supabase returns a user with an empty identities array when
+  // the email is already registered and verified -- no error is thrown.
+  if (data.user && data.user.identities && data.user.identities.length === 0) {
+    return { error: "User already registered" };
+  }
 
-1. **Add a new mode: `"verify-notice"`**
-   - Shown after successful signup OR when an unverified user tries to log in.
-   - Displays a card with a mail icon, title "Check your email", explanatory text ("We sent a verification link to {email}. You must verify before signing in."), and a "Resend verification email" button.
-   - Resend button has a 60-second cooldown timer to prevent spam.
+  return { error: null };
+};
+```
 
-2. **Inline field-level validation (signup mode)**
-   - Track per-field error strings in state: `fieldErrors: { email, password, confirmPassword, firstName, lastName }`.
-   - Validate on blur and on change (after first blur):
-     - **Email**: regex check, show "Please enter a valid email address".
-     - **First/Last name**: non-empty, max 50 chars.
-     - **Password policy**: min 8 chars, at least 1 digit, at least 1 special character. Show specific missing requirement.
-     - **Confirm password**: must match password.
-   - Display errors as small red text below each field.
-   - Also add a **password strength indicator** (a row of requirement chips: "8+ characters", "1 digit", "1 special char" -- each turns green when met).
+This is the only change needed. The existing `mapAuthError` function in `AuthPage.tsx` already maps `"User already registered"` to the friendly message: *"An account with this email already exists. Try signing in instead."*
 
-3. **Human-readable error mapping**
-   - Create a `mapAuthError(rawError: string, mode: Mode)` helper that translates known backend strings:
-     - `"Invalid login credentials"` -> `"Incorrect email or password. Please try again."`
-     - `"User already registered"` -> `"An account with this email already exists. Try signing in instead."`
-     - `"Email not confirmed"` -> `"Please verify your email before signing in."`
-     - Network/timeout -> `"Something went wrong. Please check your connection and try again."`
-     - Fallback: `"An unexpected error occurred. Please try again."`
-   - Show these as a form-level alert (using the existing Alert component) above the submit button, not just toasts.
+### Why This Works
 
-4. **Login: unverified email handling**
-   - If `signIn` returns `isUnverified: true`, switch to `"verify-notice"` mode with the email pre-filled, instead of showing a generic error.
+- **Verified duplicate**: Caught by the empty `identities` check -- user sees "An account with this email already exists."
+- **Unverified duplicate (repeated signup)**: Supabase re-sends the verification email and returns a user with non-empty identities. The flow proceeds to the verify-notice screen as intended, which is correct behavior.
+- **Fresh signup**: Normal path, identities array has one entry, no error returned.
 
-5. **Improved loading/disabled states**
-   - Disable all form inputs (not just the button) during submission.
-   - Show spinner inside the button.
+### No Other Files Affected
 
-6. **Accessibility**
-   - Add `aria-label` to the password visibility toggle buttons.
-   - Add `aria-label` to the back arrow button.
-   - Add proper `id` and `aria-describedby` linking for inline errors.
-   - Add `role="alert"` on inline error messages.
-
-### Files Touched
-
-| File | Change |
-|------|--------|
-| `src/contexts/AuthContext.tsx` | Add `resendVerification`, enhance `signIn` return type with `isUnverified` flag |
-| `src/pages/AuthPage.tsx` | Inline validation, password policy UI, verify-notice mode, resend with cooldown, error mapping, accessibility |
-
-### Technical Notes
-
-- The unverified-user detection will use the approach of checking the Supabase error message string. Supabase returns `"Email not confirmed"` when a user exists but hasn't verified -- we'll check for that specific string from `signInWithPassword`.
-- The resend cooldown is purely client-side (60s `setTimeout` with a countdown display).
-- Password policy: minimum 8 characters, at least 1 digit (`\d`), at least 1 special character (`[^A-Za-z0-9]`). This is validated client-side only; no backend changes needed since Supabase accepts any password >= 6 chars.
-- The `ResetPasswordPage` will also get the same password policy validation for consistency.
+`AuthPage.tsx` already has the error mapping and verify-notice mode. This is purely a data-inspection fix in the context layer.
 
