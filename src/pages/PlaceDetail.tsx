@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ArrowLeft, Star, MapPin, Clock, Phone, Navigation, Heart } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -6,6 +7,8 @@ import { useReviews } from "@/hooks/useReviews";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsFavorite, useToggleFavorite } from "@/hooks/useFavorites";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+import DirectionsSheet from "@/components/DirectionsSheet";
 
 const PlaceDetail = () => {
   const navigate = useNavigate();
@@ -15,6 +18,7 @@ const PlaceDetail = () => {
   const { user } = useAuth();
   const isFavorite = useIsFavorite(id || "");
   const toggleFavorite = useToggleFavorite();
+  const [showDirections, setShowDirections] = useState(false);
 
   if (isLoading) return <div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
   if (!place) return null;
@@ -65,10 +69,22 @@ const PlaceDetail = () => {
           </div>
 
           <div className="flex gap-2 mt-4">
-            <button className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-secondary rounded-xl text-sm font-medium text-secondary-foreground">
+            <button
+              onClick={() => {
+                if (place.phone) {
+                  window.open(`tel:${place.phone}`);
+                } else {
+                  toast({ title: "Phone number not available", variant: "destructive" });
+                }
+              }}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-secondary rounded-xl text-sm font-medium text-secondary-foreground"
+            >
               <Phone className="w-4 h-4" /> Call
             </button>
-            <button className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-secondary rounded-xl text-sm font-medium text-secondary-foreground">
+            <button
+              onClick={() => setShowDirections(true)}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-secondary rounded-xl text-sm font-medium text-secondary-foreground"
+            >
               <Navigation className="w-4 h-4" /> Directions
             </button>
           </div>
@@ -109,6 +125,12 @@ const PlaceDetail = () => {
           Book Now
         </Button>
       </div>
+      <DirectionsSheet
+        open={showDirections}
+        onOpenChange={setShowDirections}
+        placeName={place.name}
+        address={place.address}
+      />
     </div>
   );
 };

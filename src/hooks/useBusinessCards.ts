@@ -11,6 +11,7 @@ export interface BusinessCard {
   tags: string[];
   description: string;
   booking_price: number;
+  phone: string;
   type: "featured" | "recommended";
   created_at: string;
   category?: { id: string; name: string } | null;
