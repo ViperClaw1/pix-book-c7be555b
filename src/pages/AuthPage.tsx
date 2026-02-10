@@ -257,25 +257,25 @@ const AuthPage = () => {
   };
 
   const renderPasswordPolicy = () => (
-    <div className="flex flex-wrap gap-2 mt-1.5 ml-1">
+    <ul className="mt-2 ml-1 space-y-1">
       {[
-        { met: checks.minLength, label: "8+ characters" },
-        { met: checks.hasDigit, label: "1 digit" },
-        { met: checks.hasSpecial, label: "1 special char" },
+        { met: checks.minLength, label: "At least 8 characters" },
+        { met: checks.hasDigit, label: "At least 1 number" },
+        { met: checks.hasSpecial, label: "At least 1 special character (!@#$%…)" },
       ].map(({ met, label }) => (
-        <span
+        <li
           key={label}
-          className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full transition-colors ${
+          className={`flex items-center gap-2 text-xs transition-colors ${
             met
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-muted text-muted-foreground"
+              ? "text-green-700 dark:text-green-400"
+              : "text-muted-foreground"
           }`}
         >
-          {met && <CheckCircle2 className="w-3 h-3" />}
+          <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${met ? "text-green-600 dark:text-green-400" : "text-muted-foreground/40"}`} />
           {label}
-        </span>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 
   // ---- Verify-notice screen ----
