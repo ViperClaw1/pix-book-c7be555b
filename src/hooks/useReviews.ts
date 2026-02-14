@@ -3,12 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 export interface Review {
   id: string;
-  user_id: string;
   business_card_id: string;
   value: number;
   description: string;
   created_at: string;
-  profile?: { first_name: string; last_name: string } | null;
 }
 
 export const useReviews = (businessCardId: string) => {
@@ -16,12 +14,12 @@ export const useReviews = (businessCardId: string) => {
     queryKey: ["reviews", businessCardId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("reviews")
-        .select("*")
+        .from("public_reviews" as any)
+        .select("id, business_card_id, value, description, created_at")
         .eq("business_card_id", businessCardId)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Review[];
+      return data as unknown as Review[];
     },
     enabled: !!businessCardId,
   });

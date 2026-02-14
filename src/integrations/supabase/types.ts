@@ -298,7 +298,38 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_reviews: {
+        Row: {
+          business_card_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          value: number | null
+        }
+        Insert: {
+          business_card_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          value?: number | null
+        }
+        Update: {
+          business_card_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_business_card_id_fkey"
+            columns: ["business_card_id"]
+            isOneToOne: false
+            referencedRelation: "business_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
