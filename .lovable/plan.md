@@ -1,71 +1,65 @@
+## Admin Dashboard Page
 
-## Add User Roles System
+### Overview
 
-### 1. Database Migration
+Create a full-screen fully-responsive admin dashboard at `/admin` with a collapsible sidebar navigation containing three tabs: Transactions, Users, and Business Cards. The page is protected so only admins can access it.
 
-Create the `app_role` enum and `user_roles` table following security best practices (roles in a separate table, never on profiles):
+### Architecture
 
-```sql
--- Enum with three roles
-CREATE TYPE public.app_role AS ENUM ('buyer', 'partner', 'admin');
+The admin dashboard will break out of the mobile `max-w-lg` container and use a full-width layout with the Shadcn Sidebar component. The bottom navigation bar will be hidden on `/admin` routes.
 
--- Separate roles table
-CREATE TABLE public.user_roles (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  role app_role NOT NULL,
-  UNIQUE (user_id, role)
-);
+### 1. Database Changes
 
-ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+**New RLS policies** to let admins read all data:
 
--- Security-definer helper to avoid RLS recursion
-CREATE OR REPLACE FUNCTION public.has_role(_user_id uuid, _role app_role)
-RETURNS boolean
-LANGUAGE sql STABLE SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.user_roles
-    WHERE user_id = _user_id AND role = _role
-  )
-$$;
+- `bookings`: Add SELECT policy for admins using `has_role(auth.uid(), 'admin')` so they can see all transactions
+- `profiles`: Add SELECT policy for admins to view all user profiles
+- `user_roles`: Add SELECT/INSERT/UPDATE/DELETE policies for admins to manage roles
+- `business_cards`: Add INSERT/UPDATE/DELETE policies for admins to manage cards
+- `categories`: Admins need INSERT to create categories (for new business cards)
 
--- RLS: users can read their own roles
-CREATE POLICY "Users can read own roles"
-  ON public.user_roles FOR SELECT
-  TO authenticated
-  USING (user_id = auth.uid());
+### 2. New Files
 
--- Auto-assign 'buyer' role on signup
-CREATE OR REPLACE FUNCTION public.handle_new_user_role()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-  INSERT INTO public.user_roles (user_id, role) VALUES (NEW.id, 'buyer');
-  RETURN NEW;
-END;
-$$;
+`**src/pages/AdminDashboard.tsx**` -- Main layout with SidebarProvider, collapsible Sidebar (three menu items: Transactions, Users, Business Cards), and a content area that renders the active tab.
 
-CREATE TRIGGER on_auth_user_created_role
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user_role();
-```
+`**src/components/admin/AdminTransactions.tsx**` -- Table showing all bookings (joined with business_cards and profiles for names). Columns: date, buyer name/email, business name, cost, status.
 
-### 2. New Hook: `useUserRole`
+`**src/components/admin/AdminUsers.tsx**` -- Table of all users from profiles + user_roles. Includes:
 
-Create `src/hooks/useUserRole.ts` that queries `user_roles` for the current user and exposes:
-- `role` (the user's role string)
-- `isAdmin` (boolean shortcut)
+- Filter dropdown by role (buyer/partner/admin)
+- Search input for name or email
+- Add/Edit/Delete actions (edit opens a dialog to change name, email, role; delete removes the user role + profile)
 
-### 3. Update Profile Page
+`**src/components/admin/AdminBusinessCards.tsx**` -- Table of all business cards. Includes:
 
-In `src/pages/ProfilePage.tsx`, conditionally render an **"Admin Dashboard"** button (using a shield/layout-dashboard icon) above the logout button, visible only when `isAdmin` is true. The button navigates to `/admin` (page not yet created).
+- Filter dropdown by category
+- Search input for name, tags, or keywords
+- Add/Edit/Delete actions via dialogs (form fields: name, image URL, address, phone, category, rating, booking price, tags, description, type)
+
+### 3. Routing Changes
+
+`**src/App.tsx**`:
+
+- Import and add route: `/admin` renders `AdminDashboard` wrapped in `ProtectedRoute`
+
+`**src/components/BottomNav.tsx**`:
+
+- Hide bottom nav when path starts with `/admin`
+
+### 4. Hooks
+
+`**src/hooks/useAdminData.ts**` -- Custom hooks for admin queries:
+
+- `useAllBookings()` -- fetches all bookings with joined business_card and profile data (requires admin RLS policy)
+- `useAllProfiles()` -- fetches all profiles with their roles
+- `useAllBusinessCards()` -- fetches all business cards with categories
+- Mutation hooks for CRUD operations on users, roles, and business cards
 
 ### Technical Details
 
-- The `has_role` function uses `SECURITY DEFINER` to safely check roles without RLS recursion.
-- Every new user automatically gets the `buyer` role via a trigger on `auth.users`.
-- Admin/partner roles must be assigned manually in the database (no self-promotion).
-- The admin button is hidden client-side, but the future admin page should also be server-protected.
+- The sidebar uses `collapsible="icon"` mode with Shadcn's `Sidebar` component
+- Each tab is managed via local state (active tab) rather than nested routes, keeping it simple
+- Admin access is enforced at two levels: client-side via `useUserRole` (redirects non-admins) and server-side via RLS policies using `has_role()`
+- The admin page layout will use `SidebarProvider` wrapping a flex container, separate from the mobile app's `max-w-lg` container
+- All data tables use the existing Shadcn `Table` component with search/filter state managed locally
+- User deletion will use the service role key via an edge function (since client-side cannot delete auth users)
