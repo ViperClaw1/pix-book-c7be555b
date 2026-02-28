@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Pencil, Trash2, Plus, Search } from "lucide-react";
+import ImageUploader from "@/components/admin/ImageUploader";
 import { toast } from "sonner";
 import type { TablesInsert } from "@/integrations/supabase/types";
 
@@ -191,7 +192,11 @@ const AdminBusinessCards = () => {
           </DialogHeader>
           <div className="space-y-3">
             <Input placeholder="Name" value={form.name} onChange={(e) => setField("name", e.target.value)} />
-            <Input placeholder="Image URL" value={form.image} onChange={(e) => setField("image", e.target.value)} />
+            <ImageUploader
+              value={form.image}
+              onUpload={(url) => setField("image", url)}
+              onRemove={() => setField("image", "")}
+            />
             <Input placeholder="Address" value={form.address} onChange={(e) => setField("address", e.target.value)} />
             <Input placeholder="Phone" value={form.phone} onChange={(e) => setField("phone", e.target.value)} />
             <Select value={form.category_id || "none"} onValueChange={(v) => setField("category_id", v === "none" ? "" : v)}>
