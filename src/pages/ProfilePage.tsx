@@ -1,4 +1,4 @@
-import { User, Settings, Gift, LogOut, ChevronRight, Star, Bell, Shield, HelpCircle } from "lucide-react";
+import { User, Settings, Gift, LogOut, ChevronRight, Star, Bell, Shield, HelpCircle, LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,6 +6,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useNotifications, useUnreadCount } from "@/hooks/useNotifications";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useBookings } from "@/hooks/useBookings";
+import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
 
 const ProfilePage = () => {
@@ -15,6 +16,7 @@ const ProfilePage = () => {
   const unreadCount = useUnreadCount();
   const { data: favorites = [] } = useFavorites();
   const { data: bookings = [] } = useBookings();
+  const { isAdmin } = useUserRole();
 
   const menuItems = [
     { icon: Bell, label: "Notifications", badge: unreadCount > 0 ? String(unreadCount) : undefined },
@@ -90,6 +92,15 @@ const ProfilePage = () => {
         </div>
       </div>
 
+
+      {isAdmin && (
+        <div className="px-4 mt-4">
+          <button onClick={() => navigate("/admin")} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary/10 text-primary text-sm font-medium">
+            <LayoutDashboard className="w-4 h-4" />
+            Admin Dashboard
+          </button>
+        </div>
+      )}
 
       <div className="px-4 mt-4">
         <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-destructive/10 text-destructive text-sm font-medium">
