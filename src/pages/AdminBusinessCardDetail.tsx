@@ -12,7 +12,7 @@ import { ArrowLeft, Plus, Star, StarHalf, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const StarRating = ({ rating }: { rating: number }) => {
+const StarRating = ({ rating }: {rating: number;}) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     if (rating >= i) {
@@ -27,7 +27,7 @@ const StarRating = ({ rating }: { rating: number }) => {
 };
 
 const AdminBusinessCardDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{id: string;}>();
   const navigate = useNavigate();
   const { data: card, isLoading } = useBusinessCard(id!);
   const { data: items = [] } = useAdminShoppingItems(id!);
@@ -36,19 +36,19 @@ const AdminBusinessCardDetail = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [itemForm, setItemForm] = useState({ name: "", image: "", price: "", item_type: "main" as "main" | "sauce" | "beverage" });
-  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{id: string;name: string;} | null>(null);
 
   const isRestaurant = card?.category?.name?.toLowerCase() === "restaurants";
 
   const handleAddItem = async () => {
-    if (!itemForm.name.trim()) { toast.error("Name is required"); return; }
+    if (!itemForm.name.trim()) {toast.error("Name is required");return;}
     try {
       await createItem.mutateAsync({
         business_card_id: id!,
         name: itemForm.name.trim(),
         image: itemForm.image || null,
         price: Number(itemForm.price) || 0,
-        item_type: isRestaurant ? itemForm.item_type : "main",
+        item_type: isRestaurant ? itemForm.item_type : "main"
       });
       toast.success("Item added");
       setDialogOpen(false);
@@ -73,7 +73,7 @@ const AdminBusinessCardDetail = () => {
   if (!card) return <div className="p-6 text-muted-foreground">Business card not found.</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 py-[20px] px-[30px]">
       {/* Header */}
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate("/admin")}>
@@ -83,23 +83,23 @@ const AdminBusinessCardDetail = () => {
       </div>
 
       {/* Photo */}
-      {card.image ? (
-        <div className="rounded-lg overflow-hidden border bg-muted h-[240px]">
+      {card.image ?
+      <div className="rounded-lg overflow-hidden border bg-muted h-[240px]">
           <img src={card.image} alt={card.name} className="w-full h-full object-cover" />
-        </div>
-      ) : (
-        <div className="rounded-lg border bg-muted h-[240px] flex items-center justify-center text-muted-foreground">
+        </div> :
+
+      <div className="rounded-lg border bg-muted h-[240px] flex items-center justify-center text-muted-foreground">
           No photo
         </div>
-      )}
+      }
 
       {/* Info */}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           {card.category && <Badge>{card.category.name}</Badge>}
-          {(card.tags ?? []).map((tag) => (
-            <Badge key={tag} variant="secondary">{tag}</Badge>
-          ))}
+          {(card.tags ?? []).map((tag) =>
+          <Badge key={tag} variant="secondary">{tag}</Badge>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
@@ -109,9 +109,9 @@ const AdminBusinessCardDetail = () => {
 
         <p className="text-lg font-semibold">${Number(card.booking_price).toFixed(2)}</p>
 
-        {card.description && (
-          <p className="text-muted-foreground whitespace-pre-wrap">{card.description}</p>
-        )}
+        {card.description &&
+        <p className="text-muted-foreground whitespace-pre-wrap">{card.description}</p>
+        }
       </div>
 
       {/* Items section */}
@@ -126,18 +126,18 @@ const AdminBusinessCardDetail = () => {
           </Button>
         </div>
 
-        {items.length === 0 && (
-          <p className="text-center text-muted-foreground py-6">No items yet.</p>
-        )}
+        {items.length === 0 &&
+        <p className="text-center text-muted-foreground py-6">No items yet.</p>
+        }
 
         <div className="grid gap-3 sm:grid-cols-2">
-          {items.map((item) => (
-            <div key={item.id} className="flex items-center gap-3 rounded-lg border bg-card p-3">
-              {item.image ? (
-                <img src={item.image} alt={item.name} className="w-14 h-14 rounded-md object-cover flex-shrink-0" />
-              ) : (
-                <div className="w-14 h-14 rounded-md bg-muted flex-shrink-0" />
-              )}
+          {items.map((item) =>
+          <div key={item.id} className="flex items-center gap-3 rounded-lg border bg-card p-3">
+              {item.image ?
+            <img src={item.image} alt={item.name} className="w-14 h-14 rounded-md object-cover flex-shrink-0" /> :
+
+            <div className="w-14 h-14 rounded-md bg-muted flex-shrink-0" />
+            }
               <div className="flex-1 min-w-0">
                 <p className="font-medium truncate">{item.name}</p>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -149,7 +149,7 @@ const AdminBusinessCardDetail = () => {
                 <Trash2 className="w-4 h-4 text-destructive" />
               </Button>
             </div>
-          ))}
+          )}
         </div>
       </div>
 
@@ -170,15 +170,15 @@ const AdminBusinessCardDetail = () => {
               <ImageUploader
                 value={itemForm.image}
                 onUpload={(url) => setItemForm((p) => ({ ...p, image: url }))}
-                onRemove={() => setItemForm((p) => ({ ...p, image: "" }))}
-              />
+                onRemove={() => setItemForm((p) => ({ ...p, image: "" }))} />
+
             </div>
             <div className="space-y-1.5">
               <Label>Price</Label>
               <Input type="number" value={itemForm.price} onChange={(e) => setItemForm((p) => ({ ...p, price: e.target.value }))} placeholder="0.00" />
             </div>
-            {isRestaurant && (
-              <div className="space-y-1.5">
+            {isRestaurant &&
+            <div className="space-y-1.5">
                 <Label>Type</Label>
                 <Select value={itemForm.item_type} onValueChange={(v) => setItemForm((p) => ({ ...p, item_type: v as any }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
@@ -189,7 +189,7 @@ const AdminBusinessCardDetail = () => {
                   </SelectContent>
                 </Select>
               </div>
-            )}
+            }
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
@@ -211,8 +211,8 @@ const AdminBusinessCardDetail = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>);
+
 };
 
 export default AdminBusinessCardDetail;
