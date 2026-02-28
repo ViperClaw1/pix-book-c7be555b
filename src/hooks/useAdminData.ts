@@ -132,6 +132,19 @@ export const useDeleteBusinessCard = () => {
   });
 };
 
+export const useCreateUser = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: { email: string; password: string; first_name: string; last_name: string; role: string }) => {
+      const { data, error } = await supabase.functions.invoke("admin-create-user", { body });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-profiles"] }),
+  });
+};
+
 // Shopping items hooks for admin detail page
 export const useAdminShoppingItems = (businessCardId: string) =>
   useQuery({

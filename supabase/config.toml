@@ -2,3 +2,6 @@ project_id = "ceoqpgxbilpytvqtmebm"
 
 [functions.places-autocomplete]
 verify_jwt = false
+
+[functions.admin-create-user]
+verify_jwt = false
