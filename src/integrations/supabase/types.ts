@@ -352,6 +352,7 @@ export type Database = {
         Row: {
           business_card_id: string
           created_at: string
+          description: string | null
           id: string
           image: string | null
           item_type: Database["public"]["Enums"]["shopping_item_type"]
@@ -361,6 +362,7 @@ export type Database = {
         Insert: {
           business_card_id: string
           created_at?: string
+          description?: string | null
           id?: string
           image?: string | null
           item_type?: Database["public"]["Enums"]["shopping_item_type"]
@@ -370,6 +372,7 @@ export type Database = {
         Update: {
           business_card_id?: string
           created_at?: string
+          description?: string | null
           id?: string
           image?: string | null
           item_type?: Database["public"]["Enums"]["shopping_item_type"]
