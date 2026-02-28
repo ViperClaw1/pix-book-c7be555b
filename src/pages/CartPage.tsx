@@ -38,7 +38,10 @@ const QuantityControls = ({
         <Minus className="w-3.5 h-3.5 text-secondary-foreground" />
       </button>
       <span className="w-5 text-center text-xs font-medium text-card-foreground">{quantity}</span>
-      <button onClick={() => onUpdate(quantity + 1)} className="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
+      <button
+        onClick={() => onUpdate(quantity + 1)}
+        className="w-7 h-7 rounded-full bg-primary flex items-center justify-center"
+      >
         <Plus className="w-3.5 h-3.5 text-primary-foreground" />
       </button>
     </div>
@@ -82,9 +85,15 @@ const ShoppingCartItemRow = ({
     <div className="bg-card rounded-xl shadow-card overflow-hidden">
       <div className="flex gap-3 p-3">
         {item.shopping_item?.image ? (
-          <img src={item.shopping_item.image} alt={item.shopping_item.name} className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />
+          <img
+            src={item.shopping_item.image}
+            alt={item.shopping_item.name}
+            className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+          />
         ) : (
-          <div className="w-16 h-16 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 text-xl">📦</div>
+          <div className="w-16 h-16 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 text-xl">
+            📦
+          </div>
         )}
         <div className="flex flex-col justify-between py-0.5 min-w-0 flex-1">
           <div>
@@ -129,7 +138,10 @@ const ShoppingCartItemRow = ({
                       onUpdate={(qty) => updateQty.mutate({ id: child.id, quantity: qty })}
                       onRemove={() => handleRemoveChild(child)}
                     />
-                    <button onClick={() => handleRemoveChild(child)} className="p-1 rounded-lg hover:bg-destructive/10 transition-colors">
+                    <button
+                      onClick={() => handleRemoveChild(child)}
+                      className="p-1 rounded-lg hover:bg-destructive/10 transition-colors"
+                    >
                       <Trash2 className="w-3.5 h-3.5 text-destructive" />
                     </button>
                   </div>
@@ -164,10 +176,7 @@ const CartPage = () => {
   const bookingTotal = bookingItems.reduce((s, i) => s + Number(i.cost), 0);
   const shoppingTotal = shoppingItems.reduce((s, item) => {
     const main = (item.shopping_item?.price || 0) * item.quantity;
-    const children = (item.children || []).reduce(
-      (cs, c) => cs + (c.shopping_item?.price || 0) * c.quantity,
-      0
-    );
+    const children = (item.children || []).reduce((cs, c) => cs + (c.shopping_item?.price || 0) * c.quantity, 0);
     return s + main + children;
   }, 0);
 
@@ -206,8 +215,12 @@ const CartPage = () => {
       <main className="px-4">
         <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="w-full mb-4">
-            <TabsTrigger value="bookings" className="flex-1">Bookings</TabsTrigger>
-            <TabsTrigger value="shopping" className="flex-1">Shopping</TabsTrigger>
+            <TabsTrigger value="bookings" className="flex-1">
+              Bookings
+            </TabsTrigger>
+            <TabsTrigger value="shopping" className="flex-1">
+              Shopping
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="bookings" className="space-y-3">
@@ -240,18 +253,14 @@ const CartPage = () => {
                     />
                     <div className="flex flex-col justify-between py-0.5 min-w-0 flex-1">
                       <div>
-                        <h3 className="font-semibold text-card-foreground truncate">
-                          {item.business_card?.name}
-                        </h3>
+                        <h3 className="font-semibold text-card-foreground truncate">{item.business_card?.name}</h3>
                         <p className="text-xs text-muted-foreground mt-1">
                           {new Date(item.date_time).toLocaleDateString("en", { month: "short", day: "numeric" })}
                           {" · "}
                           {new Date(item.date_time).toLocaleTimeString("en", { hour: "2-digit", minute: "2-digit" })}
                         </p>
                       </div>
-                      <p className="text-sm font-medium text-card-foreground">
-                        {Number(item.cost).toLocaleString()} ₸
-                      </p>
+                      <p className="text-sm font-medium text-card-foreground">{Number(item.cost).toLocaleString()} ₸</p>
                     </div>
                     <button
                       onClick={() => handleCancelBooking(item.id, item.business_card?.name)}
@@ -302,7 +311,7 @@ const CartPage = () => {
                     <ShoppingCartItemRow item={item} updateQty={updateQty} removeItem={removeItem} />
                   </motion.div>
                 ))}
-                <div className="fixed bottom-16 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
+                <div className="fixed bottom-24 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
                   <div className="flex justify-between items-center mb-3 max-w-lg mx-auto">
                     <span className="text-sm text-muted-foreground">Total</span>
                     <span className="text-lg font-bold text-foreground">{shoppingTotal.toLocaleString()} ₸</span>
