@@ -1,63 +1,105 @@
 
 
-## Plan: Call Button + Directions Modal
+## Add Shopping Category and Shopping Flow
 
-### 1. Database: Add `phone` column to `business_cards`
+### Overview
+Add a new "Shopping" category and a complete shopping flow that lets users buy food items (from Restaurants) or goods (from Shopping business cards), with additional item suggestions for food, quantity controls, and an updated cart experience.
 
-- Run a migration to add a `phone text default ''` column to `business_cards`.
-- Populate all 6 existing records with mock phone numbers from the `mockData.ts` file.
+### Database Changes
 
-### 2. Update `BusinessCard` TypeScript interface
+**1. New table: `shopping_items`** -- products sold by business cards
+- `id` (uuid, PK), `business_card_id` (uuid, FK to business_cards), `name` (text), `image` (text), `price` (numeric), `item_type` (enum: 'main', 'sauce', 'beverage'), `created_at` (timestamptz)
+- RLS: public SELECT, no INSERT/UPDATE/DELETE from client
 
-**File: `src/hooks/useBusinessCards.ts`**
+**2. New table: `shopping_cart_items`** -- user's shopping cart
+- `id` (uuid, PK), `user_id` (uuid), `shopping_item_id` (uuid, FK), `business_card_id` (uuid, FK), `quantity` (integer, default 1), `parent_id` (uuid, nullable self-ref for additional items), `created_at` (timestamptz)
+- RLS: users can CRUD only their own items
 
-- Add `phone: string` to the `BusinessCard` interface.
+**3. New enum: `shopping_item_type`** ('main', 'sauce', 'beverage')
 
-### 3. Call Button -- `tel:` link
+**4. Insert seed data:**
+- Add "Shopping" category row
+- Add Shopping business cards (e.g. "Mega Store", "Tech Mall") with shopping items
+- Add food items for existing Restaurant business cards (e.g. burgers, pasta)
+- Add additional items (sauces: ketchup, mayo, BBQ; beverages: cola, juice, water)
 
-**File: `src/pages/PlaceDetail.tsx`**
+### New Files
 
-- Wire the existing "Call" button to open the native phone dialer using `window.open("tel:" + place.phone)`.
-- If `phone` is empty, show a toast saying "Phone number not available".
+**`src/hooks/useShoppingItems.ts`**
+- `useShoppingItems(businessCardId)` -- fetch main items for a business card
+- `useAdditionalItems(businessCardId)` -- fetch sauces/beverages for a business card
+- `useShoppingCart()` -- fetch user's shopping cart with joined item data
+- `useAddToShoppingCart()`, `useUpdateShoppingCartQuantity()`, `useRemoveShoppingCartItem()` -- mutations
 
-### 4. Directions Button -- Full-screen Sheet
+**`src/pages/ShoppingItemsPage.tsx`**
+- Lists all shopping items (main type) for a given business card
+- Each item shows name, image, price, and an "Add to Cart" button
+- Route: `/shop/:businessCardId`
 
-**File: `src/pages/PlaceDetail.tsx`**
+**`src/components/AdditionalItemsSheet.tsx`**
+- Bottom sheet that appears after adding a Restaurant food item
+- Shows suggested sauces and beverages with quantity controls
+- "Skip" and "Add" options
+- Skipped entirely for Shopping category business cards
 
-- Add state `showDirections` to toggle a Drawer/Sheet.
-- Clicking "Directions" opens the sheet.
+**`src/components/CartConfirmationSheet.tsx`**
+- Appears after items are added to cart
+- Shows the main item + any additional items with quantity controls (+/-)
+- Two buttons: "Continue Shopping" (goes back to items list) and "Go to Cart" (navigates to /cart)
 
-**New file: `src/components/DirectionsSheet.tsx`**
+**`src/pages/CartPage.tsx` (modified)**
+- Add a new "Shopping" tab/section for shopping cart items (separate from booking cart items)
+- Each main item shows name, image, price, quantity controls
+- If main item has additional items, show a collapsible/expandable block (collapsed by default)
+- Expand reveals additional items with their own quantity controls
+- Remove button on each item; clicking "-" when quantity is 1 removes the item
+- Total recalculates based on all items and quantities
 
-A bottom sheet (using the existing `vaul` Drawer component) containing:
+### Modified Files
 
-- **Header** with the place name, address, and a close button.
-- **An embedded Google Maps iframe** showing the destination location using the place address (no API key required for simple embed).
-- **Route options** -- three buttons for driving, transit, and walking that open Google Maps in a new tab with the correct `travelmode` parameter:
-  `https://www.google.com/maps/dir/?api=1&destination={encoded_address}&travelmode=driving|transit|walking`
-- **"Open in Google Maps" button** -- opens the full Google Maps directions page externally.
+**`src/pages/PlaceDetail.tsx`**
+- For Restaurant and Shopping category business cards, add a "Shop Items" / "Menu" button alongside "Book Now"
+- Clicking it navigates to `/shop/:id`
 
-This approach uses no API key and no Directions API. It works by:
-- Embedding a Google Maps `embed` iframe for the visual map preview.
-- Linking out to Google Maps with URL parameters for actual route building.
+**`src/App.tsx`**
+- Add route: `/shop/:id` -> `ShoppingItemsPage`
 
-This is the most practical approach because:
-- Google Directions API requires billing and an API key.
-- The embedded iframe + external links give users the full routing experience in Google Maps itself.
-- No cost, no key management.
-
-### Files Changed
-
-| File | Change |
-|------|--------|
-| Migration SQL | Add `phone` column + populate mock data |
-| `src/hooks/useBusinessCards.ts` | Add `phone` to interface |
-| `src/pages/PlaceDetail.tsx` | Wire Call button with `tel:`, add Directions sheet toggle |
-| `src/components/DirectionsSheet.tsx` | New component: Drawer with map embed + route option links |
+**`src/hooks/useCategories.ts`**
+- Add icon mapping for "Shopping": "🛍️"
 
 ### Technical Details
 
-- The Google Maps embed URL format: `https://www.google.com/maps/embed/v1/place?key=...&q={address}` requires an API key. Instead, we'll use the free `maps.google.com/maps?q={address}&output=embed` format inside an iframe.
-- Route links use the universal Google Maps URL scheme: `https://www.google.com/maps/dir/?api=1&destination={address}&travelmode={mode}` -- this opens in the user's browser/Google Maps app with no API key needed.
-- The Drawer component from `vaul` is already installed and available at `src/components/ui/drawer.tsx`.
+```text
+Shopping Flow:
+                                              
+  PlaceDetail ──> ShoppingItemsPage ──> [Add to Cart]
+                                              │
+                              ┌────────────────┴────────────────┐
+                              │ Restaurant?                     │ Shopping?
+                              ▼                                 ▼
+                   AdditionalItemsSheet              CartConfirmationSheet
+                   (sauces, beverages)                (quantity controls)
+                              │                                 │
+                              ▼                                 │
+                   CartConfirmationSheet                        │
+                   (main + additionals)                         │
+                              │                                 │
+                    ┌─────────┴─────────┐             ┌─────────┴─────────┐
+                    ▼                   ▼             ▼                   ▼
+             Continue Shopping    Go to Cart   Continue Shopping    Go to Cart
+             (back to items)     (/cart)       (back to items)     (/cart)
+```
 
+Cart page shopping section layout:
+```text
+  ┌─────────────────────────────────┐
+  │ [img] Burger         2x  800 ₸ │  [-] [2] [+]  [🗑]
+  │  ▸ Additional items (2)        │  <- collapsed by default
+  │  ┌─ Ketchup       1x  200 ₸   │  [-] [1] [+]  [🗑]
+  │  └─ Cola           1x  500 ₸   │  [-] [1] [+]  [🗑]
+  └─────────────────────────────────┘
+```
+
+- Clicking "-" when qty=1 removes the item (with confirmation toast)
+- Removing a main item also removes all its additional items
+- Total at bottom sums (price x quantity) for all items
