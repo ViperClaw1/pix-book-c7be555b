@@ -193,7 +193,7 @@ const CartPage = () => {
   const defaultTab = hasShopping && !hasBookings ? "shopping" : "bookings";
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen bg-background pb-44">
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md px-4 pt-3 pb-3 safe-top">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="p-2 -ml-2">
@@ -261,7 +261,7 @@ const CartPage = () => {
                     </button>
                   </motion.div>
                 ))}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
+                <div className="fixed bottom-16 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
                   <div className="flex justify-between items-center mb-3 max-w-lg mx-auto">
                     <span className="text-sm text-muted-foreground">Total</span>
                     <span className="text-lg font-bold text-foreground">{bookingTotal.toLocaleString()} ₸</span>
@@ -302,7 +302,7 @@ const CartPage = () => {
                     <ShoppingCartItemRow item={item} updateQty={updateQty} removeItem={removeItem} />
                   </motion.div>
                 ))}
-                <div className="fixed bottom-0 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
+                <div className="fixed bottom-16 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
                   <div className="flex justify-between items-center mb-3 max-w-lg mx-auto">
                     <span className="text-sm text-muted-foreground">Total</span>
                     <span className="text-lg font-bold text-foreground">{shoppingTotal.toLocaleString()} ₸</span>
