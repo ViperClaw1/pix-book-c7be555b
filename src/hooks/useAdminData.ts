@@ -131,3 +131,41 @@ export const useDeleteBusinessCard = () => {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-business-cards"] }),
   });
 };
+
+// Shopping items hooks for admin detail page
+export const useAdminShoppingItems = (businessCardId: string) =>
+  useQuery({
+    queryKey: ["admin-shopping-items", businessCardId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("shopping_items")
+        .select("*")
+        .eq("business_card_id", businessCardId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!businessCardId,
+  });
+
+export const useCreateShoppingItem = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (item: TablesInsert<"shopping_items">) => {
+      const { error } = await supabase.from("shopping_items").insert(item);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-shopping-items"] }),
+  });
+};
+
+export const useDeleteShoppingItem = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("shopping_items").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-shopping-items"] }),
+  });
+};
