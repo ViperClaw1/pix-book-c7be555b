@@ -1,46 +1,63 @@
 
 
-## Make Admin Dashboard Responsive (Table to Cards on Mobile/Tablet)
+## Replace Image URL Input with Image Uploader
 
-### Approach
+### Overview
 
-Use Tailwind's `md:` breakpoint to show tables on desktop and card-based lists on mobile/tablet. Each of the three admin components will render both layouts, toggling visibility with `hidden md:block` and `md:hidden`.
+Replace the plain "Image URL" text input in the Add/Edit Business Card dialog with a visual drag-and-drop image uploader. The uploader will be 200px tall, display an upload icon and placeholder text, and store images in a storage bucket.
 
-### Changes
+### 1. Create Storage Bucket (Database Migration)
 
-#### 1. `src/components/admin/AdminTransactions.tsx`
+Create a `business-cards` storage bucket for uploaded images:
 
-- Keep the existing `<Table>` but wrap it in `hidden md:block`
-- Add a mobile card list (`md:hidden`) where each booking renders as a card showing:
-  - Date and status badge in a row at the top
-  - Buyer name and email
-  - Business name
-  - Cost (right-aligned or bottom)
+```sql
+INSERT INTO storage.buckets (id, name, public) VALUES ('business-cards', 'business-cards', true);
 
-#### 2. `src/components/admin/AdminUsers.tsx`
+-- Allow authenticated users to upload
+CREATE POLICY "Authenticated users can upload business card images"
+ON storage.objects FOR INSERT TO authenticated
+WITH CHECK (bucket_id = 'business-cards');
 
-- Wrap existing `<Table>` in `hidden md:block`
-- Add mobile card list (`md:hidden`) with each user as a card:
-  - Name (bold) and role badge
-  - Email below
-  - Edit/Delete action buttons in the card footer
+-- Allow public read access
+CREATE POLICY "Public can view business card images"
+ON storage.objects FOR SELECT TO public
+USING (bucket_id = 'business-cards');
 
-#### 3. `src/components/admin/AdminBusinessCards.tsx`
+-- Allow authenticated users to delete their uploads
+CREATE POLICY "Authenticated users can delete business card images"
+ON storage.objects FOR DELETE TO authenticated
+USING (bucket_id = 'business-cards');
+```
 
-- Wrap existing `<Table>` in `hidden md:block`
-- Add mobile card list (`md:hidden`) with each card showing:
-  - Name (bold) and type badge
-  - Category and rating
-  - Price
-  - Edit/Delete action buttons
+### 2. Create `ImageUploader` Component
 
-#### 4. `src/pages/AdminDashboard.tsx`
+New file: `src/components/admin/ImageUploader.tsx`
 
-- Reduce main padding on small screens: `p-3 md:p-6`
-- The sidebar already collapses via `collapsible="icon"`, so it works on smaller screens
+A reusable component that:
+- Renders a 200px-tall dashed-border drop zone
+- Shows an `Upload` (or `ImagePlus`) icon from lucide-react centered inside
+- Displays placeholder text like "Click or drag to upload an image" beneath the icon
+- Accepts click to open file picker and drag-and-drop
+- On file select: uploads to the `business-cards` bucket via Supabase Storage, then calls `onUpload(publicUrl)` to set the form value
+- Shows a loading spinner during upload
+- When a value (URL) is already set, displays the image as a preview with a remove/replace button
+
+### 3. Update `AdminBusinessCards.tsx`
+
+- Import `ImageUploader`
+- Replace line 194 (`<Input placeholder="Image URL" .../>`) with:
+  ```tsx
+  <ImageUploader
+    value={form.image}
+    onUpload={(url) => setField("image", url)}
+    onRemove={() => setField("image", "")}
+  />
+  ```
+- No other logic changes needed -- the form's `image` field will still hold a URL string, now pointing to the storage bucket
 
 ### Technical Notes
 
-- No new components needed -- the card layouts are simple `div` structures using existing Tailwind utilities (`rounded-lg border bg-card p-4`, etc.)
-- All existing logic (filtering, search, dialogs) remains unchanged -- only the rendering layer is duplicated for the two breakpoints
-- The `md:` breakpoint (768px) is the toggle point between card and table views
+- The uploader generates a unique filename using `crypto.randomUUID()` to avoid collisions
+- Accepted file types: `image/*` (jpg, png, webp, etc.)
+- The public URL is constructed via `supabase.storage.from('business-cards').getPublicUrl(path)`
+- When editing an existing card that already has an image URL, the uploader shows the preview immediately
