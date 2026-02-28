@@ -1,105 +1,62 @@
 
 
-## Add Shopping Category and Shopping Flow
+## Add Stripe Checkout to Shopping Cart
 
 ### Overview
-Add a new "Shopping" category and a complete shopping flow that lets users buy food items (from Restaurants) or goods (from Shopping business cards), with additional item suggestions for food, quantity controls, and an updated cart experience.
+Create a backend function for Stripe Checkout, a webhook handler for payment confirmation, and a "Pay" button on the Shopping tab of the Cart page. We'll build the webhook endpoint first so you get the URL to configure in Stripe before providing the signing secret.
 
-### Database Changes
+### Step 1: Create `create-checkout` edge function
+- Accepts the shopping cart items from the authenticated user
+- Builds Stripe `line_items` dynamically from the cart (using `price_data` with item name, price in KZT, and quantity)
+- Creates a Stripe Checkout Session in `mode: "payment"`
+- Returns the checkout session URL to redirect the user
 
-**1. New table: `shopping_items`** -- products sold by business cards
-- `id` (uuid, PK), `business_card_id` (uuid, FK to business_cards), `name` (text), `image` (text), `price` (numeric), `item_type` (enum: 'main', 'sauce', 'beverage'), `created_at` (timestamptz)
-- RLS: public SELECT, no INSERT/UPDATE/DELETE from client
+### Step 2: Create `stripe-webhook` edge function
+- Listens for `checkout.session.completed` events
+- Verifies the webhook signature using `STRIPE_WEBHOOK_SECRET`
+- On successful payment: clears the user's shopping cart items from the database
+- Endpoint URL will be: `https://ceoqpgxbilpytvqtmebm.supabase.co/functions/v1/stripe-webhook`
 
-**2. New table: `shopping_cart_items`** -- user's shopping cart
-- `id` (uuid, PK), `user_id` (uuid), `shopping_item_id` (uuid, FK), `business_card_id` (uuid, FK), `quantity` (integer, default 1), `parent_id` (uuid, nullable self-ref for additional items), `created_at` (timestamptz)
-- RLS: users can CRUD only their own items
+After deploying, you'll set this URL as your webhook endpoint in Stripe Dashboard, then provide me the webhook signing secret (`whsec_...`).
 
-**3. New enum: `shopping_item_type`** ('main', 'sauce', 'beverage')
+### Step 3: Add Stripe Publishable Key secret
+- Ask you to provide `STRIPE_PUBLISHABLE_KEY` (not strictly needed server-side, but good to have)
+- Ask you to provide `STRIPE_WEBHOOK_SECRET` after you configure the webhook in Stripe
 
-**4. Insert seed data:**
-- Add "Shopping" category row
-- Add Shopping business cards (e.g. "Mega Store", "Tech Mall") with shopping items
-- Add food items for existing Restaurant business cards (e.g. burgers, pasta)
-- Add additional items (sauces: ketchup, mayo, BBQ; beverages: cola, juice, water)
+### Step 4: Update `CartPage.tsx` -- Shopping tab
+- Add a "Pay" button in the sticky bottom bar of the Shopping tab (next to the total)
+- On click, call `create-checkout` edge function with the cart data
+- Redirect to the Stripe Checkout URL
 
-### New Files
+### Step 5: Add success/cancel pages
+- `/payment-success` -- simple confirmation page
+- `/payment-canceled` -- simple page with a "Back to Cart" link
+- Register both routes in `App.tsx`
 
-**`src/hooks/useShoppingItems.ts`**
-- `useShoppingItems(businessCardId)` -- fetch main items for a business card
-- `useAdditionalItems(businessCardId)` -- fetch sauces/beverages for a business card
-- `useShoppingCart()` -- fetch user's shopping cart with joined item data
-- `useAddToShoppingCart()`, `useUpdateShoppingCartQuantity()`, `useRemoveShoppingCartItem()` -- mutations
-
-**`src/pages/ShoppingItemsPage.tsx`**
-- Lists all shopping items (main type) for a given business card
-- Each item shows name, image, price, and an "Add to Cart" button
-- Route: `/shop/:businessCardId`
-
-**`src/components/AdditionalItemsSheet.tsx`**
-- Bottom sheet that appears after adding a Restaurant food item
-- Shows suggested sauces and beverages with quantity controls
-- "Skip" and "Add" options
-- Skipped entirely for Shopping category business cards
-
-**`src/components/CartConfirmationSheet.tsx`**
-- Appears after items are added to cart
-- Shows the main item + any additional items with quantity controls (+/-)
-- Two buttons: "Continue Shopping" (goes back to items list) and "Go to Cart" (navigates to /cart)
-
-**`src/pages/CartPage.tsx` (modified)**
-- Add a new "Shopping" tab/section for shopping cart items (separate from booking cart items)
-- Each main item shows name, image, price, quantity controls
-- If main item has additional items, show a collapsible/expandable block (collapsed by default)
-- Expand reveals additional items with their own quantity controls
-- Remove button on each item; clicking "-" when quantity is 1 removes the item
-- Total recalculates based on all items and quantities
-
-### Modified Files
-
-**`src/pages/PlaceDetail.tsx`**
-- For Restaurant and Shopping category business cards, add a "Shop Items" / "Menu" button alongside "Book Now"
-- Clicking it navigates to `/shop/:id`
-
-**`src/App.tsx`**
-- Add route: `/shop/:id` -> `ShoppingItemsPage`
-
-**`src/hooks/useCategories.ts`**
-- Add icon mapping for "Shopping": "🛍️"
+### Step 6: Update `supabase/config.toml`
+- Add `[functions.stripe-webhook]` with `verify_jwt = false` (Stripe sends unsigned requests)
+- Add `[functions.create-checkout]` with `verify_jwt = false` (we validate auth in code)
 
 ### Technical Details
 
 ```text
-Shopping Flow:
-                                              
-  PlaceDetail ──> ShoppingItemsPage ──> [Add to Cart]
-                                              │
-                              ┌────────────────┴────────────────┐
-                              │ Restaurant?                     │ Shopping?
-                              ▼                                 ▼
-                   AdditionalItemsSheet              CartConfirmationSheet
-                   (sauces, beverages)                (quantity controls)
-                              │                                 │
-                              ▼                                 │
-                   CartConfirmationSheet                        │
-                   (main + additionals)                         │
-                              │                                 │
-                    ┌─────────┴─────────┐             ┌─────────┴─────────┐
-                    ▼                   ▼             ▼                   ▼
-             Continue Shopping    Go to Cart   Continue Shopping    Go to Cart
-             (back to items)     (/cart)       (back to items)     (/cart)
+Flow:
+  CartPage (Pay button)
+       │
+       ▼
+  create-checkout (edge fn)
+       │ creates Stripe Checkout Session
+       ▼
+  Stripe Checkout (redirect)
+       │
+       ├── success → /payment-success
+       │      └── stripe-webhook clears cart
+       └── cancel  → /payment-canceled
 ```
 
-Cart page shopping section layout:
-```text
-  ┌─────────────────────────────────┐
-  │ [img] Burger         2x  800 ₸ │  [-] [2] [+]  [🗑]
-  │  ▸ Additional items (2)        │  <- collapsed by default
-  │  ┌─ Ketchup       1x  200 ₸   │  [-] [1] [+]  [🗑]
-  │  └─ Cola           1x  500 ₸   │  [-] [1] [+]  [🗑]
-  └─────────────────────────────────┘
-```
+- Currency: KZT (Kazakhstani Tenge, matching the existing ₸ usage)
+- The webhook URL after deployment: `https://ceoqpgxbilpytvqtmebm.supabase.co/functions/v1/stripe-webhook`
+- I'll deploy both functions, then ask you to:
+  1. Add that webhook URL in Stripe Dashboard
+  2. Provide the `STRIPE_WEBHOOK_SECRET` back to me
 
-- Clicking "-" when qty=1 removes the item (with confirmation toast)
-- Removing a main item also removes all its additional items
-- Total at bottom sums (price x quantity) for all items
