@@ -311,7 +311,7 @@ const CartPage = () => {
                     <ShoppingCartItemRow item={item} updateQty={updateQty} removeItem={removeItem} />
                   </motion.div>
                 ))}
-                <div className="fixed bottom-16 left-0 right-0 pb-16 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
+                <div className="fixed bottom-16 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
                   <div className="flex justify-between items-center mb-3 max-w-lg mx-auto">
                     <span className="text-sm text-muted-foreground">Total</span>
                     <span className="text-lg font-bold text-foreground">{shoppingTotal.toLocaleString()} ₸</span>
