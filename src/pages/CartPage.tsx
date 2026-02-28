@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Trash2, ShoppingCart, Minus, Plus, ChevronDown } from "lucide-react";
+import { ArrowLeft, Trash2, ShoppingCart, Minus, Plus, ChevronDown, CreditCard, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCartItems, useDeleteCartItem } from "@/hooks/useCartItems";
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const QuantityControls = ({
   quantity,
@@ -306,6 +307,25 @@ const CartPage = () => {
                     <span className="text-sm text-muted-foreground">Total</span>
                     <span className="text-lg font-bold text-foreground">{shoppingTotal.toLocaleString()} ₸</span>
                   </div>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        const { data, error } = await supabase.functions.invoke("create-checkout");
+                        if (error) throw error;
+                        if (data?.url) {
+                          window.location.href = data.url;
+                        } else {
+                          throw new Error("No checkout URL returned");
+                        }
+                      } catch (e: any) {
+                        toast.error(e.message || "Failed to start payment");
+                      }
+                    }}
+                    className="w-full h-12 text-base font-semibold rounded-xl max-w-lg mx-auto flex items-center justify-center gap-2"
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    Pay {shoppingTotal.toLocaleString()} ₸
+                  </Button>
                 </div>
               </>
             )}
