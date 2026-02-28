@@ -22,6 +22,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminBusinessCardDetail from "./pages/AdminBusinessCardDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/:id" element={<ProtectedRoute><AdminBusinessCardDetail /></ProtectedRoute>} />
             <Route path="*" element={
               <div className="max-w-lg mx-auto relative min-h-screen">
                 <Routes>

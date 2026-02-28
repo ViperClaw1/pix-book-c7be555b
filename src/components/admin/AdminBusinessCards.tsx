@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Pencil, Trash2, Plus, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import ImageUploader from "@/components/admin/ImageUploader";
 import AddressAutocomplete from "@/components/admin/AddressAutocomplete";
 import { toast } from "sonner";
@@ -49,6 +50,7 @@ const formatPhone = (raw: string): string => {
 const emptyForm: CardForm = { name: "", image: "", address: "", phone: "", category_id: "", rating: "", booking_price: "", tags: "", description: "", type: "recommended" };
 
 const AdminBusinessCards = () => {
+  const navigate = useNavigate();
   const { data: cards = [], isLoading } = useAllBusinessCards();
   const { data: categories = [] } = useAllCategories();
   const createCard = useCreateBusinessCard();
@@ -152,8 +154,8 @@ const AdminBusinessCards = () => {
           <p className="text-center text-muted-foreground py-6">No cards found</p>
         )}
         {filtered.map((c) => (
-          <div key={c.id} className="rounded-lg border bg-card p-4 space-y-2">
-            <div className="flex items-center justify-between">
+          <div key={c.id} className="rounded-lg border bg-card p-4 space-y-2 cursor-pointer hover:border-primary/50 transition-colors" onClick={() => navigate(`/admin/${c.id}`)}>
+            <div className="flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
               <span className="font-medium">{c.name}</span>
               <Badge variant="outline">{c.type}</Badge>
             </div>
@@ -161,7 +163,7 @@ const AdminBusinessCards = () => {
               <span>{c.categories?.name ?? "—"}</span>
               <span>★ {c.rating}</span>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
               <span className="font-medium">${Number(c.booking_price).toFixed(2)}</span>
               <div className="flex gap-1">
                 <Button size="icon" variant="ghost" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
@@ -190,13 +192,13 @@ const AdminBusinessCards = () => {
               <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">No cards found</TableCell></TableRow>
             )}
             {filtered.map((c) => (
-              <TableRow key={c.id}>
+              <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/admin/${c.id}`)}>
                 <TableCell className="font-medium">{c.name}</TableCell>
                 <TableCell>{c.categories?.name ?? "—"}</TableCell>
                 <TableCell>{c.rating}</TableCell>
                 <TableCell className="text-right">${Number(c.booking_price).toFixed(2)}</TableCell>
                 <TableCell><Badge variant="outline">{c.type}</Badge></TableCell>
-                <TableCell className="text-right space-x-1">
+                <TableCell className="text-right space-x-1" onClick={(e) => e.stopPropagation()}>
                   <Button size="icon" variant="ghost" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
                   <Button size="icon" variant="ghost" onClick={() => setDeleteTarget({ id: c.id, name: c.name })}><Trash2 className="w-4 h-4 text-destructive" /></Button>
                 </TableCell>
