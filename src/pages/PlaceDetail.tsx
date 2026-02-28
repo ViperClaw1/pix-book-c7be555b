@@ -117,7 +117,7 @@ const PlaceDetail = () => {
         )}
       </motion.div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
+      <div className="fixed bottom-16 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border">
         <div className="flex gap-3 max-w-lg mx-auto">
           {(place.category?.name === "Restaurants" || place.category?.name === "Shopping") && (
             <Button
