@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useAllProfiles, useUpdateProfile, useUpdateUserRole, useDeleteUser } from "@/hooks/useAdminData";
+import { useAllProfiles, useUpdateProfile, useUpdateUserRole, useDeleteUser, useCreateUser } from "@/hooks/useAdminData";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { Pencil, Trash2, Search } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Pencil, Trash2, Search, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 const roleBadge: Record<string, string> = {
@@ -30,11 +31,18 @@ const AdminUsers = () => {
   const updateProfile = useUpdateProfile();
   const updateRole = useUpdateUserRole();
   const deleteUser = useDeleteUser();
+  const createUser = useCreateUser();
 
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [editUser, setEditUser] = useState<ProfileWithRole | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ProfileWithRole | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [newFirst, setNewFirst] = useState("");
+  const [newLast, setNewLast] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newRole, setNewRole] = useState("buyer");
 
   // Edit form state
   const [formName, setFormName] = useState("");
@@ -71,6 +79,15 @@ const AdminUsers = () => {
     } catch { toast.error("Failed to delete user"); }
   };
 
+  const handleAdd = async () => {
+    try {
+      await createUser.mutateAsync({ email: newEmail, password: newPassword, first_name: newFirst, last_name: newLast, role: newRole });
+      toast.success("User created");
+      setAddOpen(false);
+      setNewFirst(""); setNewLast(""); setNewEmail(""); setNewPassword(""); setNewRole("buyer");
+    } catch (e: any) { toast.error(e.message || "Failed to create user"); }
+  };
+
   const filtered = users.filter((u) => {
     const matchesRole = roleFilter === "all" || u.role === roleFilter;
     const q = search.toLowerCase();
@@ -98,6 +115,7 @@ const AdminUsers = () => {
             <SelectItem value="buyer">Buyer</SelectItem>
           </SelectContent>
         </Select>
+        <Button onClick={() => setAddOpen(true)}><Plus className="w-4 h-4 mr-1" /> Add User</Button>
       </div>
 
       {/* Mobile card list */}
@@ -189,6 +207,37 @@ const AdminUsers = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
             <Button variant="destructive" onClick={handleDelete} disabled={deleteUser.isPending}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add User Dialog */}
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add User</DialogTitle>
+            <DialogDescription>Create a new user account.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div><Label>First Name</Label><Input value={newFirst} onChange={(e) => setNewFirst(e.target.value)} /></div>
+            <div><Label>Last Name</Label><Input value={newLast} onChange={(e) => setNewLast(e.target.value)} /></div>
+            <div><Label>Email</Label><Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} /></div>
+            <div><Label>Password</Label><Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} /></div>
+            <div>
+              <Label>Role</Label>
+              <Select value={newRole} onValueChange={setNewRole}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="partner">Partner</SelectItem>
+                  <SelectItem value="buyer">Buyer</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddOpen(false)}>Cancel</Button>
+            <Button onClick={handleAdd} disabled={createUser.isPending || !newEmail || !newPassword || !newFirst || !newLast}>Create</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
