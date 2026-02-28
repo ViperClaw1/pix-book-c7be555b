@@ -20,11 +20,19 @@ const PlaceDetail = () => {
   const toggleFavorite = useToggleFavorite();
   const [showDirections, setShowDirections] = useState(false);
 
-  if (isLoading) return <div className="min-h-screen bg-background flex items-center justify-center"><div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+  if (isLoading)
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   if (!place) return null;
 
   const handleFavorite = () => {
-    if (!user) { navigate("/auth"); return; }
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
     toggleFavorite.mutate({ businessCardId: place.id, isFavorite });
   };
 
@@ -43,7 +51,11 @@ const PlaceDetail = () => {
         </div>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-4 -mt-8 relative z-10 pb-28">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="px-4 -mt-8 relative z-10 pb-28"
+      >
         <div className="bg-card rounded-2xl p-5 shadow-elevated">
           <h1 className="text-xl font-bold text-card-foreground">{place.name}</h1>
           <div className="flex items-center gap-2 mt-1">
@@ -55,7 +67,9 @@ const PlaceDetail = () => {
 
           <div className="flex gap-1.5 mt-3">
             {place.tags.map((tag) => (
-              <span key={tag} className="text-xs px-2.5 py-1 bg-secondary rounded-full text-secondary-foreground">{tag}</span>
+              <span key={tag} className="text-xs px-2.5 py-1 bg-secondary rounded-full text-secondary-foreground">
+                {tag}
+              </span>
             ))}
           </div>
 
@@ -117,7 +131,7 @@ const PlaceDetail = () => {
         )}
       </motion.div>
 
-      <div className="fixed bottom-16 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border">
         <div className="flex gap-3 max-w-lg mx-auto">
           {(place.category?.name === "Restaurants" || place.category?.name === "Shopping") && (
             <Button
@@ -129,7 +143,7 @@ const PlaceDetail = () => {
             </Button>
           )}
           <Button
-            onClick={() => user ? navigate(`/book/${place.id}`) : navigate("/auth")}
+            onClick={() => (user ? navigate(`/book/${place.id}`) : navigate("/auth"))}
             className="flex-1 h-12 text-base font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
           >
             Book Now
