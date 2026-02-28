@@ -19,6 +19,8 @@ import EditProfilePage from "./pages/EditProfilePage";
 import FavoritesPage from "./pages/FavoritesPage";
 import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCanceled from "./pages/PaymentCanceled";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +47,8 @@ const App = () => (
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
               <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
               <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/payment-canceled" element={<PaymentCanceled />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <BottomNav />
