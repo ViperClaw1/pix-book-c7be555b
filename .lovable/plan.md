@@ -1,52 +1,83 @@
 
 
-## Input Validation Improvements for Add/Edit Business Card Dialog
+## Admin Business Card Detail Page with Item Management
 
 ### Overview
 
-Four changes to the business card form: address autocomplete via Google Places, phone input with mask and validation, empty default values for rating/price, and a textarea for description.
+Create a new `/admin/:id` route that displays full business card details and allows admins to add menu items (for restaurants) or shopping items (for shopping businesses) directly linked to that card.
 
-### 1. Address Search Box (Google Places Autocomplete)
+### 1. Database: Add Admin RLS Policies for `shopping_items`
 
-**New edge function: `supabase/functions/places-autocomplete/index.ts`**
-- Proxies requests to the Google Places Autocomplete API using the already-configured `GOOGLE_MAPS_API_KEY`
-- Accepts a `query` parameter, returns a list of place predictions (description + place_id)
-- Keeps the API key server-side
+Currently, `shopping_items` has no INSERT/UPDATE/DELETE policies. Add admin policies so admins can manage items:
 
-**New component: `src/components/admin/AddressAutocomplete.tsx`**
-- A text input with a dropdown list of address suggestions
-- On typing (debounced ~300ms), calls the edge function to fetch predictions
-- On selecting a suggestion, sets the address field value
-- Uses Shadcn's `Command` / `Popover` pattern for the dropdown list
-- Shows a `MapPin` icon and "Search for an address..." placeholder
+```sql
+CREATE POLICY "Admins can insert shopping items"
+ON public.shopping_items FOR INSERT TO authenticated
+WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
 
-### 2. Phone Input with Mask
+CREATE POLICY "Admins can update shopping items"
+ON public.shopping_items FOR UPDATE TO authenticated
+USING (has_role(auth.uid(), 'admin'::app_role));
 
-**Update `AdminBusinessCards.tsx`**
-- Replace plain phone `Input` with a custom masked input
-- Apply mask format: `+X (XXX) XXX-XX-XX` using a helper function that formats on change
-- Validate against regex pattern: `/^\+\d{1,3}\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/`
-- Show validation error (red border + message) when the phone doesn't match the pattern on blur or save
-- Add phone validation check in `handleSave` -- show toast error if invalid
+CREATE POLICY "Admins can delete shopping items"
+ON public.shopping_items FOR DELETE TO authenticated
+USING (has_role(auth.uid(), 'admin'::app_role));
+```
 
-### 3. Rating and Booking Price Defaults
+### 2. New Page: `src/pages/AdminBusinessCardDetail.tsx`
 
-**Update `AdminBusinessCards.tsx`**
-- Change `emptyForm` defaults from `rating: "0", booking_price: "0"` to `rating: "", booking_price: ""`
-- The existing `placeholder` attributes ("Rating", "Booking Price") will now show since the values are empty strings
-- In `handleSave`, default empty values to 0: `Number(form.rating) || 0`
+A detail page at `/admin/:id` showing:
 
-### 4. Description as Textarea
+- **Header**: Back arrow to `/admin` + business card name
+- **Photo**: Full-width image (or placeholder)
+- **Info section**: Category badge, tags as pills, star rating (rendered as stars with 0.5 step using half-filled icons), price, description
+- **Items section**: 
+  - Button labeled "Add Menu" if category is "Restaurants", or "Add Items" if category is "Shopping"
+  - List of existing `shopping_items` for this business card, displayed as simple cards with name, image thumbnail, price, and type badge (for restaurants)
+  - Each item has edit/delete actions
 
-**Update `AdminBusinessCards.tsx`**
-- Replace `<Input placeholder="Description" .../>` with `<Textarea placeholder="Description" className="min-h-[100px]" .../>`
-- Import `Textarea` from `@/components/ui/textarea`
+Uses existing `useBusinessCard(id)` from `useBusinessCards.ts` and a new `useShoppingItemsByBusiness(id)` query that fetches ALL item types (not just "main").
 
-### Files Changed
+### 3. Add Item Dialog (within the detail page)
 
-| File | Action |
-|------|--------|
-| `supabase/functions/places-autocomplete/index.ts` | Create -- edge function proxying Google Places API |
-| `src/components/admin/AddressAutocomplete.tsx` | Create -- autocomplete input with dropdown suggestions |
-| `src/components/admin/AdminBusinessCards.tsx` | Update -- integrate all 4 changes |
+A dialog triggered by the "Add Menu" / "Add Items" button containing:
+
+- **Name** input
+- **Image uploader** (reuses existing `ImageUploader` component)
+- **Price** input (number)
+- **Item type** select -- only shown for Restaurant category cards, with options: main, sauce, beverage. For Shopping cards, defaults to "main" and is hidden.
+
+On submit: inserts into `shopping_items` with the `business_card_id` set to the current card.
+
+### 4. New Hooks in `src/hooks/useAdminData.ts`
+
+Add three new hooks:
+
+- `useAdminShoppingItems(businessCardId)` -- fetches all shopping items for a card (all types)
+- `useCreateShoppingItem()` -- inserts a new shopping item
+- `useDeleteShoppingItem()` -- deletes a shopping item
+
+### 5. Routing Updates
+
+**`src/App.tsx`**: Add route `/admin/:id` alongside the existing `/admin` route:
+
+```
+<Route path="/admin" element={...}><AdminDashboard /></Route>
+<Route path="/admin/:id" element={...}><AdminBusinessCardDetail /></Route>
+```
+
+**`src/components/admin/AdminBusinessCards.tsx`**: Make each business card row/card clickable, navigating to `/admin/{card.id}` on click.
+
+### 6. Star Rating Display
+
+Render the rating as stars with 0.5 granularity:
+- Full stars for each whole number
+- A half-star (using CSS clip or a half-filled star icon) for .5 values
+- Empty stars to fill up to 5 total
+
+### Technical Notes
+
+- The `shopping_items` table already has `name`, `image`, `price`, `item_type`, and `business_card_id` columns -- no schema changes needed beyond RLS policies
+- The existing `ImageUploader` component uploads to the `business-cards` bucket, which works for item images too
+- The route uses the card's UUID as the slug (`/admin/:id`), matching existing patterns
 
