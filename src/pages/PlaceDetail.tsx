@@ -118,12 +118,23 @@ const PlaceDetail = () => {
       </motion.div>
 
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
-        <Button
-          onClick={() => user ? navigate(`/book/${place.id}`) : navigate("/auth")}
-          className="w-full h-12 text-base font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
-        >
-          Book Now
-        </Button>
+        <div className="flex gap-3 max-w-lg mx-auto">
+          {(place.category?.name === "Restaurants" || place.category?.name === "Shopping") && (
+            <Button
+              variant="secondary"
+              onClick={() => navigate(`/shop/${place.id}`)}
+              className="flex-1 h-12 text-base font-semibold rounded-xl"
+            >
+              {place.category?.name === "Restaurants" ? "Menu" : "Shop Items"}
+            </Button>
+          )}
+          <Button
+            onClick={() => user ? navigate(`/book/${place.id}`) : navigate("/auth")}
+            className="flex-1 h-12 text-base font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            Book Now
+          </Button>
+        </div>
       </div>
       <DirectionsSheet
         open={showDirections}

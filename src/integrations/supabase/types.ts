@@ -296,6 +296,96 @@ export type Database = {
           },
         ]
       }
+      shopping_cart_items: {
+        Row: {
+          business_card_id: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          quantity: number
+          shopping_item_id: string
+          user_id: string
+        }
+        Insert: {
+          business_card_id: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          quantity?: number
+          shopping_item_id: string
+          user_id: string
+        }
+        Update: {
+          business_card_id?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          quantity?: number
+          shopping_item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_cart_items_business_card_id_fkey"
+            columns: ["business_card_id"]
+            isOneToOne: false
+            referencedRelation: "business_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shopping_cart_items_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_cart_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shopping_cart_items_shopping_item_id_fkey"
+            columns: ["shopping_item_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shopping_items: {
+        Row: {
+          business_card_id: string
+          created_at: string
+          id: string
+          image: string | null
+          item_type: Database["public"]["Enums"]["shopping_item_type"]
+          name: string
+          price: number
+        }
+        Insert: {
+          business_card_id: string
+          created_at?: string
+          id?: string
+          image?: string | null
+          item_type?: Database["public"]["Enums"]["shopping_item_type"]
+          name: string
+          price?: number
+        }
+        Update: {
+          business_card_id?: string
+          created_at?: string
+          id?: string
+          image?: string | null
+          item_type?: Database["public"]["Enums"]["shopping_item_type"]
+          name?: string
+          price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_items_business_card_id_fkey"
+            columns: ["business_card_id"]
+            isOneToOne: false
+            referencedRelation: "business_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       public_reviews: {
@@ -338,6 +428,7 @@ export type Database = {
       booking_status: "upcoming" | "completed" | "expired"
       business_card_type: "featured" | "recommended"
       cart_item_status: "created" | "paid" | "expired"
+      shopping_item_type: "main" | "sauce" | "beverage"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -468,6 +559,7 @@ export const Constants = {
       booking_status: ["upcoming", "completed", "expired"],
       business_card_type: ["featured", "recommended"],
       cart_item_status: ["created", "paid", "expired"],
+      shopping_item_type: ["main", "sauce", "beverage"],
     },
   },
 } as const

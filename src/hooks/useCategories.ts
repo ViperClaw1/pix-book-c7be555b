@@ -11,6 +11,7 @@ const categoryIcons: Record<string, string> = {
   Restaurants: "🍽️",
   Beauty: "💆",
   Events: "🎭",
+  Shopping: "🛍️",
 };
 
 export const useCategories = () => {
