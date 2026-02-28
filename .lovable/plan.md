@@ -1,63 +1,52 @@
 
 
-## Replace Image URL Input with Image Uploader
+## Input Validation Improvements for Add/Edit Business Card Dialog
 
 ### Overview
 
-Replace the plain "Image URL" text input in the Add/Edit Business Card dialog with a visual drag-and-drop image uploader. The uploader will be 200px tall, display an upload icon and placeholder text, and store images in a storage bucket.
+Four changes to the business card form: address autocomplete via Google Places, phone input with mask and validation, empty default values for rating/price, and a textarea for description.
 
-### 1. Create Storage Bucket (Database Migration)
+### 1. Address Search Box (Google Places Autocomplete)
 
-Create a `business-cards` storage bucket for uploaded images:
+**New edge function: `supabase/functions/places-autocomplete/index.ts`**
+- Proxies requests to the Google Places Autocomplete API using the already-configured `GOOGLE_MAPS_API_KEY`
+- Accepts a `query` parameter, returns a list of place predictions (description + place_id)
+- Keeps the API key server-side
 
-```sql
-INSERT INTO storage.buckets (id, name, public) VALUES ('business-cards', 'business-cards', true);
+**New component: `src/components/admin/AddressAutocomplete.tsx`**
+- A text input with a dropdown list of address suggestions
+- On typing (debounced ~300ms), calls the edge function to fetch predictions
+- On selecting a suggestion, sets the address field value
+- Uses Shadcn's `Command` / `Popover` pattern for the dropdown list
+- Shows a `MapPin` icon and "Search for an address..." placeholder
 
--- Allow authenticated users to upload
-CREATE POLICY "Authenticated users can upload business card images"
-ON storage.objects FOR INSERT TO authenticated
-WITH CHECK (bucket_id = 'business-cards');
+### 2. Phone Input with Mask
 
--- Allow public read access
-CREATE POLICY "Public can view business card images"
-ON storage.objects FOR SELECT TO public
-USING (bucket_id = 'business-cards');
+**Update `AdminBusinessCards.tsx`**
+- Replace plain phone `Input` with a custom masked input
+- Apply mask format: `+X (XXX) XXX-XX-XX` using a helper function that formats on change
+- Validate against regex pattern: `/^\+\d{1,3}\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/`
+- Show validation error (red border + message) when the phone doesn't match the pattern on blur or save
+- Add phone validation check in `handleSave` -- show toast error if invalid
 
--- Allow authenticated users to delete their uploads
-CREATE POLICY "Authenticated users can delete business card images"
-ON storage.objects FOR DELETE TO authenticated
-USING (bucket_id = 'business-cards');
-```
+### 3. Rating and Booking Price Defaults
 
-### 2. Create `ImageUploader` Component
+**Update `AdminBusinessCards.tsx`**
+- Change `emptyForm` defaults from `rating: "0", booking_price: "0"` to `rating: "", booking_price: ""`
+- The existing `placeholder` attributes ("Rating", "Booking Price") will now show since the values are empty strings
+- In `handleSave`, default empty values to 0: `Number(form.rating) || 0`
 
-New file: `src/components/admin/ImageUploader.tsx`
+### 4. Description as Textarea
 
-A reusable component that:
-- Renders a 200px-tall dashed-border drop zone
-- Shows an `Upload` (or `ImagePlus`) icon from lucide-react centered inside
-- Displays placeholder text like "Click or drag to upload an image" beneath the icon
-- Accepts click to open file picker and drag-and-drop
-- On file select: uploads to the `business-cards` bucket via Supabase Storage, then calls `onUpload(publicUrl)` to set the form value
-- Shows a loading spinner during upload
-- When a value (URL) is already set, displays the image as a preview with a remove/replace button
+**Update `AdminBusinessCards.tsx`**
+- Replace `<Input placeholder="Description" .../>` with `<Textarea placeholder="Description" className="min-h-[100px]" .../>`
+- Import `Textarea` from `@/components/ui/textarea`
 
-### 3. Update `AdminBusinessCards.tsx`
+### Files Changed
 
-- Import `ImageUploader`
-- Replace line 194 (`<Input placeholder="Image URL" .../>`) with:
-  ```tsx
-  <ImageUploader
-    value={form.image}
-    onUpload={(url) => setField("image", url)}
-    onRemove={() => setField("image", "")}
-  />
-  ```
-- No other logic changes needed -- the form's `image` field will still hold a URL string, now pointing to the storage bucket
+| File | Action |
+|------|--------|
+| `supabase/functions/places-autocomplete/index.ts` | Create -- edge function proxying Google Places API |
+| `src/components/admin/AddressAutocomplete.tsx` | Create -- autocomplete input with dropdown suggestions |
+| `src/components/admin/AdminBusinessCards.tsx` | Update -- integrate all 4 changes |
 
-### Technical Notes
-
-- The uploader generates a unique filename using `crypto.randomUUID()` to avoid collisions
-- Accepted file types: `image/*` (jpg, png, webp, etc.)
-- The public URL is constructed via `supabase.storage.from('business-cards').getPublicUrl(path)`
-- When editing an existing card that already has an image URL, the uploader shows the preview immediately
