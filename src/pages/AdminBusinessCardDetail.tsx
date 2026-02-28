@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { ArrowLeft, Plus, Star, StarHalf, Trash2 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -35,7 +36,7 @@ const AdminBusinessCardDetail = () => {
   const deleteItem = useDeleteShoppingItem();
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [itemForm, setItemForm] = useState({ name: "", image: "", price: "", item_type: "main" as "main" | "sauce" | "beverage" });
+  const [itemForm, setItemForm] = useState({ name: "", image: "", price: "", description: "", item_type: "main" as "main" | "sauce" | "beverage" });
   const [deleteTarget, setDeleteTarget] = useState<{id: string;name: string;} | null>(null);
 
   const isRestaurant = card?.category?.name?.toLowerCase() === "restaurants";
@@ -48,11 +49,12 @@ const AdminBusinessCardDetail = () => {
         name: itemForm.name.trim(),
         image: itemForm.image || null,
         price: Number(itemForm.price) || 0,
+        description: itemForm.description.trim(),
         item_type: isRestaurant ? itemForm.item_type : "main"
-      });
+      } as any);
       toast.success("Item added");
       setDialogOpen(false);
-      setItemForm({ name: "", image: "", price: "", item_type: "main" });
+      setItemForm({ name: "", image: "", price: "", description: "", item_type: "main" });
     } catch {
       toast.error("Failed to add item");
     }
@@ -144,6 +146,9 @@ const AdminBusinessCardDetail = () => {
                   <span>${Number(item.price).toFixed(2)}</span>
                   {isRestaurant && <Badge variant="outline" className="text-xs">{item.item_type}</Badge>}
                 </div>
+                {(item as any).description && (
+                  <p className="text-xs text-muted-foreground truncate mt-0.5">{(item as any).description}</p>
+                )}
               </div>
               <Button size="icon" variant="ghost" onClick={() => setDeleteTarget({ id: item.id, name: item.name })}>
                 <Trash2 className="w-4 h-4 text-destructive" />
@@ -176,6 +181,15 @@ const AdminBusinessCardDetail = () => {
             <div className="space-y-1.5">
               <Label>Price</Label>
               <Input type="number" value={itemForm.price} onChange={(e) => setItemForm((p) => ({ ...p, price: e.target.value }))} placeholder="0.00" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Description</Label>
+              <Textarea
+                value={itemForm.description}
+                onChange={(e) => setItemForm((p) => ({ ...p, description: e.target.value }))}
+                placeholder="Item description"
+                style={{ minHeight: 100 }}
+              />
             </div>
             {isRestaurant &&
             <div className="space-y-1.5">
