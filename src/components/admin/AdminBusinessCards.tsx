@@ -122,7 +122,34 @@ const AdminBusinessCards = () => {
         </Select>
       </div>
 
-      <div className="rounded-lg border bg-card overflow-x-auto">
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-3">
+        {filtered.length === 0 && (
+          <p className="text-center text-muted-foreground py-6">No cards found</p>
+        )}
+        {filtered.map((c) => (
+          <div key={c.id} className="rounded-lg border bg-card p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">{c.name}</span>
+              <Badge variant="outline">{c.type}</Badge>
+            </div>
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <span>{c.categories?.name ?? "—"}</span>
+              <span>★ {c.rating}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="font-medium">${Number(c.booking_price).toFixed(2)}</span>
+              <div className="flex gap-1">
+                <Button size="icon" variant="ghost" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => setDeleteTarget({ id: c.id, name: c.name })}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block rounded-lg border bg-card overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

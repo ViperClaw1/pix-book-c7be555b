@@ -100,7 +100,28 @@ const AdminUsers = () => {
         </Select>
       </div>
 
-      <div className="rounded-lg border bg-card">
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-3">
+        {filtered.length === 0 && (
+          <p className="text-center text-muted-foreground py-6">No users found</p>
+        )}
+        {filtered.map((u) => (
+          <div key={u.id} className="rounded-lg border bg-card p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">{u.first_name} {u.last_name}</span>
+              <Badge variant="outline" className={roleBadge[u.role] ?? ""}>{u.role}</Badge>
+            </div>
+            <div className="text-sm text-muted-foreground">{u.email}</div>
+            <div className="flex justify-end gap-1 pt-1">
+              <Button size="icon" variant="ghost" onClick={() => openEdit(u as ProfileWithRole)}><Pencil className="w-4 h-4" /></Button>
+              <Button size="icon" variant="ghost" onClick={() => setDeleteTarget(u as ProfileWithRole)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>

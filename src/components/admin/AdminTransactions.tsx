@@ -17,7 +17,31 @@ const AdminTransactions = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Transactions</h2>
-      <div className="rounded-lg border bg-card">
+      {/* Mobile card list */}
+      <div className="md:hidden space-y-3">
+        {bookings.length === 0 && (
+          <p className="text-center text-muted-foreground py-6">No transactions yet</p>
+        )}
+        {bookings.map((b) => (
+          <div key={b.id} className="rounded-lg border bg-card p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{format(new Date(b.date_time), "MMM d, yyyy")}</span>
+              <Badge variant="outline" className={statusColor[b.status] ?? ""}>{b.status}</Badge>
+            </div>
+            <div>
+              <div className="font-medium">{b.profile ? `${b.profile.first_name} ${b.profile.last_name}` : "—"}</div>
+              <div className="text-xs text-muted-foreground">{b.profile?.email}</div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{b.business_cards?.name ?? "—"}</span>
+              <span className="font-medium">${Number(b.cost).toFixed(2)}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block rounded-lg border bg-card">
         <Table>
           <TableHeader>
             <TableRow>
