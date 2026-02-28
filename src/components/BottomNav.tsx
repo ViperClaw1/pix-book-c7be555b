@@ -15,7 +15,7 @@ const BottomNav = () => {
   const navigate = useNavigate();
 
   // Hide on business detail / booking flow
-  if (location.pathname.startsWith("/place/") || location.pathname.startsWith("/book/")) return null;
+  if (location.pathname.startsWith("/place/") || location.pathname.startsWith("/book/") || location.pathname.startsWith("/admin")) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border safe-bottom">
