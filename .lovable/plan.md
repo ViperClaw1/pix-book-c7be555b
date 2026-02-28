@@ -1,62 +1,16 @@
 
 
-## Add Stripe Checkout to Shopping Cart
+## Fix Cart Page Content Being Covered by Bottom Nav
 
-### Overview
-Create a backend function for Stripe Checkout, a webhook handler for payment confirmation, and a "Pay" button on the Shopping tab of the Cart page. We'll build the webhook endpoint first so you get the URL to configure in Stripe before providing the signing secret.
+### Problem
+The cart page content and its fixed bottom "Total/Pay" bar sit behind the bottom navigation tab bar (which is ~64px tall plus safe area). The page has `pb-28` (7rem = 112px) but the fixed checkout bar at the bottom doesn't account for the nav bar height, causing overlap.
 
-### Step 1: Create `create-checkout` edge function
-- Accepts the shopping cart items from the authenticated user
-- Builds Stripe `line_items` dynamically from the cart (using `price_data` with item name, price in KZT, and quantity)
-- Creates a Stripe Checkout Session in `mode: "payment"`
-- Returns the checkout session URL to redirect the user
+### Solution
+1. **Increase bottom padding** on the cart page container from `pb-28` to `pb-44` (~176px) so scrollable content clears both the checkout bar and the bottom nav.
+2. **Move the fixed bottom checkout bars up** by adding `bottom-16` (64px) instead of `bottom-0`, so they sit above the bottom navigation bar. This applies to both the Bookings and Shopping tab checkout bars.
 
-### Step 2: Create `stripe-webhook` edge function
-- Listens for `checkout.session.completed` events
-- Verifies the webhook signature using `STRIPE_WEBHOOK_SECRET`
-- On successful payment: clears the user's shopping cart items from the database
-- Endpoint URL will be: `https://ceoqpgxbilpytvqtmebm.supabase.co/functions/v1/stripe-webhook`
-
-After deploying, you'll set this URL as your webhook endpoint in Stripe Dashboard, then provide me the webhook signing secret (`whsec_...`).
-
-### Step 3: Add Stripe Publishable Key secret
-- Ask you to provide `STRIPE_PUBLISHABLE_KEY` (not strictly needed server-side, but good to have)
-- Ask you to provide `STRIPE_WEBHOOK_SECRET` after you configure the webhook in Stripe
-
-### Step 4: Update `CartPage.tsx` -- Shopping tab
-- Add a "Pay" button in the sticky bottom bar of the Shopping tab (next to the total)
-- On click, call `create-checkout` edge function with the cart data
-- Redirect to the Stripe Checkout URL
-
-### Step 5: Add success/cancel pages
-- `/payment-success` -- simple confirmation page
-- `/payment-canceled` -- simple page with a "Back to Cart" link
-- Register both routes in `App.tsx`
-
-### Step 6: Update `supabase/config.toml`
-- Add `[functions.stripe-webhook]` with `verify_jwt = false` (Stripe sends unsigned requests)
-- Add `[functions.create-checkout]` with `verify_jwt = false` (we validate auth in code)
-
-### Technical Details
-
-```text
-Flow:
-  CartPage (Pay button)
-       │
-       ▼
-  create-checkout (edge fn)
-       │ creates Stripe Checkout Session
-       ▼
-  Stripe Checkout (redirect)
-       │
-       ├── success → /payment-success
-       │      └── stripe-webhook clears cart
-       └── cancel  → /payment-canceled
-```
-
-- Currency: KZT (Kazakhstani Tenge, matching the existing ₸ usage)
-- The webhook URL after deployment: `https://ceoqpgxbilpytvqtmebm.supabase.co/functions/v1/stripe-webhook`
-- I'll deploy both functions, then ask you to:
-  1. Add that webhook URL in Stripe Dashboard
-  2. Provide the `STRIPE_WEBHOOK_SECRET` back to me
+### Files to Change
+- **`src/pages/CartPage.tsx`**:
+  - Change outer div from `pb-28` to `pb-44`
+  - Change both fixed bottom bars (bookings checkout and shopping checkout) from `bottom-0` to `bottom-16` so they float above the bottom nav
 
