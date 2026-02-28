@@ -10,10 +10,12 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Pencil, Trash2, Plus, Search } from "lucide-react";
 import ImageUploader from "@/components/admin/ImageUploader";
+import AddressAutocomplete from "@/components/admin/AddressAutocomplete";
 import { toast } from "sonner";
 import type { TablesInsert } from "@/integrations/supabase/types";
 
@@ -30,7 +32,21 @@ type CardForm = {
   type: "featured" | "recommended";
 };
 
-const emptyForm: CardForm = { name: "", image: "", address: "", phone: "", category_id: "", rating: "0", booking_price: "0", tags: "", description: "", type: "recommended" };
+const phoneRegex = /^\+\d{1,3}\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/;
+
+const formatPhone = (raw: string): string => {
+  const digits = raw.replace(/[^\d]/g, "");
+  let result = "";
+  if (digits.length > 0) result += "+" + digits.slice(0, Math.min(digits.length, 1));
+  if (digits.length > 1) result += " (" + digits.slice(1, Math.min(digits.length, 4));
+  if (digits.length >= 4) result += ") ";
+  if (digits.length > 4) result += digits.slice(4, Math.min(digits.length, 7));
+  if (digits.length > 7) result += "-" + digits.slice(7, Math.min(digits.length, 9));
+  if (digits.length > 9) result += "-" + digits.slice(9, Math.min(digits.length, 11));
+  return result;
+};
+
+const emptyForm: CardForm = { name: "", image: "", address: "", phone: "", category_id: "", rating: "", booking_price: "", tags: "", description: "", type: "recommended" };
 
 const AdminBusinessCards = () => {
   const { data: cards = [], isLoading } = useAllBusinessCards();
@@ -45,8 +61,9 @@ const AdminBusinessCards = () => {
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<CardForm>(emptyForm);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [phoneError, setPhoneError] = useState(false);
 
-  const openAdd = () => { setForm(emptyForm); setDialogMode("add"); setEditId(null); };
+  const openAdd = () => { setForm(emptyForm); setDialogMode("add"); setEditId(null); setPhoneError(false); };
   const openEdit = (c: any) => {
     setForm({
       name: c.name, image: c.image ?? "", address: c.address ?? "", phone: c.phone,
@@ -55,17 +72,23 @@ const AdminBusinessCards = () => {
     });
     setEditId(c.id);
     setDialogMode("edit");
+    setPhoneError(false);
   };
 
   const handleSave = async () => {
+    if (form.phone && !phoneRegex.test(form.phone)) {
+      setPhoneError(true);
+      toast.error("Please enter a valid phone number");
+      return;
+    }
     const payload: TablesInsert<"business_cards"> = {
       name: form.name,
       image: form.image || null,
       address: form.address || null,
       phone: form.phone,
       category_id: form.category_id || null,
-      rating: Number(form.rating),
-      booking_price: Number(form.booking_price),
+      rating: Number(form.rating) || 0,
+      booking_price: Number(form.booking_price) || 0,
       tags: form.tags ? form.tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
       description: form.description || null,
       type: form.type,
@@ -197,8 +220,23 @@ const AdminBusinessCards = () => {
               onUpload={(url) => setField("image", url)}
               onRemove={() => setField("image", "")}
             />
-            <Input placeholder="Address" value={form.address} onChange={(e) => setField("address", e.target.value)} />
-            <Input placeholder="Phone" value={form.phone} onChange={(e) => setField("phone", e.target.value)} />
+            <AddressAutocomplete value={form.address} onChange={(v) => setField("address", v)} />
+            <div className="space-y-1">
+              <Input
+                placeholder="+1 (234) 567-89-01"
+                value={form.phone}
+                onChange={(e) => {
+                  const formatted = formatPhone(e.target.value);
+                  setField("phone", formatted);
+                  setPhoneError(false);
+                }}
+                onBlur={() => {
+                  if (form.phone && !phoneRegex.test(form.phone)) setPhoneError(true);
+                }}
+                className={phoneError ? "border-destructive" : ""}
+              />
+              {phoneError && <p className="text-xs text-destructive">Format: +X (XXX) XXX-XX-XX</p>}
+            </div>
             <Select value={form.category_id || "none"} onValueChange={(v) => setField("category_id", v === "none" ? "" : v)}>
               <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
               <SelectContent>
@@ -211,7 +249,7 @@ const AdminBusinessCards = () => {
               <Input placeholder="Booking Price" type="number" value={form.booking_price} onChange={(e) => setField("booking_price", e.target.value)} />
             </div>
             <Input placeholder="Tags (comma-separated)" value={form.tags} onChange={(e) => setField("tags", e.target.value)} />
-            <Input placeholder="Description" value={form.description} onChange={(e) => setField("description", e.target.value)} />
+            <Textarea placeholder="Description" className="min-h-[100px]" value={form.description} onChange={(e) => setField("description", e.target.value)} />
             <Select value={form.type} onValueChange={(v) => setField("type", v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
