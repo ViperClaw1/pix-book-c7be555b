@@ -2,6 +2,7 @@ import { Star, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import type { BusinessCard } from "@/hooks/useBusinessCards";
+import { getOptimizedImageUrl } from "@/lib/imageUtils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsFavorite, useToggleFavorite } from "@/hooks/useFavorites";
 import { toast } from "sonner";
@@ -34,7 +35,7 @@ const PlaceCard = ({ place, variant = "vertical" }: PlaceCardProps) => {
         className="flex gap-3 p-3 bg-card rounded-xl shadow-card w-full text-left"
       >
         <div className="relative flex-shrink-0">
-          <img src={place.image} alt={place.name} className="w-24 h-24 rounded-lg object-cover" />
+          <img src={getOptimizedImageUrl(place.image, 192, 192)} alt={place.name} className="w-24 h-24 rounded-lg object-cover" width={96} height={96} loading="lazy" decoding="async" />
           <button onClick={handleFavorite} className="absolute top-1 right-1 p-1 bg-card/80 backdrop-blur-sm rounded-full">
             <Heart className={`w-3.5 h-3.5 ${isFavorite ? "fill-primary text-primary" : "text-card-foreground"}`} />
           </button>
@@ -63,7 +64,7 @@ const PlaceCard = ({ place, variant = "vertical" }: PlaceCardProps) => {
       className="w-[200px] flex-shrink-0 text-left"
     >
       <div className="relative rounded-xl overflow-hidden shadow-card">
-        <img src={place.image} alt={place.name} className="w-full h-[140px] object-cover" />
+        <img src={getOptimizedImageUrl(place.image, 400, 280)} alt={place.name} className="w-full h-[140px] object-cover" width={200} height={140} loading="lazy" decoding="async" />
         <button onClick={handleFavorite} className="absolute top-2 left-2 p-1.5 bg-card/80 backdrop-blur-sm rounded-full">
           <Heart className={`w-3.5 h-3.5 ${isFavorite ? "fill-primary text-primary" : "text-card-foreground"}`} />
         </button>

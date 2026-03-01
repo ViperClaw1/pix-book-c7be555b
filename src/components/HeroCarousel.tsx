@@ -25,6 +25,11 @@ const HeroCarousel = () => {
             src={banners[current].image}
             alt={banners[current].title}
             className="w-full h-full object-cover"
+            width={480}
+            height={200}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent" />
           <div className="absolute bottom-4 left-4 right-4">
