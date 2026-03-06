@@ -1,11 +1,12 @@
-import { useState, useCallback, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Lock, Eye, EyeOff, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const passwordChecks = (pw: string) => ({
@@ -29,6 +30,34 @@ const ResetPasswordPage = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ password?: string; confirmPassword?: string }>({});
   const touchedRef = useRef<Record<string, boolean>>({});
+  const [sessionReady, setSessionReady] = useState(false);
+  const [linkExpired, setLinkExpired] = useState(false);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || (session && !sessionReady)) {
+        setSessionReady(true);
+      }
+    });
+
+    // Check if session already exists
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setSessionReady(true);
+    });
+
+    // Timeout: if no recovery session after 5s, link is invalid/expired
+    const timeout = setTimeout(() => {
+      setSessionReady((ready) => {
+        if (!ready) setLinkExpired(true);
+        return ready;
+      });
+    }, 5000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
+  }, []);
 
   const validateField = useCallback(
     (field: string, value: string) => {
@@ -77,6 +106,28 @@ const ResetPasswordPage = () => {
     toast.success("Password updated successfully!");
     navigate("/");
   };
+
+  if (linkExpired) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
+        <AlertCircle className="w-12 h-12 text-destructive mb-4" />
+        <h1 className="text-2xl font-bold text-foreground mb-2">Link expired or invalid</h1>
+        <p className="text-sm text-muted-foreground mb-6">This password reset link has expired or is invalid. Please request a new one.</p>
+        <Button asChild variant="outline">
+          <Link to="/auth">Back to Sign In</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  if (!sessionReady) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+        <p className="text-sm text-muted-foreground">Verifying reset link…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center px-6">
