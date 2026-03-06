@@ -107,6 +107,28 @@ const ResetPasswordPage = () => {
     navigate("/");
   };
 
+  if (linkExpired) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
+        <AlertCircle className="w-12 h-12 text-destructive mb-4" />
+        <h1 className="text-2xl font-bold text-foreground mb-2">Link expired or invalid</h1>
+        <p className="text-sm text-muted-foreground mb-6">This password reset link has expired or is invalid. Please request a new one.</p>
+        <Button asChild variant="outline">
+          <Link to="/auth">Back to Sign In</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  if (!sessionReady) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+        <p className="text-sm text-muted-foreground">Verifying reset link…</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center px-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
