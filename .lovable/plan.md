@@ -1,28 +1,39 @@
 
 
-## Add Description Field to Shopping Items
+## Fix: Password Reset Link Shows "Expired" Immediately
 
-### 1. Database Migration
+### Root Cause
 
-Add a `description` column to the `shopping_items` table:
+The Supabase JS client v2.95+ defaults to **PKCE flow**. In PKCE, the password reset link redirects to `/reset-password?code=XXXX` (query parameter), not with a hash fragment. The PKCE code verifier is stored in `localStorage` when `resetPasswordForEmail()` is called.
 
-```sql
-ALTER TABLE public.shopping_items
-ADD COLUMN description text DEFAULT '';
+The Supabase client's `detectSessionInUrl` should auto-detect the `code` param and exchange it. However, this exchange can fail silently if:
+- The code verifier in localStorage was cleared or is on a different origin
+- The exchange happens asynchronously and the `PASSWORD_RECOVERY` event fires before the `ResetPasswordPage` effect subscribes
+
+The current page waits 5 seconds for a session, then shows "Link expired." The session never appears because the code exchange either failed or the event was missed.
+
+### Fix in `ResetPasswordPage.tsx`
+
+1. **Explicitly handle the PKCE `code` parameter**: In the `useEffect`, check for a `code` query parameter in `window.location.search`. If found, call `supabase.auth.exchangeCodeForSession(code)` manually to establish the session.
+
+2. **Increase timeout to 10 seconds**: Give more time for the async code exchange to complete.
+
+3. **Handle both flows**: Keep the existing `onAuthStateChange` + `getSession()` logic for the implicit flow (hash fragments), and add the explicit PKCE code exchange as a fallback.
+
+```typescript
+// Inside useEffect, after setting up onAuthStateChange:
+const url = new URL(window.location.href);
+const code = url.searchParams.get('code');
+if (code) {
+  supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+    if (!error) setSessionReady(true);
+  });
+}
 ```
-
-### 2. Update `AdminBusinessCardDetail.tsx`
-
-- Add a `description` field to the item form state
-- Add a `Textarea` input (min-height 100px) labeled "Description" in the Add Item / Add Menu Item dialog
-- Import `Textarea` from `@/components/ui/textarea`
-- Pass `description` in the `createItem.mutateAsync` call
-- Display item descriptions in the item list (truncated, below the price)
 
 ### Files Changed
 
 | File | Action |
 |------|--------|
-| Migration SQL | Add `description` column to `shopping_items` |
-| `src/pages/AdminBusinessCardDetail.tsx` | Add description textarea to dialog and display in item cards |
+| `src/pages/ResetPasswordPage.tsx` | Add explicit PKCE code exchange handling |
 
