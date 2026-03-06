@@ -45,13 +45,23 @@ const ResetPasswordPage = () => {
       if (session) setSessionReady(true);
     });
 
-    // Timeout: if no recovery session after 5s, link is invalid/expired
+    // Explicitly handle PKCE code exchange
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get('code');
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (!error) setSessionReady(true);
+        else setLinkExpired(true);
+      });
+    }
+
+    // Timeout: if no recovery session after 10s, link is invalid/expired
     const timeout = setTimeout(() => {
       setSessionReady((ready) => {
         if (!ready) setLinkExpired(true);
         return ready;
       });
-    }, 5000);
+    }, 10000);
 
     return () => {
       subscription.unsubscribe();
