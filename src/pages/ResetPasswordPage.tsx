@@ -1,11 +1,12 @@
-import { useState, useCallback, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Lock, Eye, EyeOff, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const passwordChecks = (pw: string) => ({
@@ -29,6 +30,34 @@ const ResetPasswordPage = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ password?: string; confirmPassword?: string }>({});
   const touchedRef = useRef<Record<string, boolean>>({});
+  const [sessionReady, setSessionReady] = useState(false);
+  const [linkExpired, setLinkExpired] = useState(false);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || (session && !sessionReady)) {
+        setSessionReady(true);
+      }
+    });
+
+    // Check if session already exists
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setSessionReady(true);
+    });
+
+    // Timeout: if no recovery session after 5s, link is invalid/expired
+    const timeout = setTimeout(() => {
+      setSessionReady((ready) => {
+        if (!ready) setLinkExpired(true);
+        return ready;
+      });
+    }, 5000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
+  }, []);
 
   const validateField = useCallback(
     (field: string, value: string) => {
