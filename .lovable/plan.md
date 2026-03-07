@@ -1,28 +1,36 @@
 
 
-## Add Description Field to Shopping Items
+## Move Notifications from BottomNav to Header Bell
 
-### 1. Database Migration
+### Changes
 
-Add a `description` column to the `shopping_items` table:
+**1. `src/components/BottomNav.tsx`**
+- Remove the `NotificationsSheet` import, `useUnreadCount` hook, `Bell` import, and the entire notifications bell block (lines 51-64)
+- Remove unused imports (`Bell`, `useUnreadCount`, `NotificationsSheet`)
 
-```sql
-ALTER TABLE public.shopping_items
-ADD COLUMN description text DEFAULT '';
+**2. `src/pages/Index.tsx`**
+- Import `NotificationsSheet` component
+- Wrap the existing header Bell button with `<NotificationsSheet>` so tapping it opens the drawer
+- Keep the existing unread badge logic as-is
+
+The header Bell button (line 30-37) becomes:
+```tsx
+<NotificationsSheet unreadCount={unreadCount}>
+  <button className="relative p-2 rounded-full bg-secondary">
+    <Bell className="w-5 h-5 text-foreground" />
+    {unreadCount > 0 && (
+      <span className="...">
+        {unreadCount}
+      </span>
+    )}
+  </button>
+</NotificationsSheet>
 ```
-
-### 2. Update `AdminBusinessCardDetail.tsx`
-
-- Add a `description` field to the item form state
-- Add a `Textarea` input (min-height 100px) labeled "Description" in the Add Item / Add Menu Item dialog
-- Import `Textarea` from `@/components/ui/textarea`
-- Pass `description` in the `createItem.mutateAsync` call
-- Display item descriptions in the item list (truncated, below the price)
 
 ### Files Changed
 
 | File | Action |
 |------|--------|
-| Migration SQL | Add `description` column to `shopping_items` |
-| `src/pages/AdminBusinessCardDetail.tsx` | Add description textarea to dialog and display in item cards |
+| `src/components/BottomNav.tsx` | Remove Alerts bell + related imports |
+| `src/pages/Index.tsx` | Wrap header Bell with NotificationsSheet |
 
