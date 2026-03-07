@@ -1,6 +1,8 @@
-import { Home, Search, ShoppingCart, CalendarDays, User } from "lucide-react";
+import { Home, Search, ShoppingCart, CalendarDays, User, Bell } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useUnreadCount } from "@/hooks/useNotifications";
+import NotificationsSheet from "@/components/NotificationsSheet";
 
 const tabs = [
   { path: "/", icon: Home, label: "Home" },
@@ -13,8 +15,8 @@ const tabs = [
 const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const unreadCount = useUnreadCount();
 
-  // Hide on business detail / booking flow
   if (location.pathname.startsWith("/place/") || location.pathname.startsWith("/book/") || location.pathname.startsWith("/admin")) return null;
 
   return (
@@ -45,6 +47,21 @@ const BottomNav = () => {
             </button>
           );
         })}
+
+        {/* Notifications bell */}
+        <NotificationsSheet unreadCount={unreadCount}>
+          <button className="flex flex-col items-center gap-0.5 px-4 py-2 relative">
+            <div className="relative">
+              <Bell className="w-5 h-5 text-muted-foreground" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center px-1">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] font-medium text-muted-foreground">Alerts</span>
+          </button>
+        </NotificationsSheet>
       </div>
     </nav>
   );
