@@ -46,6 +46,68 @@ serve(async (req) => {
       }
 
       console.log(`Cart cleared for user ${userId}`);
+
+      // Get user email for admin notification
+      const { data: profile } = await supabaseAdmin
+        .from("profiles")
+        .select("email")
+        .eq("id", userId)
+        .single();
+
+      const amount = session.amount_total
+        ? (session.amount_total / 100).toLocaleString()
+        : "?";
+
+      // Buyer notification
+      await supabaseAdmin.from("notifications").insert({
+        user_id: userId,
+        text: `Your purchase of ${amount} ₸ was successful!`,
+      });
+
+      // Admin notifications
+      const { data: adminRoles } = await supabaseAdmin
+        .from("user_roles")
+        .select("user_id")
+        .eq("role", "admin");
+
+      if (adminRoles && adminRoles.length > 0) {
+        const adminNotifs = adminRoles.map((r) => ({
+          user_id: r.user_id,
+          text: `New purchase of ${amount} ₸ by ${profile?.email || "unknown"}`,
+        }));
+        await supabaseAdmin.from("notifications").insert(adminNotifs);
+      }
+
+      // Send push notifications via OneSignal
+      const appId = Deno.env.get("ONESIGNAL_APP_ID");
+      const apiKey = Deno.env.get("ONESIGNAL_REST_API_KEY");
+      if (appId && apiKey) {
+        const pushTargets = [
+          { id: userId, text: `Your purchase of ${amount} ₸ was successful!` },
+          ...(adminRoles || []).map((r) => ({
+            id: r.user_id,
+            text: `New purchase of ${amount} ₸ by ${profile?.email || "unknown"}`,
+          })),
+        ];
+        for (const t of pushTargets) {
+          try {
+            await fetch("https://api.onesignal.com/notifications", {
+              method: "POST",
+              headers: {
+                Authorization: `Key ${apiKey}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                app_id: appId,
+                include_external_user_ids: [t.id],
+                contents: { en: t.text },
+              }),
+            });
+          } catch (e) {
+            console.error("OneSignal push error:", e.message);
+          }
+        }
+      }
     }
   }
 

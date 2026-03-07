@@ -190,6 +190,20 @@ const CartPage = () => {
         });
         await deleteBookingItem.mutateAsync(item.id);
       }
+
+      // Send notification for successful booking
+      try {
+        await supabase.functions.invoke("send-notification", {
+          body: {
+            user_id: (await supabase.auth.getUser()).data.user?.id,
+            text: `Booking confirmed! Total: ${bookingTotal.toLocaleString()} ₸`,
+            notify_admins: true,
+          },
+        });
+      } catch (e) {
+        console.error("Notification failed:", e);
+      }
+
       toast.success("Booking confirmed!");
       navigate("/bookings");
     } catch {
