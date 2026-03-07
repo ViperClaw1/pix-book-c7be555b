@@ -7,6 +7,7 @@ import PlaceCard from "@/components/PlaceCard";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useBusinessCards } from "@/hooks/useBusinessCards";
 import { useUnreadCount } from "@/hooks/useNotifications";
+import NotificationsSheet from "@/components/NotificationsSheet";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -27,14 +28,16 @@ const Index = () => {
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <button className="relative p-2 rounded-full bg-secondary">
-              <Bell className="w-5 h-5 text-foreground" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
+            <NotificationsSheet unreadCount={unreadCount}>
+              <button className="relative p-2 rounded-full bg-secondary">
+                <Bell className="w-5 h-5 text-foreground" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center px-1">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+            </NotificationsSheet>
           </div>
         </div>
         <div className="px-4 pb-3">
