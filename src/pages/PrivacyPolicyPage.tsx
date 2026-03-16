@@ -151,8 +151,8 @@ const PrivacyPolicyPage = () => {
             if (match) return <p key={i} className="text-muted-foreground text-sm ml-4 mb-1"><strong className="text-foreground">{match[1]}:</strong> {match[2]}</p>;
           }
           if (line.startsWith('- ')) return <p key={i} className="text-muted-foreground text-sm ml-4 mb-1">• {line.slice(2)}</p>;
-          if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="text-foreground text-sm font-semibold mt-2">{line.replaceAll('**', '')}</p>;
-          if (line.startsWith('*') && line.endsWith('*')) return <p key={i} className="text-muted-foreground text-xs italic mt-2">{line.replaceAll('*', '')}</p>;
+          if (line.startsWith('**') && line.endsWith('**')) return <p key={i} className="text-foreground text-sm font-semibold mt-2">{line.replace(/\*\*/g, '')}</p>;
+          if (line.startsWith('*') && line.endsWith('*')) return <p key={i} className="text-muted-foreground text-xs italic mt-2">{line.replace(/\*/g, '')}</p>;
           if (line.trim() === '') return null;
           return <p key={i} className="text-muted-foreground text-sm mb-2">{line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/<strong>|<\/strong>/g, (m) => m)}</p>;
         })}
