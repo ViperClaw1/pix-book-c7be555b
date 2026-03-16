@@ -24,6 +24,7 @@ import PaymentCanceled from "./pages/PaymentCanceled";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminBusinessCardDetail from "./pages/AdminBusinessCardDetail";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 const queryClient = new QueryClient();
 
@@ -54,8 +55,9 @@ const App = () => (
                   <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
                   <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
                   <Route path="/payment-success" element={<PaymentSuccess />} />
-                  <Route path="/payment-canceled" element={<PaymentCanceled />} />
-                  <Route path="*" element={<NotFound />} />
+                   <Route path="/payment-canceled" element={<PaymentCanceled />} />
+                   <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <BottomNav />
               </div>
