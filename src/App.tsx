@@ -24,6 +24,7 @@ import PaymentCanceled from "./pages/PaymentCanceled";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminBusinessCardDetail from "./pages/AdminBusinessCardDetail";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 const queryClient = new QueryClient();
 
