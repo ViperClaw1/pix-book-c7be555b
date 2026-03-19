@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -547,11 +547,8 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await supabase.auth.signInWithOAuth({
-                    provider: "google",
-                    options: {
-                      redirectTo: "https://pixapp.kz/~oauth/callback",
-                    },
+                  const { error } = await lovable.auth.signInWithOAuth("google", {
+                    redirect_uri: "https://pixapp.kz/~oauth/callback",
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
@@ -581,11 +578,8 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await supabase.auth.signInWithOAuth({
-                    provider: "apple",
-                    options: {
-                      redirectTo: "https://pixapp.kz/~oauth/callback",
-                    },
+                  const { error } = await lovable.auth.signInWithOAuth("apple", {
+                    redirect_uri: "https://pixapp.kz/~oauth/callback",
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
