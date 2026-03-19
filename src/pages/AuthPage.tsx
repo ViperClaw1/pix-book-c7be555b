@@ -241,6 +241,25 @@ const AuthPage = () => {
     }
   };
 
+  const handleSocialSignIn = async (provider: "google" | "apple") => {
+    setLoading(true);
+    setFormError(null);
+
+    try {
+      const { error } = await lovable.auth.signInWithOAuth(provider, {
+        redirect_uri: getOAuthRedirectUrl(),
+      });
+
+      if (error) {
+        setFormError(mapAuthError(error.message ?? String(error), mode));
+      }
+    } catch (error) {
+      setFormError(mapAuthError(error instanceof Error ? error.message : String(error), mode));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ---- Derived ----
 
   const isSuccess = formError?.startsWith("__success__");
