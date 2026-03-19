@@ -23,8 +23,6 @@ interface FieldErrors {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const CUSTOM_OAUTH_HOSTS = new Set(["pixapp.kz", "www.pixapp.kz"]);
-const CANONICAL_OAUTH_HOST = "pixapp.kz";
 const OAUTH_CALLBACK_PATH = "/~oauth/callback";
 
 /** Client-side password policy */
@@ -39,13 +37,7 @@ const allPasswordChecksPassed = (pw: string) => {
   return c.minLength && c.hasDigit && c.hasSpecial;
 };
 
-const getOAuthRedirectUrl = () => {
-  if (CUSTOM_OAUTH_HOSTS.has(window.location.hostname)) {
-    return `https://${CANONICAL_OAUTH_HOST}${OAUTH_CALLBACK_PATH}`;
-  }
-
-  return `${window.location.origin}${OAUTH_CALLBACK_PATH}`;
-};
+const getOAuthRedirectUrl = () => `${window.location.origin}${OAUTH_CALLBACK_PATH}`;
 
 /** Map raw backend error strings to user-friendly messages */
 const mapAuthError = (raw: string, mode: Mode): string => {
@@ -558,14 +550,19 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await supabase.auth.signInWithOAuth({
+                  const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: "google",
                     options: {
                       redirectTo: getOAuthRedirectUrl(),
+                      skipBrowserRedirect: true,
                     },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
+                    return;
+                  }
+                  if (data?.url) {
+                    window.location.replace(data.url);
                   }
                 } catch {
                   setFormError("Something went wrong. Please try again.");
@@ -592,14 +589,19 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await supabase.auth.signInWithOAuth({
+                  const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: "apple",
                     options: {
                       redirectTo: getOAuthRedirectUrl(),
+                      skipBrowserRedirect: true,
                     },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
+                    return;
+                  }
+                  if (data?.url) {
+                    window.location.replace(data.url);
                   }
                 } catch {
                   setFormError("Something went wrong. Please try again.");
