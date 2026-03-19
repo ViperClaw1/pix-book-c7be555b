@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { lovable } from "@/integrations/lovable";
+import { lovable } from "@/integrations/lovable/index";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -548,7 +548,7 @@ const AuthPage = () => {
                 setFormError(null);
                 try {
                   const { error } = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: "https://pixapp.kz/~oauth/callback",
+                    redirect_uri: window.location.origin,
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
@@ -579,7 +579,7 @@ const AuthPage = () => {
                 setFormError(null);
                 try {
                   const { error } = await lovable.auth.signInWithOAuth("apple", {
-                    redirect_uri: "https://pixapp.kz/~oauth/callback",
+                    redirect_uri: window.location.origin,
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
