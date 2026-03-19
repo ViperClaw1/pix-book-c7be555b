@@ -547,8 +547,11 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: "https://pixapp.kz/~oauth/callback",
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: "google",
+                    options: {
+                      redirectTo: "https://pixapp.kz/~oauth/callback",
+                    },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
