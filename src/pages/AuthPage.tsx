@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { lovable } from "@/integrations/lovable";
+import { supabase } from "@/integrations/supabase/client";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -23,6 +23,8 @@ interface FieldErrors {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const CUSTOM_OAUTH_HOSTS = new Set(["pixapp.kz", "www.pixapp.kz"]);
+const OAUTH_CALLBACK_PATH = "/~oauth/callback";
 
 /** Client-side password policy */
 const passwordChecks = (pw: string) => ({
@@ -34,6 +36,14 @@ const passwordChecks = (pw: string) => ({
 const allPasswordChecksPassed = (pw: string) => {
   const c = passwordChecks(pw);
   return c.minLength && c.hasDigit && c.hasSpecial;
+};
+
+const getOAuthRedirectUrl = () => {
+  const host = CUSTOM_OAUTH_HOSTS.has(window.location.hostname)
+    ? window.location.hostname
+    : "www.pixapp.kz";
+
+  return `https://${host}${OAUTH_CALLBACK_PATH}`;
 };
 
 /** Map raw backend error strings to user-friendly messages */
@@ -547,8 +557,11 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: window.location.origin,
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: "google",
+                    options: {
+                      redirectTo: getOAuthRedirectUrl(),
+                    },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
@@ -578,8 +591,11 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await lovable.auth.signInWithOAuth("apple", {
-                    redirect_uri: window.location.origin,
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: "apple",
+                    options: {
+                      redirectTo: getOAuthRedirectUrl(),
+                    },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
