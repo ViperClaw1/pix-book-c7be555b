@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { lovable } from "@/integrations/lovable";
+import { supabase } from "@/integrations/supabase/client";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -547,8 +547,11 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: window.location.origin,
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: "google",
+                    options: {
+                      redirectTo: window.location.origin + "/~oauth/callback",
+                    },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
@@ -578,8 +581,11 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await lovable.auth.signInWithOAuth("apple", {
-                    redirect_uri: window.location.origin,
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: "apple",
+                    options: {
+                      redirectTo: window.location.origin + "/~oauth/callback",
+                    },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
