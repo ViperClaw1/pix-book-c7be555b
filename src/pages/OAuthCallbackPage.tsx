@@ -3,39 +3,80 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
+const CALLBACK_TIMEOUT_MS = 10000;
+
+const buildAuthErrorUrl = (error?: string | null, errorCode?: string | null, errorDescription?: string | null) => {
+  const params = new URLSearchParams();
+
+  if (error) params.set("error", error);
+  if (errorCode) params.set("error_code", errorCode);
+  if (errorDescription) params.set("error_description", errorDescription);
+
+  const query = params.toString();
+  return query ? `/auth?${query}` : "/auth";
+};
+
 const OAuthCallbackPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleCallback = async () => {
-      // Wait for auth state to settle after OAuth redirect
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-        if (event === "SIGNED_IN" && session) {
-          subscription.unsubscribe();
-          navigate("/", { replace: true });
-        }
-      });
+    const url = new URL(window.location.href);
+    const hashParams = new URLSearchParams(url.hash.startsWith("#") ? url.hash.slice(1) : url.hash);
+    const code = url.searchParams.get("code");
+    const authError = hashParams.get("error") ?? url.searchParams.get("error");
+    const authErrorCode = hashParams.get("error_code") ?? url.searchParams.get("error_code");
+    const authErrorDescription = hashParams.get("error_description") ?? url.searchParams.get("error_description");
 
-      // Also check if session already exists
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        subscription.unsubscribe();
-        navigate("/", { replace: true });
-      }
+    let isFinished = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let unsubscribe = () => {};
 
-      // Timeout fallback — redirect to auth after 10s
-      const timeout = setTimeout(() => {
-        subscription.unsubscribe();
-        navigate("/auth", { replace: true });
-      }, 10000);
-
-      return () => {
-        clearTimeout(timeout);
-        subscription.unsubscribe();
-      };
+    const finish = (destination: string) => {
+      if (isFinished) return;
+      isFinished = true;
+      if (timeoutId) clearTimeout(timeoutId);
+      unsubscribe();
+      navigate(destination, { replace: true });
     };
 
-    handleCallback();
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session) {
+        finish("/");
+      }
+    });
+    unsubscribe = () => data.subscription.unsubscribe();
+
+    timeoutId = setTimeout(() => {
+      finish(buildAuthErrorUrl("invalid_request", "bad_oauth_state", "OAuth state not found or expired"));
+    }, CALLBACK_TIMEOUT_MS);
+
+    if (authError) {
+      finish(buildAuthErrorUrl(authError, authErrorCode, authErrorDescription));
+      return () => {
+        if (timeoutId) clearTimeout(timeoutId);
+        unsubscribe();
+      };
+    }
+
+    void (async () => {
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) {
+          finish(buildAuthErrorUrl("invalid_request", "bad_oauth_state", error.message));
+          return;
+        }
+      }
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (sessionData.session) {
+        finish("/");
+      }
+    })();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      unsubscribe();
+    };
   }, [navigate]);
 
   return (
