@@ -6,256 +6,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { lovable } from "@/integrations/lovable";
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-type Mode = "login" | "signup" | "forgot" | "verify-notice";
-
-interface FieldErrors {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-}
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const OAUTH_CALLBACK_PATH = "/~oauth/callback";
-
-/** Client-side password policy */
-const passwordChecks = (pw: string) => ({
-  minLength: pw.length >= 8,
-  hasDigit: /\d/.test(pw),
-  hasSpecial: /[^A-Za-z0-9]/.test(pw),
-});
-
-const allPasswordChecksPassed = (pw: string) => {
-  const c = passwordChecks(pw);
-  return c.minLength && c.hasDigit && c.hasSpecial;
-};
-
-const getOAuthRedirectUrl = () => `${window.location.origin}${OAUTH_CALLBACK_PATH}`;
-
-/** Map raw backend error strings to user-friendly messages */
-const mapAuthError = (raw: string, mode: Mode): string => {
-  const lower = raw.toLowerCase();
-
-  if (lower.includes("invalid login credentials") || lower.includes("invalid credentials"))
-    return "Incorrect email or password. Please try again.";
-
-  if (lower.includes("user already registered") || lower.includes("already been registered"))
-    return "An account with this email already exists. Try signing in instead.";
-
-  if (lower.includes("email not confirmed"))
-    return "Please verify your email before signing in.";
-
-  if (lower.includes("email rate limit") || lower.includes("rate limit"))
-    return "Too many attempts. Please wait a moment and try again.";
-
-  if (lower.includes("network") || lower.includes("fetch") || lower.includes("failed to fetch"))
-    return "Something went wrong. Please check your connection and try again.";
-
-  if (lower.includes("weak password") || lower.includes("password"))
-    return raw; // pass through password-specific errors as-is
-
-  // Fallback
-  return "An unexpected error occurred. Please try again.";
-};
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
-const AuthPage = () => {
-  const navigate = useNavigate();
-  const { signIn, signUp, resetPassword, resendVerification } = useAuth();
-
-  const [mode, setMode] = useState<Mode>("login");
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
-
-  // Form fields
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-
-  // Inline field errors (shown after first blur)
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const touchedRef = useRef<Record<string, boolean>>({});
-
-  // Resend verification cooldown
-  const [resendCooldown, setResendCooldown] = useState(0);
-
-  // Tick down cooldown
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const id = setInterval(() => setResendCooldown((c) => Math.max(0, c - 1)), 1000);
-    return () => clearInterval(id);
-  }, [resendCooldown > 0]);
-
-  // Clear form error when switching modes
-  useEffect(() => {
-    setFormError(null);
-    setFieldErrors({});
-    touchedRef.current = {};
-  }, [mode]);
-
-  // ---- Validation helpers ----
-
-  const validateField = useCallback(
-    (field: string, value: string) => {
-      let err: string | undefined;
-      switch (field) {
-        case "firstName":
-        case "lastName": {
-          const label = field === "firstName" ? "First name" : "Last name";
-          if (!value.trim()) err = `${label} is required`;
-          else if (value.trim().length > 50) err = `${label} must be under 50 characters`;
-          break;
-        }
-        case "email":
-          if (!value.trim()) err = "Email is required";
-          else if (!EMAIL_RE.test(value)) err = "Please enter a valid email address";
-          break;
-        case "password":
-          if (!value) err = "Password is required";
-          else if (!allPasswordChecksPassed(value))
-            err = "Password does not meet all requirements";
-          break;
-        case "confirmPassword":
-          if (!value) err = "Please confirm your password";
-          else if (value !== password) err = "Passwords do not match";
-          break;
-      }
-      setFieldErrors((prev) => ({ ...prev, [field]: err }));
-      return !err;
-    },
-    [password],
-  );
-
-  const handleBlur = (field: string, value: string) => {
-    touchedRef.current[field] = true;
-    validateField(field, value);
-  };
-
-  const handleFieldChange = (field: string, value: string, setter: (v: string) => void) => {
-    setter(value);
-    if (touchedRef.current[field]) validateField(field, value);
-  };
-
-  // ---- Submit ----
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
-
-    // Run validation for visible fields
-    if (mode === "signup") {
-      const validations = [
-        validateField("firstName", firstName),
-        validateField("lastName", lastName),
-        validateField("email", email),
-        validateField("password", password),
-        validateField("confirmPassword", confirmPassword),
-      ];
-      // Mark all as touched
-      ["firstName", "lastName", "email", "password", "confirmPassword"].forEach(
-        (f) => (touchedRef.current[f] = true),
-      );
-      if (validations.some((v) => !v)) return;
-    }
-
-    if (mode === "login") {
-      touchedRef.current.email = true;
-      if (!validateField("email", email)) return;
-    }
-
-    if (mode === "forgot") {
-      touchedRef.current.email = true;
-      if (!validateField("email", email)) return;
-    }
-
-    setLoading(true);
-    try {
-      if (mode === "login") {
-        const { error, isUnverified } = await signIn(email, password);
-        if (isUnverified) {
-          setMode("verify-notice");
-          return;
-        }
-        if (error) {
-          setFormError(mapAuthError(error, mode));
-          return;
-        }
-        navigate("/");
-      } else if (mode === "signup") {
-        const { error } = await signUp(email, password, firstName, lastName);
-        if (error) {
-          setFormError(mapAuthError(error, mode));
-          return;
-        }
-        // Success → show verification notice
-        setMode("verify-notice");
-      } else if (mode === "forgot") {
-        const { error } = await resetPassword(email);
-        if (error) {
-          setFormError(mapAuthError(error, mode));
-          return;
-        }
-        setFormError(null);
-        setMode("login");
-        // We briefly set a success-like form message via formError with a special prefix
-        setFormError("__success__Password reset link sent to your email!");
-      }
-    } catch {
-      setFormError("Something went wrong. Please check your connection and try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ---- Resend verification ----
-
-  const handleResend = async () => {
-    if (resendCooldown > 0 || loading) return;
-    setLoading(true);
-    setFormError(null);
-    try {
-      const { error } = await resendVerification(email);
-      if (error) {
-        setFormError(mapAuthError(error, mode));
-      } else {
-        setFormError("__success__Verification email sent! Check your inbox.");
-        setResendCooldown(60);
-      }
-    } catch {
-      setFormError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+import { supabase } from "@/integrations/supabase/client";
+...
   const handleSocialSignIn = async (provider: "google" | "apple") => {
     setLoading(true);
     setFormError(null);
 
     try {
-      const { error } = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: getOAuthRedirectUrl(),
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: getOAuthRedirectUrl(),
+          skipBrowserRedirect: true,
+          queryParams: provider === "google" ? { prompt: "select_account" } : undefined,
+        },
       });
 
       if (error) {
         setFormError(mapAuthError(error.message ?? String(error), mode));
+        return;
       }
+
+      if (!data?.url) {
+        setFormError("Unable to start sign in. Please try again.");
+        return;
+      }
+
+      window.location.replace(data.url);
     } catch (error) {
       setFormError(mapAuthError(error instanceof Error ? error.message : String(error), mode));
-    } finally {
       setLoading(false);
     }
   };
