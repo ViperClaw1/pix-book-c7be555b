@@ -550,14 +550,19 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await supabase.auth.signInWithOAuth({
+                  const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: "google",
                     options: {
                       redirectTo: getOAuthRedirectUrl(),
+                      skipBrowserRedirect: true,
                     },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
+                    return;
+                  }
+                  if (data?.url) {
+                    window.location.replace(data.url);
                   }
                 } catch {
                   setFormError("Something went wrong. Please try again.");
@@ -584,14 +589,19 @@ const AuthPage = () => {
                 setLoading(true);
                 setFormError(null);
                 try {
-                  const { error } = await supabase.auth.signInWithOAuth({
+                  const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: "apple",
                     options: {
                       redirectTo: getOAuthRedirectUrl(),
+                      skipBrowserRedirect: true,
                     },
                   });
                   if (error) {
                     setFormError(mapAuthError(String(error), mode));
+                    return;
+                  }
+                  if (data?.url) {
+                    window.location.replace(data.url);
                   }
                 } catch {
                   setFormError("Something went wrong. Please try again.");
