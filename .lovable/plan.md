@@ -1,24 +1,28 @@
 
 
-## Plan: Update Google SSO Redirect URI for Native App
+## Add Description Field to Shopping Items
 
-### Context
-The app is wrapped in a native mobile shell and needs OAuth callbacks to redirect to `https://pixapp.kz/~oauth/callback` instead of the current `window.location.origin`, so the native app can intercept the redirect via deep linking (configured in the `.well-known/assetlinks.json` and `apple-app-site-association.json` files already in place).
+### 1. Database Migration
 
-### Changes
+Add a `description` column to the `shopping_items` table:
 
-**File: `src/pages/AuthPage.tsx`**
-
-Update the `redirect_uri` in both OAuth calls (Google on line 551 and Apple on line 582) from `window.location.origin` to `https://pixapp.kz/~oauth/callback`:
-
-```typescript
-// Google (line 551)
-redirect_uri: "https://pixapp.kz/~oauth/callback",
-
-// Apple (line 582)
-redirect_uri: "https://pixapp.kz/~oauth/callback",
+```sql
+ALTER TABLE public.shopping_items
+ADD COLUMN description text DEFAULT '';
 ```
 
-### Important Note
-For this to work, `https://pixapp.kz` must be added as an allowed redirect URL in the Cloud authentication settings. The managed OAuth provider must recognize this domain. You may need to update the redirect URL allowlist in your Cloud dashboard under Authentication Settings → Redirect URLs.
+### 2. Update `AdminBusinessCardDetail.tsx`
+
+- Add a `description` field to the item form state
+- Add a `Textarea` input (min-height 100px) labeled "Description" in the Add Item / Add Menu Item dialog
+- Import `Textarea` from `@/components/ui/textarea`
+- Pass `description` in the `createItem.mutateAsync` call
+- Display item descriptions in the item list (truncated, below the price)
+
+### Files Changed
+
+| File | Action |
+|------|--------|
+| Migration SQL | Add `description` column to `shopping_items` |
+| `src/pages/AdminBusinessCardDetail.tsx` | Add description textarea to dialog and display in item cards |
 
