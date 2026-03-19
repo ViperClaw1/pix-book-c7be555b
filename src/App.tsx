@@ -25,6 +25,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminBusinessCardDetail from "./pages/AdminBusinessCardDetail";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 
 const queryClient = new QueryClient();
 
