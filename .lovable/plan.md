@@ -1,62 +1,87 @@
-Do I know what the issue is? Yes — the most likely problem is that the app is now using the wrong OAuth client path for this project.
 
-What I found:
 
-- `src/pages/AuthPage.tsx` currently uses `supabase.auth.signInWithOAuth(...)` with `redirectTo: "https://pixapp.kz/~oauth/callback"`.
-- This project still has Lovable Cloud social auth installed (`src/integrations/lovable/index.ts` exists).
-- There is no frontend route/handler for `/~oauth/callback`.
-- Auth logs show `/authorize` requests are being made with referer `https://pixapp.kz/~oauth/callback`, so that callback URL is part of the active flow.
-- Google’s `redirect_uri_mismatch` happens before the user comes back, which means the exact redirect URI being sent to Google does not match the one registered for that Google client.
+## Problem Root Cause
 
-Most likely root cause:
+The redirect to `oauth.lovable.app/callback` is not caused by your frontend code. It is caused by the **managed Lovable Cloud OAuth credentials** configured in the backend. When Lovable Cloud manages Google/Apple sign-in, it uses its own OAuth client whose authorized redirect URI is `oauth.lovable.app/callback`. No frontend code change can override this — the OAuth provider (Google/Apple) always redirects to the URI registered with the OAuth client credentials.
 
-1. The previous change switched the app from Lovable Cloud OAuth to direct `supabase.auth.signInWithOAuth`, but your Google client was configured in Cloud authentication settings.
-2. In this setup, Google must trust the exact backend callback URI used by Cloud auth — not the app return URL (`https://pixapp.kz/~oauth/callback`).
-3. The current code/config likely mixes two different OAuth flows:
-   - app return URL: `https://pixapp.kz/~oauth/callback`
-   - backend/provider callback URL: the exact callback shown in Cloud Authentication Settings for Google
-4. Separately, even once Google auth succeeds, `/~oauth/callback` still needs a real route in the app.
+Your frontend code (`supabase.auth.signInWithOAuth`) is already correct. The `redirectTo` parameter only controls where the user goes **after** the backend processes the callback — it does not control the OAuth provider's callback URI.
 
-Implementation plan:
+## Solution: Use Your Own OAuth Credentials (BYOK)
 
-1. Revert the Google and Apple buttons in `src/pages/AuthPage.tsx` back to the supported Lovable Cloud call:
-   - use `lovable.auth.signInWithOAuth("google", { redirect_uri: "https://pixapp.kz/~oauth/callback" })`
-   - same for Apple
-     This aligns the frontend with Cloud auth settings and avoids mixing auth stacks.
+To completely eliminate `oauth.lovable.app` from the flow, you must replace the managed Lovable OAuth credentials with your own Google and Apple OAuth client credentials. This routes the OAuth callback through your Supabase project directly (`ceoqpgxbilpytvqtmebm.supabase.co/auth/v1/callback`), which then redirects to your app at `pixapp.kz/~oauth/callback`.
 
-2. Verify the Google Console redirect configuration against the exact callback shown in Cloud auth settings:
-   - keep `https://pixapp.kz/~oauth/callback` as the app return URL
-   - register the exact backend Google callback URI shown in Cloud Authentication Settings as an Authorized redirect URI
-   - do not guess this value or substitute it with only the raw app callback
-   - keep one canonical host if possible (`pixapp.kz` or `www.pixapp.kz`, not both as active auth origins)
+### Step 1: Set Up Google OAuth Credentials
 
-3. Add a dedicated OAuth callback page and route:
-   - new page for `/~oauth/callback`
-   - wait for the auth session to be available
-   - handle success/error state cleanly
-   - then redirect into the correct native deep-link or in-app destination
+In the [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
+1. Create (or edit) an OAuth 2.0 Client ID (Web application type)
+2. Under **Authorized redirect URIs**, add exactly:
+   `https://ceoqpgxbilpytvqtmebm.supabase.co/auth/v1/callback`
+3. Under **Authorized JavaScript origins**, add your domains (`https://pixapp.kz`, `https://www.pixapp.kz`)
+4. Copy the **Client ID** and **Client Secret**
 
-4. Update routing in `src/App.tsx`:
-   - add a public route for `/~oauth/callback`
-   - ensure it is outside protected routes
-   - avoid falling through to `NotFound`
+### Step 2: Set Up Apple OAuth Credentials
 
-5. Add temporary OAuth debug instrumentation:
-   - log which provider flow is started
-   - log returned OAuth errors cleanly
-   - if needed, capture the generated auth URL before redirect for one debugging cycle
-     This will confirm whether the browser is being sent to the expected backend callback URI.
+In [Apple Developer](https://developer.apple.com/account/resources/identifiers):
+1. Configure a Services ID with Sign In with Apple enabled
+2. Set the return URL to:
+   `https://ceoqpgxbilpytvqtmebm.supabase.co/auth/v1/callback`
+3. Generate a client secret (key file)
 
-Technical details:
+### Step 3: Configure Credentials in Lovable Cloud
 
-- `redirect_uri_mismatch` is a Google-provider configuration error, not a database or RLS issue.
-- `redirectTo` / `redirect_uri` is your app return destination after the backend finishes auth.
-- Google validates the backend callback URI used by the auth provider, and that must exactly match the URI registered in Google Cloud.
-- The current direct `supabase.auth.signInWithOAuth` implementation is the wrong fit for this Lovable Cloud project and is the first thing I would change.
-- Missing `/~oauth/callback` route is not the cause of the 400 from Google, but it will break the post-login native handoff once the mismatch is fixed.
+Go to **Cloud → Authentication Settings → Sign In Methods**:
+1. For **Google**: Enter your own Client ID and Client Secret
+2. For **Apple**: Enter your own Services ID and secret
+3. Save — this replaces the managed Lovable credentials
 
-Files to update:
+### Step 4: Update Redirect URLs in Backend Auth Settings
 
-- `src/pages/AuthPage.tsx`
-- `src/App.tsx`
-- add new callback page, e.g. `src/pages/OAuthCallbackPage.tsx`
+In Cloud Auth settings, ensure:
+- **Site URL**: `https://pixapp.kz`
+- **Redirect URLs** include:
+  - `https://pixapp.kz/~oauth/callback`
+  - `https://www.pixapp.kz/~oauth/callback`
+
+### Step 5: Code Changes (Minor)
+
+The frontend code is already mostly correct. Two small changes:
+
+1. **`src/pages/AuthPage.tsx`** — Add an origin allowlist guard to the redirect URL builder to prevent callbacks to unexpected origins:
+
+```typescript
+const ALLOWED_ORIGINS = [
+  "https://pixapp.kz",
+  "https://www.pixapp.kz",
+];
+
+const getOAuthRedirectUrl = () => {
+  const origin = window.location.origin;
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    return `${origin}/~oauth/callback`;
+  }
+  // Fallback for preview/dev environments
+  return `${origin}/~oauth/callback`;
+};
+```
+
+2. **`src/integrations/lovable/index.ts`** — No changes needed, but this file can remain unused. It is auto-generated and harmless.
+
+### Expected Flow After Fix
+
+```text
+User clicks "Continue with Google"
+  → supabase.auth.signInWithOAuth (skipBrowserRedirect: true)
+  → Gets URL: accounts.google.com/o/oauth2/auth?redirect_uri=...supabase.co/auth/v1/callback
+  → window.location.replace(url)
+  → User authenticates with Google
+  → Google redirects to: ceoqpgxbilpytvqtmebm.supabase.co/auth/v1/callback
+  → Supabase processes PKCE, redirects to: pixapp.kz/~oauth/callback?code=...
+  → OAuthCallbackPage detects session → navigates to "/"
+```
+
+No `oauth.lovable.app` involvement at any step.
+
+### Step 6: Publish and Test
+
+After configuring credentials and publishing, test Google and Apple sign-in on both `pixapp.kz` and `www.pixapp.kz`, including the browser back-button scenario.
+
