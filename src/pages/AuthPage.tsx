@@ -21,6 +21,11 @@ interface FieldErrors {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const OAUTH_CALLBACK_PATH = "/~oauth/callback";
 
+const ALLOWED_ORIGINS = [
+  "https://pixapp.kz",
+  "https://www.pixapp.kz",
+];
+
 const passwordChecks = (pw: string) => ({
   minLength: pw.length >= 8,
   hasDigit: /\d/.test(pw),
@@ -32,7 +37,11 @@ const allPasswordChecksPassed = (pw: string) => {
   return checks.minLength && checks.hasDigit && checks.hasSpecial;
 };
 
-const getOAuthRedirectUrl = () => `${window.location.origin}${OAUTH_CALLBACK_PATH}`;
+const getOAuthRedirectUrl = () => {
+  const origin = window.location.origin;
+  const safeOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return `${safeOrigin}${OAUTH_CALLBACK_PATH}`;
+};
 
 const mapAuthError = (raw: string, mode: Mode): string => {
   const lower = raw.toLowerCase();
