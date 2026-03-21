@@ -268,31 +268,25 @@ const AuthPage = () => {
   const handleSocialSignIn = async (provider: "google" | "apple") => {
     setLoading(true);
     setFormError(null);
-    const redirectTo = getOAuthRedirectUrl();
+    const redirectUri = getOAuthRedirectUrl();
 
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo,
-          skipBrowserRedirect: true,
-          queryParams: provider === "google" ? { prompt: "select_account" } : undefined,
-        },
+      const result = await lovable.auth.signInWithOAuth(provider, {
+        redirect_uri: redirectUri,
+        extraParams: provider === "google" ? { prompt: "select_account" } : undefined,
       });
 
-      if (error) {
-        setFormError(mapAuthError(error.message ?? String(error), mode));
+      if (result.error) {
+        setFormError(mapAuthError(result.error.message ?? String(result.error), mode));
         setLoading(false);
         return;
       }
 
-      if (!data?.url) {
-        setFormError("Unable to start sign in. Please try again.");
-        setLoading(false);
-        return;
+      // If redirected, the page will navigate away automatically
+      if (!result.redirected) {
+        // Session was set synchronously (tokens returned directly)
+        navigate("/");
       }
-
-      window.location.replace(data.url);
     } catch (error) {
       setFormError(mapAuthError(error instanceof Error ? error.message : String(error), mode));
       setLoading(false);
