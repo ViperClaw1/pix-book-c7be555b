@@ -19,7 +19,7 @@ interface FieldErrors {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const OAUTH_CALLBACK_PATH = "/~oauth/callback";
+const OAUTH_CALLBACK_PATH = "/auth/callback";
 const DEFAULT_PROD_OAUTH_ORIGINS = ["https://pixapp.kz", "https://www.pixapp.kz"] as const;
 
 const passwordChecks = (pw: string) => ({
@@ -44,6 +44,8 @@ const getAllowedOAuthOrigins = () => {
   return fromEnv.length > 0 ? fromEnv : [...DEFAULT_PROD_OAUTH_ORIGINS];
 };
 
+const getCanonicalOAuthOrigin = () => getAllowedOAuthOrigins()[0] ?? DEFAULT_PROD_OAUTH_ORIGINS[0];
+
 const isLocalDevOrigin = (origin: string) => /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
 
 const getOAuthRedirectUrl = () => {
@@ -53,9 +55,7 @@ const getOAuthRedirectUrl = () => {
     return `${currentOrigin}${OAUTH_CALLBACK_PATH}`;
   }
 
-  const allowedOrigins = getAllowedOAuthOrigins();
-  const redirectOrigin = allowedOrigins.includes(currentOrigin) ? currentOrigin : allowedOrigins[0];
-  return `${redirectOrigin}${OAUTH_CALLBACK_PATH}`;
+  return `${getCanonicalOAuthOrigin()}${OAUTH_CALLBACK_PATH}`;
 };
 
 const mapAuthError = (raw: string, mode: Mode): string => {
