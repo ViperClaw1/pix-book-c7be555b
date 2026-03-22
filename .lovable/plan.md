@@ -1,42 +1,21 @@
 
 
-## In-Dialog Route Display
+## Fix: Regenerate Complete Schema Export
 
-### Problem
-Clicking Drive, Transit, or Walk opens an external Google Maps page. The user wants routes rendered inside the same dialog's embedded map.
+### Why it broke
+The previously generated `database_schema_export.sql` file was essentially empty — it had section comments but no actual SQL statements for enums, tables, functions, triggers, RLS policies, or views. Only the storage bucket INSERT and realtime ALTER were present. So when you run it, no tables get created, and the data export then fails because it references nonexistent tables.
 
-### Approach
-Use the Google Maps Embed API **directions mode**, which supports showing routes inline. The URL format is:
-```
-https://www.google.com/maps/embed/v1/directions?key=API_KEY&origin=LAT,LNG&destination=ADDRESS&mode=driving|transit|walking
-```
+### What I will do
+Generate a new, complete `database_schema_export_v2.sql` that includes all DDL in the correct dependency order:
 
-This requires the user's current location as the origin. We'll use the browser Geolocation API for that.
+1. **Enums** — `app_role`, `booking_status`, `business_card_type`, `cart_item_status`, `shopping_item_type`
+2. **Tables** — All 11 tables (`categories`, `business_cards`, `profiles`, `user_roles`, `bookings`, `cart_items`, `favorites`, `notifications`, `reviews`, `shopping_items`, `shopping_cart_items`) with columns, defaults, primary keys, and foreign keys
+3. **Views** — `public_reviews`
+4. **Functions** — `has_role`, `handle_new_user`, `handle_new_user_role`, `update_category_count`, `update_updated_at_column`
+5. **Triggers** — on `auth.users` for profile/role creation, on `business_cards` for category count, on `profiles` for `updated_at`
+6. **RLS** — Enable RLS on all tables + all policy definitions
+7. **Storage** — Create `business-cards` bucket
+8. **Realtime** — Add `notifications` to realtime publication
 
-### Changes
-
-**1. Update edge function `supabase/functions/maps-embed/index.ts`**
-- Accept optional `origin` and `mode` query params
-- When provided, return a directions embed URL instead of a place embed URL
-- When not provided, return the existing place embed (current behavior)
-
-**2. Update `src/components/DirectionsSheet.tsx`**
-- Add state for `selectedMode` (null = place view, "driving"/"transit"/"walking" = directions view)
-- On mode button click: request browser geolocation, then call the edge function with `origin`, `destination`, and `mode` to get a directions embed URL
-- Update the iframe `src` with the returned directions embed URL
-- Highlight the active mode button
-- Keep the "Open in Google Maps" external link button unchanged
-- Show a loading indicator while fetching location/embed URL
-
-### Technical Detail
-
-```text
-User taps "Drive"
-  → navigator.geolocation.getCurrentPosition()
-  → GET /functions/v1/maps-embed?address=...&origin=LAT,LNG&mode=driving
-  → Edge function returns directions embed URL
-  → iframe src updated → route shown in-dialog
-```
-
-The place embed remains the default view. Tapping a mode switches to directions. Tapping the same mode again could toggle back to place view.
+All derived from the existing database schema and RLS policies visible in the project context. No code changes to the app itself.
 
