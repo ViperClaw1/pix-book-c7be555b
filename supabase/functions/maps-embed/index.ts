@@ -27,7 +27,18 @@ serve(async (req) => {
     });
   }
 
-  const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(address)}`;
+  const origin = url.searchParams.get("origin");
+  const mode = url.searchParams.get("mode");
+
+  let embedUrl: string;
+
+  if (origin && mode) {
+    // Directions embed
+    embedUrl = `https://www.google.com/maps/embed/v1/directions?key=${GOOGLE_MAPS_API_KEY}&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(address)}&mode=${encodeURIComponent(mode)}`;
+  } else {
+    // Place embed (existing behavior)
+    embedUrl = `https://www.google.com/maps/embed/v1/place?key=${GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(address)}`;
+  }
 
   return new Response(JSON.stringify({ embedUrl }), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Car, Footprints, Train, ExternalLink, X, MapPin } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Car, Footprints, Train, ExternalLink, X, MapPin, Loader2 } from "lucide-react";
 import {
   Drawer,
   DrawerContent,
@@ -9,7 +9,7 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 interface DirectionsSheetProps {
   open: boolean;
@@ -18,21 +18,30 @@ interface DirectionsSheetProps {
   address: string;
 }
 
+type TravelMode = "driving" | "transit" | "walking";
+
 const travelModes = [
-  { mode: "driving", label: "Drive", icon: Car },
-  { mode: "transit", label: "Transit", icon: Train },
-  { mode: "walking", label: "Walk", icon: Footprints },
-] as const;
+  { mode: "driving" as TravelMode, label: "Drive", icon: Car },
+  { mode: "transit" as TravelMode, label: "Transit", icon: Train },
+  { mode: "walking" as TravelMode, label: "Walk", icon: Footprints },
+];
 
 const DirectionsSheet = ({ open, onOpenChange, placeName, address }: DirectionsSheetProps) => {
   const encoded = encodeURIComponent(address);
-  const [mapEmbedUrl, setMapEmbedUrl] = useState(
+  const [placeEmbedUrl, setPlaceEmbedUrl] = useState(
     `https://maps.google.com/maps?q=${encoded}&t=&z=15&ie=UTF8&iwloc=&output=embed`
   );
+  const [mapEmbedUrl, setMapEmbedUrl] = useState(placeEmbedUrl);
+  const [selectedMode, setSelectedMode] = useState<TravelMode | null>(null);
+  const [loading, setLoading] = useState(false);
 
+  // Fetch place embed on open
   useEffect(() => {
-    if (!open) return;
-    const fetchEmbedUrl = async () => {
+    if (!open) {
+      setSelectedMode(null);
+      return;
+    }
+    const fetchPlaceEmbed = async () => {
       try {
         const res = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/maps-embed?address=${encoded}`,
@@ -44,21 +53,68 @@ const DirectionsSheet = ({ open, onOpenChange, placeName, address }: DirectionsS
         );
         if (res.ok) {
           const json = await res.json();
-          if (json.embedUrl) setMapEmbedUrl(json.embedUrl);
+          if (json.embedUrl) {
+            setPlaceEmbedUrl(json.embedUrl);
+            if (!selectedMode) setMapEmbedUrl(json.embedUrl);
+          }
         }
       } catch {
-        // fallback to free embed already set
+        // fallback already set
       }
     };
-    fetchEmbedUrl();
+    fetchPlaceEmbed();
   }, [open, encoded]);
 
-  const openRoute = (mode: string) => {
-    window.open(
-      `https://www.google.com/maps/dir/?api=1&destination=${encoded}&travelmode=${mode}`,
-      "_blank"
-    );
+  const getUserLocation = (): Promise<{ lat: number; lng: number }> => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation not supported"));
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        (err) => reject(err),
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    });
   };
+
+  const handleModeClick = useCallback(async (mode: TravelMode) => {
+    // Toggle off if already selected
+    if (selectedMode === mode) {
+      setSelectedMode(null);
+      setMapEmbedUrl(placeEmbedUrl);
+      return;
+    }
+
+    setSelectedMode(mode);
+    setLoading(true);
+
+    try {
+      const location = await getUserLocation();
+      const origin = `${location.lat},${location.lng}`;
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/maps-embed?address=${encoded}&origin=${encodeURIComponent(origin)}&mode=${mode}`,
+        {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+        }
+      );
+      if (res.ok) {
+        const json = await res.json();
+        if (json.embedUrl) {
+          setMapEmbedUrl(json.embedUrl);
+        }
+      }
+    } catch {
+      toast({ title: "Could not get your location", description: "Please allow location access to see routes.", variant: "destructive" });
+      setSelectedMode(null);
+      setMapEmbedUrl(placeEmbedUrl);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedMode, placeEmbedUrl, encoded]);
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -76,7 +132,12 @@ const DirectionsSheet = ({ open, onOpenChange, placeName, address }: DirectionsS
 
         <div className="px-4 pb-4 space-y-4 overflow-y-auto">
           {/* Map embed */}
-          <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border border-border">
+          <div className="w-full aspect-[4/3] rounded-xl overflow-hidden border border-border relative">
+            {loading && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            )}
             <iframe
               src={mapEmbedUrl}
               className="w-full h-full border-0"
@@ -92,11 +153,15 @@ const DirectionsSheet = ({ open, onOpenChange, placeName, address }: DirectionsS
             {travelModes.map(({ mode, label, icon: Icon }) => (
               <button
                 key={mode}
-                onClick={() => openRoute(mode)}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors"
+                onClick={() => handleModeClick(mode)}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-colors ${
+                  selectedMode === mode
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                }`}
               >
-                <Icon className="w-5 h-5 text-primary" />
-                <span className="text-xs font-medium text-secondary-foreground">{label}</span>
+                <Icon className={`w-5 h-5 ${selectedMode === mode ? "text-primary-foreground" : "text-primary"}`} />
+                <span className="text-xs font-medium">{label}</span>
               </button>
             ))}
           </div>
