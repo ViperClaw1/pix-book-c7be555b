@@ -1,28 +1,22 @@
 
+## Current State
 
-## Add Description Field to Shopping Items
+Social auth now uses the managed Lovable Cloud flow via `lovable.auth.signInWithOAuth()` from `@lovable.dev/cloud-auth-js`. This is the officially supported method.
 
-### 1. Database Migration
+### How it works
+1. User clicks "Continue with Google/Apple"
+2. `lovable.auth.signInWithOAuth(provider, { redirect_uri })` is called
+3. The managed broker handles the OAuth exchange (may pass through `oauth.lovable.app` internally)
+4. User returns to `redirect_uri` (`pixapp.kz/~oauth/callback` or `www.pixapp.kz/~oauth/callback`)
+5. `OAuthCallbackPage` picks up the session and navigates to `/`
 
-Add a `description` column to the `shopping_items` table:
+### Key files
+- `src/pages/AuthPage.tsx` — initiates social login via `lovable.auth.signInWithOAuth`
+- `src/integrations/lovable/index.ts` — auto-generated, do NOT edit
+- `src/pages/OAuthCallbackPage.tsx` — handles callback, session establishment
+- `src/App.tsx` — routes `/~oauth/callback` to OAuthCallbackPage
 
-```sql
-ALTER TABLE public.shopping_items
-ADD COLUMN description text DEFAULT '';
-```
-
-### 2. Update `AdminBusinessCardDetail.tsx`
-
-- Add a `description` field to the item form state
-- Add a `Textarea` input (min-height 100px) labeled "Description" in the Add Item / Add Menu Item dialog
-- Import `Textarea` from `@/components/ui/textarea`
-- Pass `description` in the `createItem.mutateAsync` call
-- Display item descriptions in the item list (truncated, below the price)
-
-### Files Changed
-
-| File | Action |
-|------|--------|
-| Migration SQL | Add `description` column to `shopping_items` |
-| `src/pages/AdminBusinessCardDetail.tsx` | Add description textarea to dialog and display in item cards |
-
+### Configuration (external)
+- Google/Apple credentials can be customized in Cloud → Auth Settings → Sign In Methods
+- Site URL should be `https://pixapp.kz`
+- Redirect URLs should include both `https://pixapp.kz/~oauth/callback` and `https://www.pixapp.kz/~oauth/callback`
