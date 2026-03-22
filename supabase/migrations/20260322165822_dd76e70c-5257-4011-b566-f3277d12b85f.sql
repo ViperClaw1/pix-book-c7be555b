@@ -1,0 +1,6 @@
+UPDATE business_cards SET image = 'https://ceoqpgxbilpytvqtmebm.supabase.co/storage/v1/object/public/business-cards/place-1.jpg' WHERE id = 'b1111111-1111-1111-1111-111111111111';
+UPDATE business_cards SET image = 'https://ceoqpgxbilpytvqtmebm.supabase.co/storage/v1/object/public/business-cards/place-2.jpg' WHERE id = 'b2222222-2222-2222-2222-222222222222';
+UPDATE business_cards SET image = 'https://ceoqpgxbilpytvqtmebm.supabase.co/storage/v1/object/public/business-cards/place-3.jpg' WHERE id = 'b3333333-3333-3333-3333-333333333333';
+UPDATE business_cards SET image = 'https://ceoqpgxbilpytvqtmebm.supabase.co/storage/v1/object/public/business-cards/place-4.jpg' WHERE id = 'b4444444-4444-4444-4444-444444444444';
+UPDATE business_cards SET image = 'https://ceoqpgxbilpytvqtmebm.supabase.co/storage/v1/object/public/business-cards/place-5.jpg' WHERE id = 'b5555555-5555-5555-5555-555555555555';
+UPDATE business_cards SET image = 'https://ceoqpgxbilpytvqtmebm.supabase.co/storage/v1/object/public/business-cards/place-6.jpg' WHERE id = 'b6666666-6666-6666-6666-666666666666';
