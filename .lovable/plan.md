@@ -1,22 +1,42 @@
 
-## Current State
 
-Social auth now uses the managed Lovable Cloud flow via `lovable.auth.signInWithOAuth()` from `@lovable.dev/cloud-auth-js`. This is the officially supported method.
+## In-Dialog Route Display
 
-### How it works
-1. User clicks "Continue with Google/Apple"
-2. `lovable.auth.signInWithOAuth(provider, { redirect_uri })` is called
-3. The managed broker handles the OAuth exchange (may pass through `oauth.lovable.app` internally)
-4. User returns to `redirect_uri` (`pixapp.kz/~oauth/callback` or `www.pixapp.kz/~oauth/callback`)
-5. `OAuthCallbackPage` picks up the session and navigates to `/`
+### Problem
+Clicking Drive, Transit, or Walk opens an external Google Maps page. The user wants routes rendered inside the same dialog's embedded map.
 
-### Key files
-- `src/pages/AuthPage.tsx` — initiates social login via `lovable.auth.signInWithOAuth`
-- `src/integrations/lovable/index.ts` — auto-generated, do NOT edit
-- `src/pages/OAuthCallbackPage.tsx` — handles callback, session establishment
-- `src/App.tsx` — routes `/~oauth/callback` to OAuthCallbackPage
+### Approach
+Use the Google Maps Embed API **directions mode**, which supports showing routes inline. The URL format is:
+```
+https://www.google.com/maps/embed/v1/directions?key=API_KEY&origin=LAT,LNG&destination=ADDRESS&mode=driving|transit|walking
+```
 
-### Configuration (external)
-- Google/Apple credentials can be customized in Cloud → Auth Settings → Sign In Methods
-- Site URL should be `https://pixapp.kz`
-- Redirect URLs should include both `https://pixapp.kz/~oauth/callback` and `https://www.pixapp.kz/~oauth/callback`
+This requires the user's current location as the origin. We'll use the browser Geolocation API for that.
+
+### Changes
+
+**1. Update edge function `supabase/functions/maps-embed/index.ts`**
+- Accept optional `origin` and `mode` query params
+- When provided, return a directions embed URL instead of a place embed URL
+- When not provided, return the existing place embed (current behavior)
+
+**2. Update `src/components/DirectionsSheet.tsx`**
+- Add state for `selectedMode` (null = place view, "driving"/"transit"/"walking" = directions view)
+- On mode button click: request browser geolocation, then call the edge function with `origin`, `destination`, and `mode` to get a directions embed URL
+- Update the iframe `src` with the returned directions embed URL
+- Highlight the active mode button
+- Keep the "Open in Google Maps" external link button unchanged
+- Show a loading indicator while fetching location/embed URL
+
+### Technical Detail
+
+```text
+User taps "Drive"
+  → navigator.geolocation.getCurrentPosition()
+  → GET /functions/v1/maps-embed?address=...&origin=LAT,LNG&mode=driving
+  → Edge function returns directions embed URL
+  → iframe src updated → route shown in-dialog
+```
+
+The place embed remains the default view. Tapping a mode switches to directions. Tapping the same mode again could toggle back to place view.
+
