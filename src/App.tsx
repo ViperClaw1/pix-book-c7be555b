@@ -26,6 +26,7 @@ import AdminBusinessCardDetail from "./pages/AdminBusinessCardDetail";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import OAuthCallbackPage from "./pages/OAuthCallbackPage";
+import LandingPage from "./pages/LandingPage";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
           <Routes>
             <Route path="/auth/callback" element={<OAuthCallbackPage />} />
             <Route path="/~oauth/callback" element={<OAuthCallbackPage />} />
+            <Route path="/landing" element={<LandingPage />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/:id" element={<ProtectedRoute><AdminBusinessCardDetail /></ProtectedRoute>} />
             <Route path="*" element={
