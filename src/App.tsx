@@ -40,6 +40,7 @@ const App = () => (
           <Routes>
             <Route path="/auth/callback" element={<OAuthCallbackPage />} />
             <Route path="/~oauth/callback" element={<OAuthCallbackPage />} />
+            <Route path="/landing" element={<LandingPage />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/:id" element={<ProtectedRoute><AdminBusinessCardDetail /></ProtectedRoute>} />
             <Route path="*" element={
