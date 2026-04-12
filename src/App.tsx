@@ -40,7 +40,7 @@ const App = () => (
           <Routes>
             <Route path="/auth/callback" element={<OAuthCallbackPage />} />
             <Route path="/~oauth/callback" element={<OAuthCallbackPage />} />
-            <Route path="/landing" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/:id" element={<ProtectedRoute><AdminBusinessCardDetail /></ProtectedRoute>} />
             <Route path="*" element={
@@ -48,7 +48,7 @@ const App = () => (
                 <Routes>
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
-                  <Route path="/" element={<Index />} />
+                  <Route path="/app" element={<Index />} />
                   <Route path="/search" element={<SearchPage />} />
                   <Route path="/category/:id" element={<CategoryPage />} />
                   <Route path="/place/:id" element={<PlaceDetail />} />
