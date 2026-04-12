@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import heroImage from "@/assets/landing-hero.jpg";
+import pixapLogo from "@/assets/pixap-logo.png";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -53,7 +54,10 @@ const LandingPage = () => {
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 h-16">
-          <span className="text-2xl font-bold tracking-tight text-primary font-sans">Pixap</span>
+          <div className="flex items-center gap-2">
+            <img src={pixapLogo} alt="Pixap logo" className="w-8 h-8 rounded-lg" />
+            <span className="text-2xl font-bold tracking-tight text-primary font-sans">Pixap</span>
+          </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#how-it-works" className="hover:text-foreground transition-colors">How it Works</a>
             <a href="#use-cases" className="hover:text-foreground transition-colors">Use Cases</a>
