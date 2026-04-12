@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import heroImage from "@/assets/landing-hero.jpg";
+import pixapLogo from "@/assets/pixap-logo.png";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
