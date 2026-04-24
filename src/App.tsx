@@ -27,6 +27,7 @@ import NotFound from "./pages/NotFound";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 import LandingPage from "./pages/LandingPage";
+import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const App = () => (
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                    <Route path="/payment-canceled" element={<PaymentCanceled />} />
                    <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                   <Route path="/returns" element={<ReturnPolicyPage />} />
                    <Route path="*" element={<NotFound />} />
                 </Routes>
                 <BottomNav />
