@@ -306,6 +306,7 @@ const LandingPage = () => {
           <span className="font-bold text-foreground text-lg">Pixap</span>
           <div className="flex gap-6">
             <a href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</a>
+            <a href="/returns" className="hover:text-foreground transition-colors">Return Policy</a>
             <a href="#" className="hover:text-foreground transition-colors">Terms of Service</a>
             <a href="#" className="hover:text-foreground transition-colors">Contact</a>
           </div>
