@@ -136,11 +136,12 @@ const PrivacyPolicyPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="px-4 py-6 pb-24">
-      <button onClick={() => navigate(-1)} className="mb-4 p-2 rounded-full bg-secondary">
-        <ArrowLeft className="w-5 h-5 text-foreground" />
+    <div className="min-h-screen bg-background">
+      <div className="max-w-3xl mx-auto px-6 py-10">
+      <button onClick={() => navigate(-1)} className="mb-6 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary hover:bg-secondary/80 transition text-sm text-foreground">
+        <ArrowLeft className="w-4 h-4" /> Back
       </button>
-      <article className="prose prose-sm dark:prose-invert max-w-none">
+      <article className="prose prose-base dark:prose-invert max-w-none">
         {policy.split('\n').map((line, i) => {
           if (line.startsWith('# ')) return <h1 key={i} className="text-2xl font-bold text-foreground mb-2">{line.slice(2)}</h1>;
           if (line.startsWith('## ')) return <h2 key={i} className="text-lg font-semibold text-foreground mt-6 mb-2">{line.slice(3)}</h2>;
@@ -157,6 +158,7 @@ const PrivacyPolicyPage = () => {
           return <p key={i} className="text-muted-foreground text-sm mb-2">{line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/<strong>|<\/strong>/g, (m) => m)}</p>;
         })}
       </article>
+      </div>
     </div>
   );
 };
