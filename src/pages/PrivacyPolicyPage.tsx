@@ -158,6 +158,7 @@ const PrivacyPolicyPage = () => {
           return <p key={i} className="text-muted-foreground text-sm mb-2">{line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/<strong>|<\/strong>/g, (m) => m)}</p>;
         })}
       </article>
+      </div>
     </div>
   );
 };
