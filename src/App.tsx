@@ -28,6 +28,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 import LandingPage from "./pages/LandingPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
+import DataDeletionPage from "./pages/DataDeletionPage";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,9 @@ const App = () => (
             <Route path="/auth/callback" element={<OAuthCallbackPage />} />
             <Route path="/~oauth/callback" element={<OAuthCallbackPage />} />
             <Route path="/" element={<LandingPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/returns" element={<ReturnPolicyPage />} />
+            <Route path="/data-deletion" element={<DataDeletionPage />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/:id" element={<ProtectedRoute><AdminBusinessCardDetail /></ProtectedRoute>} />
             <Route path="*" element={
@@ -62,8 +66,6 @@ const App = () => (
                   <Route path="/favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                    <Route path="/payment-canceled" element={<PaymentCanceled />} />
-                   <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                   <Route path="/returns" element={<ReturnPolicyPage />} />
                    <Route path="*" element={<NotFound />} />
                 </Routes>
                 <BottomNav />
