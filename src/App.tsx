@@ -29,6 +29,7 @@ import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 import LandingPage from "./pages/LandingPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import DataDeletionPage from "./pages/DataDeletionPage";
+import UserAgreementPage from "./pages/UserAgreementPage";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/returns" element={<ReturnPolicyPage />} />
             <Route path="/data-deletion" element={<DataDeletionPage />} />
+            <Route path="/terms" element={<UserAgreementPage />} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/:id" element={<ProtectedRoute><AdminBusinessCardDetail /></ProtectedRoute>} />
             <Route path="*" element={
