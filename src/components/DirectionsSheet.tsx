@@ -52,11 +52,7 @@ const DirectionsSheet = ({ open, onOpenChange, placeName, address }: DirectionsS
       try {
         const res = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/maps-embed?address=${encoded}`,
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            },
-          }
+          { headers: await getAuthHeader() }
         );
         if (res.ok) {
           const json = await res.json();
