@@ -10,6 +10,13 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
+const getAuthHeader = async () => {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  return { Authorization: `Bearer ${token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY };
+};
 
 interface DirectionsSheetProps {
   open: boolean;
@@ -45,11 +52,7 @@ const DirectionsSheet = ({ open, onOpenChange, placeName, address }: DirectionsS
       try {
         const res = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/maps-embed?address=${encoded}`,
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            },
-          }
+          { headers: await getAuthHeader() }
         );
         if (res.ok) {
           const json = await res.json();
@@ -95,11 +98,7 @@ const DirectionsSheet = ({ open, onOpenChange, placeName, address }: DirectionsS
       const origin = `${location.lat},${location.lng}`;
       const res = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/maps-embed?address=${encoded}&origin=${encodeURIComponent(origin)}&mode=${mode}`,
-        {
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-        }
+        { headers: await getAuthHeader() }
       );
       if (res.ok) {
         const json = await res.json();
