@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/landing-hero.jpg";
 import pixapLogo from "@/assets/pixap-logo.png";
 import heroBg from "@/assets/landing-hero-bg.jpg";
-import { PixapMark } from "@/components/PixapMark";
+import pixapMark from "@/assets/pixap-mark.png";
 import heroRestaurant from "@/assets/hero-restaurant.jpg";
 import heroBeauty from "@/assets/hero-beauty.jpg";
 import heroEvents from "@/assets/hero-events.jpg";
@@ -238,7 +238,14 @@ const LandingPage = () => {
             style={{ y: logoY }}
             className="flex flex-col items-center justify-center will-change-transform"
           >
-            <PixapMark className="w-40 h-44 sm:w-52 sm:h-56 md:w-64 md:h-72 text-primary-foreground drop-shadow-[0_10px_40px_rgba(0,0,0,0.45)]" />
+            <img
+              src={pixapMark}
+              alt="Pixap logo"
+              width={512}
+              height={512}
+              className="w-40 h-40 sm:w-52 sm:h-52 md:w-64 md:h-64 object-contain drop-shadow-[0_10px_40px_rgba(0,0,0,0.45)]"
+              fetchPriority="high"
+            />
             <motion.h1
               style={{ y: titleY }}
               className="mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-[0.08em] text-primary-foreground will-change-transform drop-shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
