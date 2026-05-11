@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, MotionValue, type Variants } from "framer-motion";
 import {
   Search, MessageCircle, CreditCard, Star, Shield, Clock,
   Zap, ChevronDown, ChevronUp, Utensils, Scissors, Stethoscope, Compass,
@@ -18,11 +18,11 @@ import usecasesImg from "@/assets/landing-usecases.png";
 const APP_STORE_URL = "#";
 const GOOGLE_PLAY_URL = "#";
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
+  visible: (i: number = 0) => ({
     opacity: 1, y: 0,
-    transition: { delay: i * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
