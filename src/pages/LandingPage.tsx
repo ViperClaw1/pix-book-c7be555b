@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/landing-hero.jpg";
 import pixapLogo from "@/assets/pixap-logo.png";
 import heroBg from "@/assets/landing-hero-bg.jpg";
+import { PixapMark } from "@/components/PixapMark";
 import heroRestaurant from "@/assets/hero-restaurant.jpg";
 import heroBeauty from "@/assets/hero-beauty.jpg";
 import heroEvents from "@/assets/hero-events.jpg";
@@ -235,21 +236,12 @@ const LandingPage = () => {
         >
           <motion.div
             style={{ y: logoY }}
-            className="flex items-center justify-center gap-4 sm:gap-6 will-change-transform"
+            className="flex flex-col items-center justify-center will-change-transform"
           >
-            <div className="relative">
-              <MapPin
-                className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 text-primary-foreground drop-shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
-                strokeWidth={1.5}
-              />
-              <Plane
-                className="absolute top-3 sm:top-4 md:top-6 left-1/2 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary-foreground -rotate-12"
-                strokeWidth={1.5}
-              />
-            </div>
+            <PixapMark className="w-40 h-44 sm:w-52 sm:h-56 md:w-64 md:h-72 text-primary-foreground drop-shadow-[0_10px_40px_rgba(0,0,0,0.45)]" />
             <motion.h1
               style={{ y: titleY }}
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-[0.05em] text-primary-foreground will-change-transform drop-shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
+              className="mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-[0.08em] text-primary-foreground will-change-transform drop-shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
             >
               PIXAP
             </motion.h1>
