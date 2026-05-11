@@ -1,14 +1,15 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Search, MessageCircle, CreditCard, CheckCircle, Star, Shield, Clock,
   Zap, ChevronDown, ChevronUp, Utensils, Scissors, Stethoscope, Compass,
-  ArrowRight, Smartphone, Bot, Lock
+  ArrowRight, Smartphone, Bot, Lock, Plane, MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import heroImage from "@/assets/landing-hero.jpg";
 import pixapLogo from "@/assets/pixap-logo.png";
+import heroBg from "@/assets/landing-hero-bg.jpg";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -48,6 +49,13 @@ const ctaLabels = ["Download Pixap — It's Free", "Get Started", "Book Your Fir
 
 const LandingPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollY } = useScroll();
+  const bgY = useTransform(scrollY, [0, 800], [0, 200]);
+  const logoY = useTransform(scrollY, [0, 800], [0, -120]);
+  const titleY = useTransform(scrollY, [0, 800], [0, -60]);
+  const taglineY = useTransform(scrollY, [0, 800], [0, -20]);
+  const overlayOpacity = useTransform(scrollY, [0, 600], [1, 0]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -68,6 +76,65 @@ const LandingPage = () => {
           </Button>
         </div>
       </nav>
+
+      {/* Brand Hero */}
+      <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
+        <motion.div
+          style={{ y: bgY }}
+          className="absolute inset-0 -top-20 -bottom-20 will-change-transform"
+        >
+          <img
+            src={heroBg}
+            alt="Scenic mountain landscape with travelers overlooking a lake"
+            className="w-full h-full object-cover"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-foreground/20" />
+        </motion.div>
+
+        <motion.div
+          style={{ opacity: overlayOpacity }}
+          className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4"
+        >
+          <motion.div
+            style={{ y: logoY }}
+            className="flex items-center justify-center gap-4 sm:gap-6 will-change-transform"
+          >
+            <div className="relative">
+              <MapPin
+                className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 text-primary-foreground"
+                strokeWidth={1.5}
+              />
+              <Plane
+                className="absolute top-3 sm:top-4 md:top-6 left-1/2 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary-foreground -rotate-12"
+                strokeWidth={1.5}
+              />
+            </div>
+            <motion.h1
+              style={{ y: titleY }}
+              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-[0.05em] text-primary-foreground will-change-transform"
+            >
+              PIXAP
+            </motion.h1>
+          </motion.div>
+          <motion.p
+            style={{ y: taglineY }}
+            className="mt-6 text-lg sm:text-xl md:text-2xl font-medium text-primary-foreground/90 will-change-transform"
+          >
+            <span className="text-pink-400">People.</span>{" "}
+            <span className="text-blue-400">Inspire.</span>{" "}
+            <span className="text-purple-400">eXplore.</span>{" "}
+            <span>Any Place.</span>
+          </motion.p>
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          >
+            <ChevronDown className="w-8 h-8 text-primary-foreground/70" />
+          </motion.div>
+        </motion.div>
+      </section>
 
       {/* Hero */}
       <section className="relative overflow-hidden">
