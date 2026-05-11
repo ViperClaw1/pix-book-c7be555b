@@ -49,6 +49,13 @@ const ctaLabels = ["Download Pixap — It's Free", "Get Started", "Book Your Fir
 
 const LandingPage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollY } = useScroll();
+  const bgY = useTransform(scrollY, [0, 800], [0, 200]);
+  const logoY = useTransform(scrollY, [0, 800], [0, -120]);
+  const titleY = useTransform(scrollY, [0, 800], [0, -60]);
+  const taglineY = useTransform(scrollY, [0, 800], [0, -20]);
+  const overlayOpacity = useTransform(scrollY, [0, 600], [1, 0]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
