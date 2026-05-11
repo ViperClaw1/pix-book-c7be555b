@@ -56,7 +56,7 @@ const NotificationsSheet = ({ unreadCount, children }: NotificationsSheetProps) 
     if (!user) return;
 
     const channel = supabase
-      .channel("notifications-realtime")
+      .channel(`notifications:${user.id}`)
       .on(
         "postgres_changes",
         {
