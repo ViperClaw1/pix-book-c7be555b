@@ -1,14 +1,15 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Search, MessageCircle, CreditCard, CheckCircle, Star, Shield, Clock,
   Zap, ChevronDown, ChevronUp, Utensils, Scissors, Stethoscope, Compass,
-  ArrowRight, Smartphone, Bot, Lock
+  ArrowRight, Smartphone, Bot, Lock, Plane, MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import heroImage from "@/assets/landing-hero.jpg";
 import pixapLogo from "@/assets/pixap-logo.png";
+import heroBg from "@/assets/landing-hero-bg.jpg";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
