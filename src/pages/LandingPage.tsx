@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/landing-hero.jpg";
 import pixapLogo from "@/assets/pixap-logo.png";
 import heroBg from "@/assets/landing-hero-bg.jpg";
-import pixapMark from "@/assets/pixap-mark.svg";
+import pixapMark from "@/assets/pixap-mark.png";
 import heroRestaurant from "@/assets/hero-restaurant.jpg";
 import heroBeauty from "@/assets/hero-beauty.jpg";
 import heroEvents from "@/assets/hero-events.jpg";
