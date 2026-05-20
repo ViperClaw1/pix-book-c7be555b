@@ -250,7 +250,7 @@ const LandingPage = () => {
               style={{ y: titleY }}
               className="mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-[0.08em] text-primary-foreground will-change-transform drop-shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
             >
-              PIXAP
+              {"\u200b\n"}
             </motion.h1>
           </motion.div>
 
