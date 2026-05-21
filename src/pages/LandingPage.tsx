@@ -197,8 +197,17 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <Helmet>
+        <title>Pixap — AI Concierge for Bookings in Almaty</title>
+        <meta name="description" content="Pixap is an AI concierge that finds places, talks to venues on WhatsApp, and confirms your booking in under a minute. Restaurants, salons, tours and more in Almaty." />
+        <link rel="canonical" href="https://pixapp.kz/" />
+        <meta property="og:title" content="Pixap — AI Concierge for Bookings in Almaty" />
+        <meta property="og:description" content="Find a place, let the AI handle the WhatsApp back-and-forth, and get a confirmed booking in under a minute." />
+        <meta property="og:url" content="https://pixapp.kz/" />
+      </Helmet>
       {/* Navbar */}
-      <nav className="fixed top-0 inset-x-0 z-50">
+      <nav className="fixed top-0 inset-x-0 z-50" aria-label="Primary">
+
         <div className="max-w-6xl mx-auto mt-3 px-3">
           <div className="flex items-center justify-between px-4 sm:px-5 h-14 rounded-2xl bg-background/60 backdrop-blur-xl border border-border/60 shadow-[0_8px_30px_-10px_hsl(220_25%_12%/0.15)]">
             <div className="flex items-center gap-2">
