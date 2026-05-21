@@ -280,16 +280,20 @@ const LandingPage = () => {
 
       {/* Marquee of categories */}
       <section className="relative py-8 border-y border-border/60 bg-secondary/40 overflow-hidden">
-        <div className="flex gap-12 animate-[marquee_30s_linear_infinite] whitespace-nowrap">
-          {[...useCases, ...useCases, ...useCases].map((u, i) => (
-            <div key={i} className="flex items-center gap-3 text-muted-foreground">
-              <u.icon className="w-5 h-5 text-primary" />
-              <span className="text-sm font-semibold tracking-widest uppercase">{u.label}</span>
-              <span className="text-border">•</span>
+        <div className="flex w-max animate-[marquee_30s_linear_infinite] whitespace-nowrap will-change-transform">
+          {[...Array(2)].map((_, copy) => (
+            <div key={copy} className="flex gap-12 pr-12 shrink-0" aria-hidden={copy === 1}>
+              {useCases.map((u, i) => (
+                <div key={i} className="flex items-center gap-3 text-muted-foreground">
+                  <u.icon className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-semibold tracking-widest uppercase">{u.label}</span>
+                  <span className="text-border">•</span>
+                </div>
+              ))}
             </div>
           ))}
         </div>
-        <style>{`@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-33.333%); } }`}</style>
+        <style>{`@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }`}</style>
       </section>
 
       {/* Pain Points */}
