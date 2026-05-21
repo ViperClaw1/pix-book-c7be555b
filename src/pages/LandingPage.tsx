@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import { motion, useScroll, useTransform, useSpring, MotionValue, type Variants } from "framer-motion";
 import {
   Search, MessageCircle, CreditCard, Star, Shield, Clock,
