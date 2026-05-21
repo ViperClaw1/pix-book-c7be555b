@@ -260,7 +260,8 @@ const LandingPage = () => {
               style={{ y: titleY }}
               className="mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-[0.08em] text-primary-foreground will-change-transform drop-shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
             >
-              PIXAP
+              <span aria-hidden="true">PIXAP</span>
+              <span className="sr-only">Pixap — AI Concierge for Booking Any Place</span>
             </motion.h1>
           </motion.div>
 
