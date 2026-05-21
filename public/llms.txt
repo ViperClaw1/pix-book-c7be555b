@@ -1,0 +1,13 @@
+# Pixap
+
+> Pixap is an AI concierge for booking restaurants, salons, spas, medical services, and tours in Almaty, Kazakhstan. The AI agent finds places, contacts venues on WhatsApp in real time, and returns a confirmed booking in under a minute.
+
+## Pages
+
+- [Home](/): Product overview, features, how it works, FAQ.
+- [App](/app): Browse curated places and search by category.
+- [Search](/search): Search places by name, cuisine, or vibe.
+- [Privacy Policy](/privacy): How Pixap handles user data.
+- [Terms of Service](/terms): User agreement.
+- [Returns Policy](/returns): Refund and cancellation rules.
+- [Data Deletion](/data-deletion): How to delete account data.
