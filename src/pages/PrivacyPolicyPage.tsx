@@ -617,7 +617,7 @@ const PrivacyPolicyPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-6 py-10">
-        <div className="flex items-center justify-between mb-6 gap-3">
+        <div className="flex items-center justify-end mb-6 gap-3">
           <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary hover:bg-secondary/80 transition text-sm text-foreground"
