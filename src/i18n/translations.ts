@@ -171,6 +171,24 @@ const en: Dict = {
     privacy: "Privacy Policy", terms: "User Agreement", returns: "Return Policy", dataDeletion: "Data Deletion",
     rights: "All rights reserved.", madeIn: "Made with care in Almaty.",
   },
+  cookies: {
+    title: "We value your privacy",
+    body: "We use cookies to keep Pixap running, analyze usage, and improve the experience. You can accept all, reject non-essential, or pick what you allow. Read our",
+    privacyLink: "Privacy Policy",
+    acceptAll: "Accept all",
+    rejectAll: "Reject non-essential",
+    customize: "Customize",
+    save: "Save preferences",
+    close: "Close and reject non-essential cookies",
+    necessaryTitle: "Strictly necessary",
+    necessaryDesc: "Required for the site to function. Always on.",
+    functionalTitle: "Functional",
+    functionalDesc: "Remembers your preferences (theme, language).",
+    analyticsTitle: "Analytics",
+    analyticsDesc: "Anonymous usage stats (Google Analytics) so we can improve.",
+    marketingTitle: "Marketing",
+    marketingDesc: "Measure ad performance and conversions.",
+  },
 };
 
 const ru: Dict = {
