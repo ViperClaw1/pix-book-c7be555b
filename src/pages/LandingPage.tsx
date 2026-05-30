@@ -3,9 +3,9 @@ import { Helmet } from "react-helmet-async";
 import { motion, useScroll, useTransform, useSpring, MotionValue, type Variants } from "framer-motion";
 import {
   Search, MessageCircle, CreditCard, Star, Shield, Clock,
-  Zap, ChevronDown, ChevronUp, Utensils, Scissors, Stethoscope, Compass,
-  ArrowRight, Apple, Play, Bot, Sparkles, Plane, MapPin, Phone, CalendarX,
-  Hourglass, MessageSquareX, Wand2, MapIcon, BellRing,
+  Zap, ChevronDown, ChevronUp, Utensils, Scissors, Music, Compass,
+  ArrowRight, Apple, Play, Bot, Sparkles, Heart, MapPin, Phone, CalendarX,
+  Hourglass, Users, Wand2, Activity, BellRing, Route,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/landing-hero.jpg";
@@ -15,7 +15,8 @@ import pixapMark from "@/assets/pixap-mark.png";
 import heroRestaurant from "@/assets/hero-restaurant.jpg";
 import heroBeauty from "@/assets/hero-beauty.jpg";
 import heroEvents from "@/assets/hero-events.jpg";
-import usecasesImg from "@/assets/landing-usecases.png";
+import appShowcase from "@/assets/landing-app-showcase.png";
+
 
 const APP_STORE_URL = "#";
 const GOOGLE_PLAY_URL = "#";
