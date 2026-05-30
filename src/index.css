@@ -97,6 +97,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Reserve scrollbar space so Radix overlays (dropdown, dialog) don't cause layout shift */
+    scrollbar-gutter: stable;
   }
 
   * {
