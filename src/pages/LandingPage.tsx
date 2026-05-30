@@ -12,10 +12,11 @@ import heroImage from "@/assets/landing-hero.jpg";
 import pixapLogo from "@/assets/pixap-logo.png";
 import heroBg from "@/assets/landing-hero-bg.jpg";
 import pixapMark from "@/assets/pixap-mark.png";
-import heroRestaurant from "@/assets/hero-restaurant.jpg";
-import heroBeauty from "@/assets/hero-beauty.jpg";
-import heroEvents from "@/assets/hero-events.jpg";
 import appShowcase from "@/assets/landing-app-showcase.png";
+import featureSmartBooking from "@/assets/feature-smart-booking.png";
+import featureVibeMatch from "@/assets/feature-vibe-match.png";
+import featureNightPlanned from "@/assets/feature-night-planned.png";
+import featureExplore from "@/assets/feature-explore.png";
 
 
 const APP_STORE_URL = "#";
@@ -42,7 +43,7 @@ const features = [
     title: "Just say it. We book it.",
     desc: "Tell Pix AI what you’re in the mood for — cuisine, music, budget, time. It negotiates with venues on WhatsApp and locks in a confirmed seat in under a minute.",
     icon: Bot,
-    image: heroRestaurant,
+    image: featureSmartBooking,
     accent: "from-primary/30 via-primary/10 to-transparent",
   },
   {
@@ -50,7 +51,7 @@ const features = [
     title: "Find places that feel like you.",
     desc: "Calm, luxury, social, underground — pick your vibe and Pixap surfaces the venues whose energy matches yours tonight.",
     icon: Heart,
-    image: heroBeauty,
+    image: featureVibeMatch,
     accent: "from-accent/30 via-accent/10 to-transparent",
   },
   {
@@ -58,7 +59,7 @@ const features = [
     title: "See the room before you go.",
     desc: "Real-time crowd levels, wait times and energy reads from every spot — so you walk into the night you actually wanted.",
     icon: Activity,
-    image: heroEvents,
+    image: featureNightPlanned,
     accent: "from-primary/30 via-accent/20 to-transparent",
   },
   {
@@ -66,7 +67,7 @@ const features = [
     title: "Plan together. Book together.",
     desc: "Invite friends, vote on the plan, split the bill, and confirm dinner, drinks and the club in one shared timeline.",
     icon: Users,
-    image: heroRestaurant,
+    image: featureExplore,
     accent: "from-accent/30 via-primary/10 to-transparent",
   },
 ];
