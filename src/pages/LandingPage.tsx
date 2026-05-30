@@ -109,6 +109,18 @@ const faqs = [
 ];
 
 
+function trackStoreClick(store: "app_store" | "google_play") {
+  const w = window as unknown as { gtag?: (...args: unknown[]) => void };
+  if (typeof w.gtag === "function") {
+    w.gtag("event", "store_click", {
+      event_category: "conversion",
+      event_label: store,
+      store,
+    });
+    w.gtag("event", "conversion", { send_to: "G-TZL3J8NSPT", store });
+  }
+}
+
 function StoreButtons({ variant = "solid" as "solid" | "ghost" }) {
   const base =
     "group inline-flex items-center gap-3 rounded-2xl px-5 py-3.5 transition-all duration-300 will-change-transform";
@@ -119,14 +131,14 @@ function StoreButtons({ variant = "solid" as "solid" | "ghost" }) {
   const cls = variant === "solid" ? `${base} ${solid}` : `${base} ${ghost}`;
   return (
     <div className="flex flex-col sm:flex-row gap-3">
-      <a href={APP_STORE_URL} className={cls} aria-label="Download on the App Store">
+      <a href={APP_STORE_URL} onClick={() => trackStoreClick("app_store")} className={cls} aria-label="Download on the App Store">
         <Apple className="w-7 h-7" strokeWidth={1.5} />
         <div className="text-left leading-tight">
           <div className="text-[10px] uppercase tracking-widest opacity-70">Download on the</div>
           <div className="text-base font-semibold">App Store</div>
         </div>
       </a>
-      <a href={GOOGLE_PLAY_URL} className={cls} aria-label="Get it on Google Play">
+      <a href={GOOGLE_PLAY_URL} onClick={() => trackStoreClick("google_play")} className={cls} aria-label="Get it on Google Play">
         <Play className="w-6 h-6 fill-current" strokeWidth={1.5} />
         <div className="text-left leading-tight">
           <div className="text-[10px] uppercase tracking-widest opacity-70">Get it on</div>
