@@ -377,6 +377,50 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* App Showcase */}
+      <section className="relative py-24 md:py-32 overflow-hidden bg-foreground text-background">
+        <div className="absolute inset-0 opacity-70 pointer-events-none">
+          <div className="absolute -top-32 left-1/4 w-[600px] h-[600px] rounded-full bg-primary/25 blur-[140px]" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-accent/20 blur-[140px]" />
+        </div>
+
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
+            className="max-w-3xl mx-auto text-center space-y-5 mb-14"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/10 text-background/80 text-xs font-semibold tracking-wider uppercase">
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              See it in motion
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
+              One app for the whole night.
+            </h2>
+            <p className="text-lg text-background/70 leading-relaxed">
+              From the first craving to the last stop — Pixap plans it, books it, matches the vibe, and reads the room in real time.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="relative"
+          >
+            <div className="absolute -inset-6 bg-gradient-to-r from-primary/20 via-transparent to-accent/20 blur-3xl opacity-60 pointer-events-none" />
+            <div className="relative rounded-[2rem] overflow-hidden border border-background/10 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.6)] bg-background/[0.03]">
+              <img
+                src={appShowcase}
+                alt="Pixap app screens: planning a journey, AI concierge, smart route with vibe match, social booking and the final plan view"
+                className="w-full h-auto block"
+                loading="lazy"
+              />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Features */}
       <section id="features" ref={featuresRef} className="relative py-24 md:py-32">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-32 md:space-y-48">
@@ -385,6 +429,7 @@ const LandingPage = () => {
           ))}
         </div>
       </section>
+
 
       {/* Interactive demo (sticky scroll) */}
       <section id="how" ref={demoRef} className="relative bg-foreground text-background">
