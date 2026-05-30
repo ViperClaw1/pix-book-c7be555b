@@ -17,6 +17,9 @@ import featureSmartBooking from "@/assets/feature-smart-booking.png";
 import featureVibeMatch from "@/assets/feature-vibe-match.png";
 import featureNightPlanned from "@/assets/feature-night-planned.png";
 import featureExplore from "@/assets/feature-explore.png";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useI18n } from "@/i18n/I18nProvider";
+import type { Dict } from "@/i18n/translations";
 
 
 const APP_STORE_URL = "#";
@@ -30,84 +33,18 @@ const fadeUp: Variants = {
   }),
 };
 
-const pains = [
-  { icon: Phone, title: "Five apps, one night", desc: "Reservations here, tickets there, group chat everywhere." },
-  { icon: Hourglass, title: "Guessing the vibe", desc: "Photos lie. You only know the mood once you arrive." },
-  { icon: Users, title: "Lost in the group chat", desc: "Plans dissolve in a thread of ‘maybe later’ replies." },
-  { icon: CalendarX, title: "Packed or empty", desc: "No way to see how crowded a place is right now." },
+const painIcons = [Phone, Hourglass, Users, CalendarX];
+const featureIcons = [Bot, Heart, Activity, Users];
+const featureImages = [featureSmartBooking, featureVibeMatch, featureNightPlanned, featureExplore];
+const featureAccents = [
+  "from-primary/30 via-primary/10 to-transparent",
+  "from-accent/30 via-accent/10 to-transparent",
+  "from-primary/30 via-accent/20 to-transparent",
+  "from-accent/30 via-primary/10 to-transparent",
 ];
+const demoIcons = [Search, Wand2, Route, BellRing];
 
-const features = [
-  {
-    eyebrow: "Pix AI Smart Booking",
-    title: "Just say it. We book it.",
-    desc: "Tell Pix AI what you’re in the mood for — cuisine, music, budget, time. It negotiates with venues on WhatsApp and locks in a confirmed seat in under a minute.",
-    icon: Bot,
-    image: featureSmartBooking,
-    accent: "from-primary/30 via-primary/10 to-transparent",
-  },
-  {
-    eyebrow: "Vibe Matching",
-    title: "Find places that feel like you.",
-    desc: "Calm, luxury, social, underground — pick your vibe and Pixap surfaces the venues whose energy matches yours tonight.",
-    icon: Heart,
-    image: featureVibeMatch,
-    accent: "from-accent/30 via-accent/10 to-transparent",
-  },
-  {
-    eyebrow: "Live Crowd Metrics",
-    title: "See the room before you go.",
-    desc: "Real-time crowd levels, wait times and energy reads from every spot — so you walk into the night you actually wanted.",
-    icon: Activity,
-    image: featureNightPlanned,
-    accent: "from-primary/30 via-accent/20 to-transparent",
-  },
-  {
-    eyebrow: "Social + Booking, One Place",
-    title: "Plan together. Book together.",
-    desc: "Invite friends, vote on the plan, split the bill, and confirm dinner, drinks and the club in one shared timeline.",
-    icon: Users,
-    image: featureExplore,
-    accent: "from-accent/30 via-primary/10 to-transparent",
-  },
-];
-
-const demoSteps = [
-  { icon: Search, title: "Describe your night", desc: "Tell Pix AI the vibe, the crew, the hours — in your own words." },
-  { icon: Wand2, title: "Match the vibe", desc: "AI ranks venues by your taste, live crowd levels, and distance." },
-  { icon: Route, title: "Build the plan", desc: "Dinner, drinks, club — chained into one smart route with your friends." },
-  { icon: BellRing, title: "Arrive", desc: "One pass, all stops. Walk in, skip the line, enjoy the night." },
-];
-
-const useCases = [
-  { icon: Utensils, label: "Restaurants" },
-  { icon: Scissors, label: "Salons & Spa" },
-  { icon: Music, label: "Nightlife" },
-  { icon: Compass, label: "Events" },
-];
-
-const marqueeUseCases = Array.from({ length: 16 }, (_, index) => useCases[index % useCases.length]);
-
-const stats = [
-  { value: "<60s", label: "From idea to confirmed plan" },
-  { value: "Live", label: "Crowd & wait-time data, always on" },
-  { value: "1 app", label: "Plan, book, split and arrive together" },
-];
-
-const testimonials = [
-  { quote: "Friday night, six friends, three venues — all confirmed in two minutes. Pix AI just runs the night.", name: "Aliya K.", role: "Almaty" },
-  { quote: "The vibe match nailed it. Calm dinner, social bar, underground club — exactly the night I described.", name: "Daniyar M.", role: "Astana" },
-  { quote: "Seeing live crowd levels before we leave the house is a cheat code. No more dead rooms.", name: "Saule T.", role: "Almaty" },
-];
-
-const faqs = [
-  { q: "What is Pix AI smart booking?", a: "Pix AI is the concierge inside the app. You describe what you want, it talks to venues on WhatsApp in real time and returns a confirmed booking — no calls, no DMs from you." },
-  { q: "How does vibe matching work?", a: "Pick a mood — calm, luxury, social or underground — and Pixap ranks venues by their crowd energy, music, design and reviews so the result actually feels right." },
-  { q: "What are live crowd metrics?", a: "We show real-time occupancy, wait time and energy level for partner venues, so you can decide between two places without leaving the couch." },
-  { q: "Can I plan a night with friends?", a: "Yes. Invite your group, vote on places, build a multi-stop route, split the bill, and let Pix AI lock every reservation at once." },
-  { q: "Where is Pixap available?", a: "Launching in Almaty, Kazakhstan, with expansion to more cities soon." },
-];
-
+const useCaseIcons = [Utensils, Scissors, Music, Compass];
 
 function trackStoreClick(store: "app_store" | "google_play") {
   const w = window as unknown as { gtag?: (...args: unknown[]) => void };
@@ -122,6 +59,7 @@ function trackStoreClick(store: "app_store" | "google_play") {
 }
 
 function StoreButtons({ variant = "solid" as "solid" | "ghost" }) {
+  const { t } = useI18n();
   const base =
     "group inline-flex items-center gap-3 rounded-2xl px-5 py-3.5 transition-all duration-300 will-change-transform";
   const solid =
@@ -131,25 +69,27 @@ function StoreButtons({ variant = "solid" as "solid" | "ghost" }) {
   const cls = variant === "solid" ? `${base} ${solid}` : `${base} ${ghost}`;
   return (
     <div className="flex flex-col sm:flex-row gap-3">
-      <a href={APP_STORE_URL} onClick={() => trackStoreClick("app_store")} className={cls} aria-label="Download on the App Store">
+      <a href={APP_STORE_URL} onClick={() => trackStoreClick("app_store")} className={cls} aria-label={`${t.store.downloadOn} ${t.store.appStore}`}>
         <Apple className="w-7 h-7" strokeWidth={1.5} />
         <div className="text-left leading-tight">
-          <div className="text-[10px] uppercase tracking-widest opacity-70">Download on the</div>
-          <div className="text-base font-semibold">App Store</div>
+          <div className="text-[10px] uppercase tracking-widest opacity-70">{t.store.downloadOn}</div>
+          <div className="text-base font-semibold">{t.store.appStore}</div>
         </div>
       </a>
-      <a href={GOOGLE_PLAY_URL} onClick={() => trackStoreClick("google_play")} className={cls} aria-label="Get it on Google Play">
+      <a href={GOOGLE_PLAY_URL} onClick={() => trackStoreClick("google_play")} className={cls} aria-label={`${t.store.getItOn} ${t.store.googlePlay}`}>
         <Play className="w-6 h-6 fill-current" strokeWidth={1.5} />
         <div className="text-left leading-tight">
-          <div className="text-[10px] uppercase tracking-widest opacity-70">Get it on</div>
-          <div className="text-base font-semibold">Google Play</div>
+          <div className="text-[10px] uppercase tracking-widest opacity-70">{t.store.getItOn}</div>
+          <div className="text-base font-semibold">{t.store.googlePlay}</div>
         </div>
       </a>
     </div>
   );
 }
 
-function FeatureRow({ f, index, progress }: { f: typeof features[number]; index: number; progress: MotionValue<number> }) {
+type FeatureItem = { eyebrow: string; title: string; desc: string; icon: typeof Bot; image: string; accent: string };
+
+function FeatureRow({ f, index, progress }: { f: FeatureItem; index: number; progress: MotionValue<number> }) {
   const reverse = index % 2 === 1;
   const y = useTransform(progress, [0, 1], [40, -40]);
   const Icon = f.icon;
@@ -197,6 +137,7 @@ function FeatureRow({ f, index, progress }: { f: typeof features[number]; index:
 }
 
 const LandingPage = () => {
+  const { t, lang } = useI18n();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const heroRef = useRef<HTMLElement>(null);
   const featuresRef = useRef<HTMLElement>(null);
@@ -221,17 +162,28 @@ const LandingPage = () => {
     offset: ["start start", "end end"],
   });
   const activeStep = useTransform(demoProgress, (v) =>
-    Math.min(demoSteps.length - 1, Math.floor(v * demoSteps.length))
+    Math.min(t.demo.steps.length - 1, Math.floor(v * t.demo.steps.length))
   );
+
+  const features: FeatureItem[] = [t.features.smart, t.features.vibe, t.features.crowd, t.features.social].map(
+    (f, i) => ({ ...f, icon: featureIcons[i], image: featureImages[i], accent: featureAccents[i] })
+  );
+
+  const useCases = useCaseIcons.map((Icon, i) => ({
+    Icon,
+    label: [t.marquee.restaurants, t.marquee.salons, t.marquee.nightlife, t.marquee.events][i],
+  }));
+  const marqueeUseCases = Array.from({ length: 16 }, (_, i) => useCases[i % useCases.length]);
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <Helmet>
-        <title>Pixap — AI Concierge for Bookings in Almaty</title>
-        <meta name="description" content="Pixap is an AI concierge that finds places, talks to venues on WhatsApp, and confirms your booking in under a minute. Restaurants, salons, tours and more in Almaty." />
+        <html lang={lang} />
+        <title>{t.meta.title}</title>
+        <meta name="description" content={t.meta.description} />
         <link rel="canonical" href="https://pixapp.kz/" />
-        <meta property="og:title" content="Pixap — AI Concierge for Bookings in Almaty" />
-        <meta property="og:description" content="Find a place, let the AI handle the WhatsApp back-and-forth, and get a confirmed booking in under a minute." />
+        <meta property="og:title" content={t.meta.title} />
+        <meta property="og:description" content={t.meta.ogDescription} />
         <meta property="og:url" content="https://pixapp.kz/" />
       </Helmet>
       {/* Navbar */}
@@ -244,15 +196,18 @@ const LandingPage = () => {
               <span className="text-xl font-bold tracking-tight text-foreground">Pixap</span>
             </div>
             <div className="hidden md:flex items-center gap-7 text-sm font-medium text-muted-foreground">
-              <a href="#features" className="hover:text-foreground transition-colors">Features</a>
-              <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
-              <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
+              <a href="#features" className="hover:text-foreground transition-colors">{t.nav.features}</a>
+              <a href="#how" className="hover:text-foreground transition-colors">{t.nav.how}</a>
+              <a href="#faq" className="hover:text-foreground transition-colors">{t.nav.faq}</a>
             </div>
-            <a href={APP_STORE_URL}>
-              <Button size="sm" className="rounded-full px-4 h-9 text-xs font-semibold">
-                Get the app <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Button>
-            </a>
+            <div className="flex items-center gap-1.5">
+              <LanguageSwitcher />
+              <a href={APP_STORE_URL} onClick={() => trackStoreClick("app_store")}>
+                <Button size="sm" className="rounded-full px-4 h-9 text-xs font-semibold">
+                  {t.nav.getApp} <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </Button>
+              </a>
+            </div>
           </div>
         </div>
       </nav>
@@ -290,7 +245,7 @@ const LandingPage = () => {
               className="mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-[0.08em] text-primary-foreground will-change-transform drop-shadow-[0_6px_24px_rgba(0,0,0,0.35)]"
             >
               <span aria-hidden="true">PIXAP</span>
-              <span className="sr-only">Pixap — AI Concierge for Booking Any Place</span>
+              <span className="sr-only">{t.hero.srTitle}</span>
             </motion.h1>
           </motion.div>
 
@@ -298,10 +253,10 @@ const LandingPage = () => {
             style={{ y: taglineY }}
             className="mt-6 text-lg sm:text-xl md:text-2xl font-medium text-primary-foreground/95 will-change-transform"
           >
-            <span className="text-pink-300">People.</span>{" "}
-            <span className="text-blue-300">Inspire.</span>{" "}
-            <span className="text-purple-300">eXplore.</span>{" "}
-            <span>Any Place.</span>
+            <span className="text-pink-300">{t.hero.taglinePeople}</span>{" "}
+            <span className="text-blue-300">{t.hero.taglineInspire}</span>{" "}
+            <span className="text-purple-300">{t.hero.taglineExplore}</span>{" "}
+            <span>{t.hero.taglineAnyPlace}</span>
           </motion.p>
 
           <motion.div style={{ y: ctaY }} className="mt-10 will-change-transform">
@@ -325,7 +280,7 @@ const LandingPage = () => {
             <div key={copy} className="flex min-w-max shrink-0 gap-12 pr-12" aria-hidden={copy === 1}>
               {marqueeUseCases.map((u, i) => (
                 <div key={`${u.label}-${copy}-${i}`} className="flex shrink-0 items-center gap-3 text-muted-foreground">
-                  <u.icon className="w-5 h-5 text-primary" />
+                  <u.Icon className="w-5 h-5 text-primary" />
                   <span className="text-sm font-semibold tracking-widest uppercase">{u.label}</span>
                   <span className="text-border">•</span>
                 </div>
@@ -345,29 +300,32 @@ const LandingPage = () => {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-foreground/5 text-muted-foreground text-xs font-semibold tracking-wider uppercase mb-6">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
-              The booking problem
+              {t.pains.eyebrow}
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-foreground">
-              Booking shouldn’t feel <br className="hidden sm:block" />
-              <span className="text-muted-foreground/60">like a part-time job.</span>
+              {t.pains.title1} <br className="hidden sm:block" />
+              <span className="text-muted-foreground/60">{t.pains.title2}</span>
             </h2>
           </motion.div>
 
           <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {pains.map((p, i) => (
-              <motion.div
-                key={p.title}
-                initial="hidden" whileInView="visible" viewport={{ once: true }}
-                variants={fadeUp} custom={i}
-                className="group relative p-6 rounded-3xl bg-card border border-border/60 hover:border-primary/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_60px_-20px_hsl(12_76%_58%/0.25)]"
-              >
-                <div className="w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center mb-5 group-hover:bg-primary/10 transition-colors">
-                  <p.icon className="w-5 h-5 text-foreground/70 group-hover:text-primary transition-colors" />
-                </div>
-                <h3 className="text-base font-semibold text-foreground">{p.title}</h3>
-                <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{p.desc}</p>
-              </motion.div>
-            ))}
+            {t.pains.items.map((p, i) => {
+              const Icon = painIcons[i];
+              return (
+                <motion.div
+                  key={p.title}
+                  initial="hidden" whileInView="visible" viewport={{ once: true }}
+                  variants={fadeUp} custom={i}
+                  className="group relative p-6 rounded-3xl bg-card border border-border/60 hover:border-primary/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_60px_-20px_hsl(12_76%_58%/0.25)]"
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center mb-5 group-hover:bg-primary/10 transition-colors">
+                    <Icon className="w-5 h-5 text-foreground/70 group-hover:text-primary transition-colors" />
+                  </div>
+                  <h3 className="text-base font-semibold text-foreground">{p.title}</h3>
+                  <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{p.desc}</p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -379,17 +337,16 @@ const LandingPage = () => {
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
             className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-[1.05] text-foreground"
           >
-            Tell Pixap what you want.<br />
+            {t.solution.line1}<br />
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              We handle the rest.
+              {t.solution.line2}
             </span>
           </motion.h2>
           <motion.p
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
             className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
           >
-            An AI concierge that finds the perfect place, talks to the venue on WhatsApp,
-            and confirms your booking — in less than a minute.
+            {t.solution.sub}
           </motion.p>
         </div>
       </section>
@@ -408,13 +365,13 @@ const LandingPage = () => {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/10 text-background/80 text-xs font-semibold tracking-wider uppercase">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
-              See it in motion
+              {t.showcase.eyebrow}
             </div>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
-              One app for the whole night.
+              {t.showcase.title}
             </h2>
             <p className="text-lg text-background/70 leading-relaxed">
-              From the first craving to the last stop — Pixap plans it, books it, matches the vibe, and reads the room in real time.
+              {t.showcase.desc}
             </p>
           </motion.div>
 
@@ -429,7 +386,7 @@ const LandingPage = () => {
             <div className="relative rounded-[2rem] overflow-hidden border border-background/10 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.6)] bg-background/[0.03]">
               <img
                 src={appShowcase}
-                alt="Pixap app screens: planning a journey, AI concierge, smart route with vibe match, social booking and the final plan view"
+                alt={t.showcase.alt}
                 className="w-full h-auto block"
                 loading="lazy"
               />
@@ -456,15 +413,14 @@ const LandingPage = () => {
             <div className="lg:sticky lg:top-28 lg:self-start space-y-8">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/10 text-background/80 text-xs font-semibold tracking-wider uppercase">
                 <Zap className="w-3.5 h-3.5" />
-                The flow
+                {t.demo.eyebrow}
               </div>
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
-                Four taps.<br />
-                <span className="text-background/50">Zero friction.</span>
+                {t.demo.titleA}<br />
+                <span className="text-background/50">{t.demo.titleB}</span>
               </h2>
               <p className="text-lg text-background/70 max-w-md leading-relaxed">
-                Watch how Pixap turns a vague craving into a confirmed booking — without you
-                ever picking up the phone.
+                {t.demo.intro}
               </p>
 
               <div className="relative h-72 w-full max-w-sm rounded-3xl overflow-hidden border border-background/10 bg-background/5">
@@ -472,36 +428,39 @@ const LandingPage = () => {
                 <motion.div
                   className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-foreground via-foreground/80 to-transparent"
                 >
-                  <DemoStepBadge activeStep={activeStep} />
+                  <DemoStepBadge activeStep={activeStep} steps={t.demo.steps} nowLabel={t.demo.nowLabel} />
                 </motion.div>
               </div>
             </div>
 
             {/* Right scrolling steps */}
             <div className="space-y-6">
-              {demoSteps.map((s, i) => (
-                <motion.div
-                  key={s.title}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-20%" }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  className="p-8 rounded-3xl border border-background/10 bg-background/[0.04] backdrop-blur-sm"
-                >
-                  <div className="flex items-start gap-5">
-                    <div className="w-12 h-12 rounded-2xl bg-primary/20 text-primary flex items-center justify-center flex-shrink-0">
-                      <s.icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-primary tracking-widest uppercase mb-1">
-                        Step {String(i + 1).padStart(2, "0")}
+              {t.demo.steps.map((s, i) => {
+                const Icon = demoIcons[i];
+                return (
+                  <motion.div
+                    key={s.title}
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-20%" }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    className="p-8 rounded-3xl border border-background/10 bg-background/[0.04] backdrop-blur-sm"
+                  >
+                    <div className="flex items-start gap-5">
+                      <div className="w-12 h-12 rounded-2xl bg-primary/20 text-primary flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5" />
                       </div>
-                      <h3 className="text-2xl font-semibold mb-2">{s.title}</h3>
-                      <p className="text-background/70 leading-relaxed">{s.desc}</p>
+                      <div>
+                        <div className="text-xs font-bold text-primary tracking-widest uppercase mb-1">
+                          {t.demo.stepLabel} {String(i + 1).padStart(2, "0")}
+                        </div>
+                        <h3 className="text-2xl font-semibold mb-2">{s.title}</h3>
+                        <p className="text-background/70 leading-relaxed">{s.desc}</p>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -510,7 +469,7 @@ const LandingPage = () => {
       {/* Stats */}
       <section className="relative py-20 md:py-28 border-y border-border/60">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 grid sm:grid-cols-3 gap-10">
-          {stats.map((s, i) => (
+          {t.stats.map((s, i) => (
             <motion.div
               key={s.label}
               initial="hidden" whileInView="visible" viewport={{ once: true }}
@@ -535,12 +494,12 @@ const LandingPage = () => {
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
             className="text-4xl sm:text-5xl font-bold tracking-tight text-center text-foreground mb-16"
           >
-            Loved by early adopters.
+            {t.testimonials.title}
           </motion.h2>
           <div className="grid md:grid-cols-3 gap-5">
-            {testimonials.map((t, i) => (
+            {t.testimonials.items.map((tItem, i) => (
               <motion.div
-                key={t.name}
+                key={tItem.name}
                 initial="hidden" whileInView="visible" viewport={{ once: true }}
                 variants={fadeUp} custom={i}
                 className="p-7 rounded-3xl bg-card border border-border/60 flex flex-col gap-5 hover:shadow-[0_20px_60px_-20px_hsl(220_25%_12%/0.15)] transition-shadow"
@@ -548,10 +507,10 @@ const LandingPage = () => {
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, s) => <Star key={s} className="w-4 h-4 fill-primary text-primary" />)}
                 </div>
-                <p className="text-foreground leading-relaxed">“{t.quote}”</p>
+                <p className="text-foreground leading-relaxed">“{tItem.quote}”</p>
                 <div className="mt-auto pt-4 border-t border-border/60">
-                  <div className="font-semibold text-foreground text-sm">{t.name}</div>
-                  <div className="text-muted-foreground text-xs">{t.role}</div>
+                  <div className="font-semibold text-foreground text-sm">{tItem.name}</div>
+                  <div className="text-muted-foreground text-xs">{tItem.role}</div>
                 </div>
               </motion.div>
             ))}
@@ -566,10 +525,10 @@ const LandingPage = () => {
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
             className="text-4xl sm:text-5xl font-bold tracking-tight text-center text-foreground mb-12"
           >
-            Questions, answered.
+            {t.faq.title}
           </motion.h2>
           <div className="space-y-3">
-            {faqs.map((f, i) => (
+            {t.faq.items.map((f, i) => (
               <div key={i} className="rounded-2xl border border-border/60 bg-card overflow-hidden transition-colors hover:border-primary/30">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
@@ -605,17 +564,16 @@ const LandingPage = () => {
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
             className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.02]"
           >
-            Stop calling.<br />
+            {t.finalCta.titleA}<br />
             <span className="bg-gradient-to-r from-primary via-pink-300 to-accent bg-clip-text text-transparent">
-              Start booking.
+              {t.finalCta.titleB}
             </span>
           </motion.h2>
           <motion.p
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
             className="text-lg text-background/70 max-w-xl mx-auto leading-relaxed"
           >
-            Join the waitlist of people who let Pixap’s AI handle every booking.
-            Free to download. No credit card required.
+            {t.finalCta.desc}
           </motion.p>
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={2}
@@ -637,58 +595,58 @@ const LandingPage = () => {
               <span className="text-lg font-bold text-foreground">Pixap</span>
             </div>
             <p className="text-muted-foreground text-xs leading-relaxed max-w-[14rem]">
-              The AI booking concierge for everything you used to call about.
+              {t.footer.tagline}
             </p>
           </div>
           <div className="space-y-3">
-            <div className="text-xs font-semibold tracking-widest uppercase text-foreground">Product</div>
+            <div className="text-xs font-semibold tracking-widest uppercase text-foreground">{t.footer.product}</div>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="#features" className="hover:text-foreground transition-colors">Features</a></li>
-              <li><a href="#how" className="hover:text-foreground transition-colors">How it works</a></li>
-              <li><a href="#faq" className="hover:text-foreground transition-colors">FAQ</a></li>
+              <li><a href="#features" className="hover:text-foreground transition-colors">{t.nav.features}</a></li>
+              <li><a href="#how" className="hover:text-foreground transition-colors">{t.nav.how}</a></li>
+              <li><a href="#faq" className="hover:text-foreground transition-colors">{t.nav.faq}</a></li>
             </ul>
           </div>
           <div className="space-y-3">
-            <div className="text-xs font-semibold tracking-widest uppercase text-foreground">Legal</div>
+            <div className="text-xs font-semibold tracking-widest uppercase text-foreground">{t.footer.legal}</div>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-              <li><a href="/terms" className="hover:text-foreground transition-colors">User Agreement</a></li>
-              <li><a href="/returns" className="hover:text-foreground transition-colors">Return Policy</a></li>
-              <li><a href="/data-deletion" className="hover:text-foreground transition-colors">Data Deletion</a></li>
+              <li><a href="/privacy" className="hover:text-foreground transition-colors">{t.footer.privacy}</a></li>
+              <li><a href="/terms" className="hover:text-foreground transition-colors">{t.footer.terms}</a></li>
+              <li><a href="/returns" className="hover:text-foreground transition-colors">{t.footer.returns}</a></li>
+              <li><a href="/data-deletion" className="hover:text-foreground transition-colors">{t.footer.dataDeletion}</a></li>
             </ul>
           </div>
           <div className="space-y-3">
-            <div className="text-xs font-semibold tracking-widest uppercase text-foreground">Get the app</div>
+            <div className="text-xs font-semibold tracking-widest uppercase text-foreground">{t.footer.getApp}</div>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href={APP_STORE_URL} onClick={() => trackStoreClick("app_store")} className="hover:text-foreground transition-colors">App Store</a></li>
-              <li><a href={GOOGLE_PLAY_URL} onClick={() => trackStoreClick("google_play")} className="hover:text-foreground transition-colors">Google Play</a></li>
+              <li><a href={APP_STORE_URL} onClick={() => trackStoreClick("app_store")} className="hover:text-foreground transition-colors">{t.store.appStore}</a></li>
+              <li><a href={GOOGLE_PLAY_URL} onClick={() => trackStoreClick("google_play")} className="hover:text-foreground transition-colors">{t.store.googlePlay}</a></li>
             </ul>
           </div>
         </div>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 mt-10 pt-6 border-t border-border/60 text-xs text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© {new Date().getFullYear()} Pixap. All rights reserved.</p>
-          <p>Made with care in Almaty.</p>
+          <p>© {new Date().getFullYear()} Pixap. {t.footer.rights}</p>
+          <p>{t.footer.madeIn}</p>
         </div>
       </footer>
     </div>
   );
 };
 
-function DemoStepBadge({ activeStep }: { activeStep: MotionValue<number> }) {
+function DemoStepBadge({ activeStep, steps, nowLabel }: { activeStep: MotionValue<number>; steps: Dict["demo"]["steps"]; nowLabel: string }) {
   const [step, setStep] = useState(0);
   // Subscribe to changes
   if (typeof window !== "undefined") {
     activeStep.on("change", (v) => setStep(v));
   }
-  const s = demoSteps[step] ?? demoSteps[0];
-  const Icon = s.icon;
+  const s = steps[step] ?? steps[0];
+  const Icon = demoIcons[step] ?? demoIcons[0];
   return (
     <div className="flex items-center gap-3">
       <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center">
         <Icon className="w-5 h-5" />
       </div>
       <div className="text-background">
-        <div className="text-[10px] uppercase tracking-widest text-background/60">Now: Step {step + 1}</div>
+        <div className="text-[10px] uppercase tracking-widest text-background/60">{nowLabel} {step + 1}</div>
         <div className="font-semibold">{s.title}</div>
       </div>
     </div>
