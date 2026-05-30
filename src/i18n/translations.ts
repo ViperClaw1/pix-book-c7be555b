@@ -46,6 +46,24 @@ type Dict = {
     rights: string;
     madeIn: string;
   };
+  cookies: {
+    title: string;
+    body: string;
+    privacyLink: string;
+    acceptAll: string;
+    rejectAll: string;
+    customize: string;
+    save: string;
+    close: string;
+    necessaryTitle: string;
+    necessaryDesc: string;
+    functionalTitle: string;
+    functionalDesc: string;
+    analyticsTitle: string;
+    analyticsDesc: string;
+    marketingTitle: string;
+    marketingDesc: string;
+  };
 };
 
 const en: Dict = {
