@@ -660,8 +660,8 @@ const LandingPage = () => {
           <div className="space-y-3">
             <div className="text-xs font-semibold tracking-widest uppercase text-foreground">Get the app</div>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href={APP_STORE_URL} className="hover:text-foreground transition-colors">App Store</a></li>
-              <li><a href={GOOGLE_PLAY_URL} className="hover:text-foreground transition-colors">Google Play</a></li>
+              <li><a href={APP_STORE_URL} onClick={() => trackStoreClick("app_store")} className="hover:text-foreground transition-colors">App Store</a></li>
+              <li><a href={GOOGLE_PLAY_URL} onClick={() => trackStoreClick("google_play")} className="hover:text-foreground transition-colors">Google Play</a></li>
             </ul>
           </div>
         </div>
