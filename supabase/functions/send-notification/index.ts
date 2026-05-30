@@ -7,33 +7,93 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+
+const MAX_TEXT = 500;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
-    const { user_id, text, business_card_id, notify_admins } = await req.json();
-
-    if (!user_id || !text) {
-      return new Response(JSON.stringify({ error: "user_id and text required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // 1. Require a valid JWT.
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return json({ error: "Unauthorized" }, 401);
     }
 
-    // Insert notification for the user
+    const supabaseAuth = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    );
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData, error: authError } = await supabaseAuth.auth.getUser(token);
+    if (authError || !userData?.user) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+    const callerId = userData.user.id;
+
+    // 2. Validate input.
+    const body = await req.json().catch(() => null);
+    if (!body || typeof body !== "object") {
+      return json({ error: "Invalid request body" }, 400);
+    }
+    const { user_id, text, business_card_id, notify_admins } = body as {
+      user_id?: unknown;
+      text?: unknown;
+      business_card_id?: unknown;
+      notify_admins?: unknown;
+    };
+
+    if (typeof user_id !== "string" || !UUID_RE.test(user_id)) {
+      return json({ error: "Invalid user_id" }, 400);
+    }
+    if (typeof text !== "string" || text.trim().length === 0 || text.length > MAX_TEXT) {
+      return json({ error: `text must be 1-${MAX_TEXT} chars` }, 400);
+    }
+    if (business_card_id !== undefined && business_card_id !== null) {
+      if (typeof business_card_id !== "string" || !UUID_RE.test(business_card_id)) {
+        return json({ error: "Invalid business_card_id" }, 400);
+      }
+    }
+    const wantNotifyAdmins = notify_admins === true;
+
+    // 3. Authorization: caller may only target themselves unless they are admin.
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
+    let callerIsAdmin = false;
+    {
+      const { data: roleRow } = await supabaseAdmin
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", callerId)
+        .eq("role", "admin")
+        .maybeSingle();
+      callerIsAdmin = !!roleRow;
+    }
+
+    if (user_id !== callerId && !callerIsAdmin) {
+      return json({ error: "Forbidden" }, 403);
+    }
+    // Only admins may broadcast to other admins.
+    const broadcastAdmins = wantNotifyAdmins && callerIsAdmin;
+
+    // 4. Insert notification for the target user.
     const { error: insertError } = await supabaseAdmin
       .from("notifications")
       .insert({
         user_id,
         text,
-        business_card_id: business_card_id || null,
+        business_card_id: (business_card_id as string | undefined) || null,
       });
 
     if (insertError) {
@@ -41,11 +101,9 @@ serve(async (req) => {
       throw insertError;
     }
 
-    // Send push notification via OneSignal
     await sendPush(user_id, text);
 
-    // If notify_admins, also create notifications for all admin users
-    if (notify_admins) {
+    if (broadcastAdmins) {
       const { data: adminRoles } = await supabaseAdmin
         .from("user_roles")
         .select("user_id")
@@ -53,16 +111,15 @@ serve(async (req) => {
 
       if (adminRoles && adminRoles.length > 0) {
         const adminNotifications = adminRoles
-          .filter((r) => r.user_id !== user_id) // don't double-notify if user is admin
+          .filter((r) => r.user_id !== user_id)
           .map((r) => ({
             user_id: r.user_id,
             text,
-            business_card_id: business_card_id || null,
+            business_card_id: (business_card_id as string | undefined) || null,
           }));
 
         if (adminNotifications.length > 0) {
           await supabaseAdmin.from("notifications").insert(adminNotifications);
-          // Push to each admin
           for (const n of adminNotifications) {
             await sendPush(n.user_id, text);
           }
@@ -70,15 +127,11 @@ serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return json({ success: true });
   } catch (err) {
-    console.error("send-notification error:", err.message);
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    console.error("send-notification error:", msg);
+    return json({ error: "Internal error" }, 500);
   }
 });
 
@@ -110,6 +163,7 @@ async function sendPush(userId: string, text: string) {
       console.error("OneSignal push failed:", body);
     }
   } catch (err) {
-    console.error("OneSignal push error:", err.message);
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    console.error("OneSignal push error:", msg);
   }
 }
