@@ -12,10 +12,11 @@ import heroImage from "@/assets/landing-hero.jpg";
 import pixapLogo from "@/assets/pixap-logo.png";
 import heroBg from "@/assets/landing-hero-bg.jpg";
 import pixapMark from "@/assets/pixap-mark.png";
-import heroRestaurant from "@/assets/hero-restaurant.jpg";
-import heroBeauty from "@/assets/hero-beauty.jpg";
-import heroEvents from "@/assets/hero-events.jpg";
 import appShowcase from "@/assets/landing-app-showcase.png";
+import featureSmartBooking from "@/assets/feature-smart-booking.png";
+import featureVibeMatch from "@/assets/feature-vibe-match.png";
+import featureNightPlanned from "@/assets/feature-night-planned.png";
+import featureExplore from "@/assets/feature-explore.png";
 
 
 const APP_STORE_URL = "#";
@@ -42,7 +43,7 @@ const features = [
     title: "Just say it. We book it.",
     desc: "Tell Pix AI what you’re in the mood for — cuisine, music, budget, time. It negotiates with venues on WhatsApp and locks in a confirmed seat in under a minute.",
     icon: Bot,
-    image: heroRestaurant,
+    image: featureSmartBooking,
     accent: "from-primary/30 via-primary/10 to-transparent",
   },
   {
@@ -50,7 +51,7 @@ const features = [
     title: "Find places that feel like you.",
     desc: "Calm, luxury, social, underground — pick your vibe and Pixap surfaces the venues whose energy matches yours tonight.",
     icon: Heart,
-    image: heroBeauty,
+    image: featureVibeMatch,
     accent: "from-accent/30 via-accent/10 to-transparent",
   },
   {
@@ -58,7 +59,7 @@ const features = [
     title: "See the room before you go.",
     desc: "Real-time crowd levels, wait times and energy reads from every spot — so you walk into the night you actually wanted.",
     icon: Activity,
-    image: heroEvents,
+    image: featureNightPlanned,
     accent: "from-primary/30 via-accent/20 to-transparent",
   },
   {
@@ -66,7 +67,7 @@ const features = [
     title: "Plan together. Book together.",
     desc: "Invite friends, vote on the plan, split the bill, and confirm dinner, drinks and the club in one shared timeline.",
     icon: Users,
-    image: heroRestaurant,
+    image: featureExplore,
     accent: "from-accent/30 via-primary/10 to-transparent",
   },
 ];
@@ -138,18 +139,19 @@ function StoreButtons({ variant = "solid" as "solid" | "ghost" }) {
 
 function FeatureRow({ f, index, progress }: { f: typeof features[number]; index: number; progress: MotionValue<number> }) {
   const reverse = index % 2 === 1;
-  const y = useTransform(progress, [0, 1], [60, -60]);
+  const y = useTransform(progress, [0, 1], [40, -40]);
   const Icon = f.icon;
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-15%" }}
-      variants={fadeUp}
-      custom={0}
+    <div
       className={`grid lg:grid-cols-2 gap-10 lg:gap-20 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
     >
-      <div className="space-y-5">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-15%" }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="space-y-5"
+      >
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wider uppercase">
           <Icon className="w-3.5 h-3.5" />
           {f.eyebrow}
@@ -158,24 +160,27 @@ function FeatureRow({ f, index, progress }: { f: typeof features[number]; index:
           {f.title}
         </h3>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-md">{f.desc}</p>
-      </div>
-      <motion.div style={{ y }} className="relative aspect-[4/5] max-w-md mx-auto w-full will-change-transform">
-        <div className={`absolute -inset-10 bg-gradient-radial ${f.accent} blur-3xl opacity-80`} />
-        <div className="relative h-full rounded-[2.5rem] overflow-hidden border border-border/50 shadow-[0_30px_80px_-20px_hsl(220_25%_12%/0.35)]">
-          <img src={f.image} alt={f.title} className="w-full h-full object-cover" loading="lazy" />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 via-transparent to-transparent" />
-          <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3 p-3 rounded-2xl bg-background/80 backdrop-blur-xl border border-border/50">
-            <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
-              <Icon className="w-5 h-5 text-primary" />
-            </div>
-            <div className="text-sm">
-              <div className="font-semibold text-foreground">{f.eyebrow}</div>
-              <div className="text-muted-foreground text-xs">Powered by Pixap AI</div>
-            </div>
-          </div>
-        </div>
       </motion.div>
-    </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 60, scale: 0.96 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full max-w-md mx-auto will-change-transform"
+      >
+        <motion.div style={{ y }} className="relative will-change-transform">
+          <div className={`absolute -inset-10 bg-gradient-radial ${f.accent} blur-3xl opacity-80 pointer-events-none`} />
+          <div className="relative rounded-[2rem] overflow-hidden border border-border/50 shadow-[0_30px_80px_-20px_hsl(220_25%_12%/0.45)] bg-black">
+            <img
+              src={f.image}
+              alt={f.title}
+              className="w-full h-auto block"
+              loading="lazy"
+            />
+          </div>
+        </motion.div>
+      </motion.div>
+    </div>
   );
 }
 
