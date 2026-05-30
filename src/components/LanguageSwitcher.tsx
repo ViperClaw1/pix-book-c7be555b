@@ -12,7 +12,7 @@ export default function LanguageSwitcher() {
   const current = LANGS.find((l) => l.code === lang) ?? LANGS[0];
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         aria-label={t.nav.language}
         className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-full text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
