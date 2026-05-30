@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { useI18n } from "@/i18n/I18nProvider";
 
 const STORAGE_KEY = "pixap_cookie_consent_v1";
 
@@ -38,6 +39,8 @@ function save(c: Consent) {
 }
 
 export default function CookieConsent() {
+  const { t } = useI18n();
+  const c = t.cookies;
   const [open, setOpen] = useState(false);
   const [details, setDetails] = useState(false);
   const [analytics, setAnalytics] = useState(true);
@@ -83,7 +86,7 @@ export default function CookieConsent() {
           className="fixed inset-x-0 bottom-0 z-[100] p-3 sm:p-5 pointer-events-none"
           role="dialog"
           aria-live="polite"
-          aria-label="Cookie consent"
+          aria-label={c.title}
         >
           <div className="mx-auto max-w-3xl pointer-events-auto rounded-2xl border border-border bg-background/95 backdrop-blur-xl shadow-2xl p-5 sm:p-6">
             <div className="flex items-start gap-4">
@@ -92,13 +95,12 @@ export default function CookieConsent() {
               </div>
               <div className="flex-1 min-w-0">
                 <h2 className="text-base sm:text-lg font-semibold text-foreground">
-                  We value your privacy
+                  {c.title}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                  We use cookies to keep Pixap running, analyze usage, and improve the experience.
-                  You can accept all, reject non-essential, or pick what you allow. Read our{" "}
+                  {c.body}{" "}
                   <Link to="/privacy" className="underline hover:text-foreground">
-                    Privacy Policy
+                    {c.privacyLink}
                   </Link>
                   .
                 </p>
@@ -110,58 +112,34 @@ export default function CookieConsent() {
                     transition={{ duration: 0.3 }}
                     className="mt-4 space-y-3 overflow-hidden"
                   >
-                    <Row
-                      title="Strictly necessary"
-                      desc="Required for the site to function. Always on."
-                      checked
-                      disabled
-                    />
-                    <Row
-                      title="Functional"
-                      desc="Remembers your preferences (theme, language)."
-                      checked={functional}
-                      onChange={setFunctional}
-                    />
-                    <Row
-                      title="Analytics"
-                      desc="Anonymous usage stats (Google Analytics) so we can improve."
-                      checked={analytics}
-                      onChange={setAnalytics}
-                    />
-                    <Row
-                      title="Marketing"
-                      desc="Measure ad performance and conversions."
-                      checked={marketing}
-                      onChange={setMarketing}
-                    />
+                    <Row title={c.necessaryTitle} desc={c.necessaryDesc} checked disabled />
+                    <Row title={c.functionalTitle} desc={c.functionalDesc} checked={functional} onChange={setFunctional} />
+                    <Row title={c.analyticsTitle} desc={c.analyticsDesc} checked={analytics} onChange={setAnalytics} />
+                    <Row title={c.marketingTitle} desc={c.marketingDesc} checked={marketing} onChange={setMarketing} />
                   </motion.div>
                 )}
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Button onClick={acceptAll} className="flex-1 sm:flex-none">
-                    Accept all
+                    {c.acceptAll}
                   </Button>
                   <Button onClick={rejectAll} variant="outline" className="flex-1 sm:flex-none">
-                    Reject non-essential
+                    {c.rejectAll}
                   </Button>
                   {details ? (
                     <Button onClick={saveChoice} variant="secondary" className="flex-1 sm:flex-none">
-                      Save preferences
+                      {c.save}
                     </Button>
                   ) : (
-                    <Button
-                      onClick={() => setDetails(true)}
-                      variant="ghost"
-                      className="flex-1 sm:flex-none"
-                    >
-                      Customize
+                    <Button onClick={() => setDetails(true)} variant="ghost" className="flex-1 sm:flex-none">
+                      {c.customize}
                     </Button>
                   )}
                 </div>
               </div>
               <button
                 onClick={rejectAll}
-                aria-label="Close and reject non-essential cookies"
+                aria-label={c.close}
                 className="shrink-0 rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-colors"
               >
                 <X className="h-4 w-4" />

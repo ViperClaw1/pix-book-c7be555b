@@ -46,6 +46,24 @@ type Dict = {
     rights: string;
     madeIn: string;
   };
+  cookies: {
+    title: string;
+    body: string;
+    privacyLink: string;
+    acceptAll: string;
+    rejectAll: string;
+    customize: string;
+    save: string;
+    close: string;
+    necessaryTitle: string;
+    necessaryDesc: string;
+    functionalTitle: string;
+    functionalDesc: string;
+    analyticsTitle: string;
+    analyticsDesc: string;
+    marketingTitle: string;
+    marketingDesc: string;
+  };
 };
 
 const en: Dict = {
@@ -152,6 +170,24 @@ const en: Dict = {
     product: "Product", legal: "Legal", getApp: "Get the app",
     privacy: "Privacy Policy", terms: "User Agreement", returns: "Return Policy", dataDeletion: "Data Deletion",
     rights: "All rights reserved.", madeIn: "Made with care in Almaty.",
+  },
+  cookies: {
+    title: "We value your privacy",
+    body: "We use cookies to keep Pixap running, analyze usage, and improve the experience. You can accept all, reject non-essential, or pick what you allow. Read our",
+    privacyLink: "Privacy Policy",
+    acceptAll: "Accept all",
+    rejectAll: "Reject non-essential",
+    customize: "Customize",
+    save: "Save preferences",
+    close: "Close and reject non-essential cookies",
+    necessaryTitle: "Strictly necessary",
+    necessaryDesc: "Required for the site to function. Always on.",
+    functionalTitle: "Functional",
+    functionalDesc: "Remembers your preferences (theme, language).",
+    analyticsTitle: "Analytics",
+    analyticsDesc: "Anonymous usage stats (Google Analytics) so we can improve.",
+    marketingTitle: "Marketing",
+    marketingDesc: "Measure ad performance and conversions.",
   },
 };
 
@@ -260,6 +296,24 @@ const ru: Dict = {
     privacy: "Политика конфиденциальности", terms: "Пользовательское соглашение", returns: "Политика возврата", dataDeletion: "Удаление данных",
     rights: "Все права защищены.", madeIn: "Сделано с заботой в Алматы.",
   },
+  cookies: {
+    title: "Мы ценим вашу приватность",
+    body: "Мы используем cookies, чтобы Pixap работал, анализировать использование и улучшать сервис. Можно принять всё, отклонить необязательные или выбрать вручную. Подробнее — в нашей",
+    privacyLink: "Политике конфиденциальности",
+    acceptAll: "Принять все",
+    rejectAll: "Отклонить необязательные",
+    customize: "Настроить",
+    save: "Сохранить выбор",
+    close: "Закрыть и отклонить необязательные cookies",
+    necessaryTitle: "Строго необходимые",
+    necessaryDesc: "Нужны для работы сайта. Всегда включены.",
+    functionalTitle: "Функциональные",
+    functionalDesc: "Запоминают ваши настройки (тема, язык).",
+    analyticsTitle: "Аналитика",
+    analyticsDesc: "Анонимная статистика (Google Analytics), чтобы становиться лучше.",
+    marketingTitle: "Маркетинг",
+    marketingDesc: "Измерение эффективности рекламы и конверсий.",
+  },
 };
 
 const kk: Dict = {
@@ -366,6 +420,24 @@ const kk: Dict = {
     product: "Өнім", legal: "Құқықтық ақпарат", getApp: "Қолданбаны жүктеу",
     privacy: "Құпиялылық саясаты", terms: "Пайдаланушы келісімі", returns: "Қайтару саясаты", dataDeletion: "Деректерді жою",
     rights: "Барлық құқықтар қорғалған.", madeIn: "Алматыда мұқияттылықпен жасалған.",
+  },
+  cookies: {
+    title: "Біз сіздің құпиялығыңызды бағалаймыз",
+    body: "Pixap-тың жұмысын қамтамасыз ету, пайдалануды талдау және қызметті жақсарту үшін cookie файлдарын қолданамыз. Барлығын қабылдауға, міндетті еместерден бас тартуға немесе өзіңіз таңдауға болады. Толығырақ:",
+    privacyLink: "Құпиялылық саясаты",
+    acceptAll: "Барлығын қабылдау",
+    rejectAll: "Міндетті еместерден бас тарту",
+    customize: "Баптау",
+    save: "Сақтау",
+    close: "Жабу және міндетті емес cookie файлдарын қабылдамау",
+    necessaryTitle: "Қатаң қажетті",
+    necessaryDesc: "Сайттың жұмысы үшін қажет. Әрқашан қосулы.",
+    functionalTitle: "Функционалдық",
+    functionalDesc: "Параметрлеріңізді есте сақтайды (тақырып, тіл).",
+    analyticsTitle: "Аналитика",
+    analyticsDesc: "Жақсартуға арналған анонимді статистика (Google Analytics).",
+    marketingTitle: "Маркетинг",
+    marketingDesc: "Жарнама тиімділігі мен конверсияларды өлшеу.",
   },
 };
 
