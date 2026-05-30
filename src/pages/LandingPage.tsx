@@ -30,74 +30,83 @@ const fadeUp: Variants = {
 };
 
 const pains = [
-  { icon: Phone, title: "Endless calls", desc: "Dialing five places to find one open table." },
-  { icon: Hourglass, title: "Time wasted on hold", desc: "Minutes lost waiting for a human to pick up." },
-  { icon: MessageSquareX, title: "Messages ignored", desc: "DMs that never get a reply, slots that vanish." },
-  { icon: CalendarX, title: "Surprise unavailability", desc: "Apps that show ‘free’ — until you arrive." },
+  { icon: Phone, title: "Five apps, one night", desc: "Reservations here, tickets there, group chat everywhere." },
+  { icon: Hourglass, title: "Guessing the vibe", desc: "Photos lie. You only know the mood once you arrive." },
+  { icon: Users, title: "Lost in the group chat", desc: "Plans dissolve in a thread of ‘maybe later’ replies." },
+  { icon: CalendarX, title: "Packed or empty", desc: "No way to see how crowded a place is right now." },
 ];
 
 const features = [
   {
-    eyebrow: "Conversational AI",
-    title: "Just say what you want.",
-    desc: "Pixap understands natural language and finds exactly what fits — cuisine, vibe, time, location, budget.",
+    eyebrow: "Pix AI Smart Booking",
+    title: "Just say it. We book it.",
+    desc: "Tell Pix AI what you’re in the mood for — cuisine, music, budget, time. It negotiates with venues on WhatsApp and locks in a confirmed seat in under a minute.",
     icon: Bot,
     image: heroRestaurant,
     accent: "from-primary/30 via-primary/10 to-transparent",
   },
   {
-    eyebrow: "WhatsApp Orchestration",
-    title: "We talk to the venue. You don’t.",
-    desc: "Our agent contacts businesses on WhatsApp in real time, confirms your slot, and handles the back-and-forth.",
-    icon: MessageCircle,
+    eyebrow: "Vibe Matching",
+    title: "Find places that feel like you.",
+    desc: "Calm, luxury, social, underground — pick your vibe and Pixap surfaces the venues whose energy matches yours tonight.",
+    icon: Heart,
     image: heroBeauty,
     accent: "from-accent/30 via-accent/10 to-transparent",
   },
   {
-    eyebrow: "One-tap Checkout",
-    title: "Pay once. Done.",
-    desc: "Secure payments in KZT, instant confirmation, and a booking pass that lives in your pocket.",
-    icon: CreditCard,
+    eyebrow: "Live Crowd Metrics",
+    title: "See the room before you go.",
+    desc: "Real-time crowd levels, wait times and energy reads from every spot — so you walk into the night you actually wanted.",
+    icon: Activity,
     image: heroEvents,
     accent: "from-primary/30 via-accent/20 to-transparent",
+  },
+  {
+    eyebrow: "Social + Booking, One Place",
+    title: "Plan together. Book together.",
+    desc: "Invite friends, vote on the plan, split the bill, and confirm dinner, drinks and the club in one shared timeline.",
+    icon: Users,
+    image: heroRestaurant,
+    accent: "from-accent/30 via-primary/10 to-transparent",
   },
 ];
 
 const demoSteps = [
-  { icon: Search, title: "Discover", desc: "Browse curated places or describe your perfect spot." },
-  { icon: Wand2, title: "Match", desc: "AI ranks the best fit by taste, distance, and timing." },
-  { icon: MessageCircle, title: "Confirm", desc: "We message the venue and lock in your slot." },
-  { icon: BellRing, title: "Arrive", desc: "Tap your pass at the door. That’s it." },
+  { icon: Search, title: "Describe your night", desc: "Tell Pix AI the vibe, the crew, the hours — in your own words." },
+  { icon: Wand2, title: "Match the vibe", desc: "AI ranks venues by your taste, live crowd levels, and distance." },
+  { icon: Route, title: "Build the plan", desc: "Dinner, drinks, club — chained into one smart route with your friends." },
+  { icon: BellRing, title: "Arrive", desc: "One pass, all stops. Walk in, skip the line, enjoy the night." },
 ];
 
 const useCases = [
   { icon: Utensils, label: "Restaurants" },
   { icon: Scissors, label: "Salons & Spa" },
-  { icon: Stethoscope, label: "Medical" },
-  { icon: Compass, label: "Tours" },
+  { icon: Music, label: "Nightlife" },
+  { icon: Compass, label: "Events" },
 ];
 
 const marqueeUseCases = Array.from({ length: 16 }, (_, index) => useCases[index % useCases.length]);
 
 const stats = [
-  { value: "<60s", label: "From idea to confirmed booking" },
-  { value: "24/7", label: "AI agent that never sleeps" },
-  { value: "100%", label: "Real-time venue verification" },
+  { value: "<60s", label: "From idea to confirmed plan" },
+  { value: "Live", label: "Crowd & wait-time data, always on" },
+  { value: "1 app", label: "Plan, book, split and arrive together" },
 ];
 
 const testimonials = [
-  { quote: "I booked a haircut and dinner in the same minute. Pixap feels like cheating.", name: "Aliya K.", role: "Almaty" },
-  { quote: "No phone calls, no DMs. The AI just gets it done. This is the future of booking.", name: "Daniyar M.", role: "Astana" },
-  { quote: "Finally an app that doesn’t pretend a slot is open. Confirmations are real.", name: "Saule T.", role: "Almaty" },
+  { quote: "Friday night, six friends, three venues — all confirmed in two minutes. Pix AI just runs the night.", name: "Aliya K.", role: "Almaty" },
+  { quote: "The vibe match nailed it. Calm dinner, social bar, underground club — exactly the night I described.", name: "Daniyar M.", role: "Astana" },
+  { quote: "Seeing live crowd levels before we leave the house is a cheat code. No more dead rooms.", name: "Saule T.", role: "Almaty" },
 ];
 
 const faqs = [
-  { q: "Is Pixap free to use?", a: "Yes. The app is free — you only pay for the services you book." },
-  { q: "How does the AI booking work?", a: "Our orchestrator contacts the business via WhatsApp to verify availability and confirm your booking instantly." },
-  { q: "Are payments secure?", a: "Payments are processed through encrypted, PCI-compliant gateways. We never store card details." },
-  { q: "Can I cancel a booking?", a: "Yes. Cancel or reschedule directly in the app — policies depend on the venue." },
+  { q: "What is Pix AI smart booking?", a: "Pix AI is the concierge inside the app. You describe what you want, it talks to venues on WhatsApp in real time and returns a confirmed booking — no calls, no DMs from you." },
+  { q: "How does vibe matching work?", a: "Pick a mood — calm, luxury, social or underground — and Pixap ranks venues by their crowd energy, music, design and reviews so the result actually feels right." },
+  { q: "What are live crowd metrics?", a: "We show real-time occupancy, wait time and energy level for partner venues, so you can decide between two places without leaving the couch." },
+  { q: "Can I plan a night with friends?", a: "Yes. Invite your group, vote on places, build a multi-stop route, split the bill, and let Pix AI lock every reservation at once." },
   { q: "Where is Pixap available?", a: "Launching in Almaty, Kazakhstan, with expansion to more cities soon." },
 ];
+
 
 function StoreButtons({ variant = "solid" as "solid" | "ghost" }) {
   const base =
