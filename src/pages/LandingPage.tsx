@@ -563,16 +563,14 @@ const LandingPage = () => {
                     ? <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     : <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />}
                 </button>
-                {openFaq === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                    className="px-6 pb-6"
-                  >
-                    <p className="text-muted-foreground leading-relaxed">{f.a}</p>
-                  </motion.div>
-                )}
+                <motion.div
+                  initial={false}
+                  animate={{ height: openFaq === i ? "auto" : 0, opacity: openFaq === i ? 1 : 0 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden"
+                >
+                  <p className="px-6 pb-6 text-muted-foreground leading-relaxed">{f.a}</p>
+                </motion.div>
               </div>
             ))}
           </div>
