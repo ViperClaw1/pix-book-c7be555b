@@ -9,6 +9,7 @@ import LandingPage from "./pages/LandingPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import DataDeletionPage from "./pages/DataDeletionPage";
 import UserAgreementPage from "./pages/UserAgreementPage";
+import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <CookieConsent />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
