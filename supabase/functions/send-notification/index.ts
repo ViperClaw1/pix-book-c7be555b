@@ -84,8 +84,9 @@ serve(async (req) => {
     if (user_id !== callerId && !callerIsAdmin) {
       return json({ error: "Forbidden" }, 403);
     }
-    // Only admins may broadcast to other admins.
-    const broadcastAdmins = wantNotifyAdmins && callerIsAdmin;
+    // Admin broadcast allowed for: admins, or users notifying about their own action.
+    const broadcastAdmins = wantNotifyAdmins && (callerIsAdmin || user_id === callerId);
+
 
     // 4. Insert notification for the target user.
     const { error: insertError } = await supabaseAdmin
