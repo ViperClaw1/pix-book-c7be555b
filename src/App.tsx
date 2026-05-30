@@ -10,6 +10,7 @@ import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import DataDeletionPage from "./pages/DataDeletionPage";
 import UserAgreementPage from "./pages/UserAgreementPage";
 import CookieConsent from "./components/CookieConsent";
+import { I18nProvider } from "./i18n/I18nProvider";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,8 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <I18nProvider>
+        <BrowserRouter>
         <CookieConsent />
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -28,7 +30,8 @@ const App = () => (
           <Route path="/terms" element={<UserAgreementPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
+        </BrowserRouter>
+      </I18nProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
