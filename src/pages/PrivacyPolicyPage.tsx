@@ -9,8 +9,8 @@ const policies: Record<Lang, string> = {
   en: `
 # Pixap Privacy Policy
 
-**Effective date:** [publication date]
-**Last updated:** [update date]
+**Effective date:** 01.06.2026
+**Last updated:** 01.06.2026
 
 This Privacy Policy describes how Pixap LLC ("we", "us", "our") collects, uses, stores, and shares your personal data when you use the Pixap mobile application (the "App") and related services.
 
