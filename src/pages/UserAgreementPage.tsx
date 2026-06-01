@@ -9,8 +9,8 @@ const agreements: Record<Lang, string> = {
   en: `
 # Pixap User Agreement
 
-**Effective date:** [publication date]
-**Last updated:** [update date]
+**Effective date:** 01.06.2026
+**Last updated:** 01.06.2026
 
 This User Agreement (the "Agreement") governs the relationship between you ("User") and Pixap LLC ("Company", "we") when you use the Pixap mobile application (the "App") and related services.
 
@@ -174,7 +174,7 @@ We may suspend or delete your account without notice if:
 - You engage in fraudulent or unlawful activity
 - You systematically violate the rights of other users
 
-You may appeal a decision by contacting [support email] within 30 days.
+You may appeal a decision by contacting support@pixapp.kz within 30 days.
 
 ---
 
@@ -184,7 +184,7 @@ This Agreement is governed by the laws of the Republic of Kazakhstan.
 
 Disputes are resolved in the following order:
 
-- **Pre-trial resolution** — send a written claim to [legal@pixapp.kz]. Response time — 30 days.
+- **Pre-trial resolution** — send a written claim to legal@pixapp.kz. Response time — 30 days.
 - **Mediation** — with the consent of both parties.
 - **Litigation** — in the courts of the Republic of Kazakhstan at the Company's registered location.
 
@@ -200,16 +200,16 @@ We may amend this Agreement. We will notify you of material changes through the 
 
 ## 12. Contact Information
 
-**Support:** [support@pixapp.kz]
-**Legal inquiries:** [legal@pixapp.kz]
-**Address:** [registered address of the company]
-**Company details:** [LLC, Tax ID, registration date]
+**Support:** support@pixapp.kz
+**Legal inquiries:** legal@pixapp.kz
+**Address:** Republic of Kazakhstan, Almaty, Bostandyk District, Miras Microdistrict 188/2, Apartment 29, ZIP Code 050013
+**Company details:** LLC, 231240018841, 20.12.2023
 `,
   ru: `
 # Пользовательское соглашение Pixap
 
-**Дата вступления в силу:** [дата публикации]
-**Последнее обновление:** [дата обновления]
+**Дата вступления в силу:** 01.06.2026
+**Последнее обновление:** 01.06.2026
 
 Настоящее Пользовательское соглашение (далее — «Соглашение») регулирует отношения между вами («Пользователь») и ООО «Пиксап» / Pixap («Компания», «мы») при использовании мобильного приложения Pixap (далее — «Приложение») и связанных сервисов.
 
@@ -373,7 +373,7 @@ AI-ассистент Pixap предоставляет рекомендации 
 - Мошеннической или противоправной деятельности
 - Систематического нарушения прав других пользователей
 
-Вы можете обжаловать решение, обратившись по адресу [email поддержки] в течение 30 дней.
+Вы можете обжаловать решение, обратившись по адресу support@pixapp.kz в течение 30 дней.
 
 ---
 
@@ -383,7 +383,7 @@ AI-ассистент Pixap предоставляет рекомендации 
 
 Споры разрешаются в следующем порядке:
 
-- **Досудебное урегулирование** — направьте претензию на [legal@pixapp.kz]. Срок ответа — 30 дней.
+- **Досудебное урегулирование** — направьте претензию на legal@pixapp.kz. Срок ответа — 30 дней.
 - **Медиация** — при наличии согласия сторон.
 - **Судебное разбирательство** — в судах Республики Казахстан по месту нахождения Компании.
 
@@ -399,16 +399,16 @@ AI-ассистент Pixap предоставляет рекомендации 
 
 ## 12. Контактная информация
 
-**Поддержка:** [support@pixapp.kz]
-**Юридические вопросы:** [legal@pixapp.kz]
-**Адрес:** [юридический адрес компании]
-**Реквизиты:** [ООО, БИН/ИНН, дата регистрации]
+**Поддержка:** support@pixapp.kz
+**Юридические вопросы:** legal@pixapp.kz
+**Адрес:** Республика Казахстан, город Алматы, Бостандыкский район, мкрн Мирас 188./2, кв. 29, почтовый индекс 050013
+**Реквизиты:** ТТО, 231240018841, 20.12.2023
 `,
   kk: `
 # Pixap Пайдаланушы келісімі
 
-**Күшіне ену күні:** [жариялану күні]
-**Соңғы жаңарту:** [жаңарту күні]
+**Күшіне ену күні:** 01.06.2026
+**Соңғы жаңарту:** 01.06.2026
 
 Осы Пайдаланушы келісімі (бұдан әрі — «Келісім») Pixap мобильді қосымшасын («Қосымша») және онымен байланысты қызметтерді пайдаланған кезде сіз («Пайдаланушы») мен Pixap ЖШС («Компания», «біз») арасындағы қатынастарды реттейді.
 
@@ -582,7 +582,7 @@ Pixap AI-ассистенті ақпараттық мақсаттарда ұсы
 
 Даулар мынадай тәртіппен шешіледі:
 
-- **Сотқа дейінгі реттеу** — [legal@pixapp.kz] мекенжайына жазбаша талап жіберіңіз. Жауап беру мерзімі — 30 күн.
+- **Сотқа дейінгі реттеу** — legal@pixapp.kz мекенжайына жазбаша талап жіберіңіз. Жауап беру мерзімі — 30 күн.
 - **Медиация** — тараптардың келісімімен.
 - **Сот ісін жүргізу** — Компанияның тіркелген орны бойынша Қазақстан Республикасы соттарында.
 
@@ -598,10 +598,10 @@ Pixap AI-ассистенті ақпараттық мақсаттарда ұсы
 
 ## 12. Байланыс ақпараты
 
-**Қолдау:** [support@pixapp.kz]
-**Заңды сұрақтар:** [legal@pixapp.kz]
-**Мекенжай:** [компанияның заңды мекенжайы]
-**Деректемелер:** [ЖШС, БСН/ЖСН, тіркеу күні]
+**Қолдау:** support@pixapp.kz
+**Заңды сұрақтар:** legal@pixapp.kz
+**Мекенжай:** Қазақстан Республикасы, Алматы қаласы, Бостандык ауданы, Мирас 188./2 микрорайоны, 29-пәтер, пошта индексі 050013
+**Деректемелер:** ТТО, 231240018841, 20.12.2023
 `,
 };
 
@@ -621,7 +621,11 @@ const renderInline = (text: string) => {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={i} className="text-foreground font-semibold">{part.slice(2, -2)}</strong>;
+      return (
+        <strong key={i} className="text-foreground font-semibold">
+          {part.slice(2, -2)}
+        </strong>
+      );
     }
     return <span key={i}>{part}</span>;
   });
@@ -635,15 +639,21 @@ const renderDoc = (markdown: string) => {
     const line = raw.trimEnd();
     if (line.startsWith("# ")) {
       elements.push(
-        <h1 key={i} className="text-3xl md:text-4xl font-bold text-foreground mb-4">{line.slice(2)}</h1>
+        <h1 key={i} className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          {line.slice(2)}
+        </h1>,
       );
     } else if (line.startsWith("## ")) {
       elements.push(
-        <h2 key={i} className="text-2xl font-semibold text-foreground mt-8 mb-3">{line.slice(3)}</h2>
+        <h2 key={i} className="text-2xl font-semibold text-foreground mt-8 mb-3">
+          {line.slice(3)}
+        </h2>,
       );
     } else if (line.startsWith("### ")) {
       elements.push(
-        <h3 key={i} className="text-lg font-semibold text-foreground mt-5 mb-2">{line.slice(4)}</h3>
+        <h3 key={i} className="text-lg font-semibold text-foreground mt-5 mb-2">
+          {line.slice(4)}
+        </h3>,
       );
     } else if (line.startsWith("---")) {
       elements.push(<hr key={i} className="my-6 border-border" />);
@@ -651,7 +661,7 @@ const renderDoc = (markdown: string) => {
       elements.push(
         <p key={i} className="text-foreground/90 text-sm md:text-base ml-5 mb-1 leading-relaxed">
           • {renderInline(line.slice(2))}
-        </p>
+        </p>,
       );
     } else if (line.trim() === "") {
       return;
@@ -659,7 +669,7 @@ const renderDoc = (markdown: string) => {
       elements.push(
         <p key={i} className="text-foreground/90 text-sm md:text-base mb-3 leading-relaxed">
           {renderInline(line)}
-        </p>
+        </p>,
       );
     }
   });
@@ -691,7 +701,7 @@ const UserAgreementPage = () => {
                   "px-3 py-1.5 rounded-md text-xs font-semibold transition",
                   lang === code
                     ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {languageLabels[code]}
