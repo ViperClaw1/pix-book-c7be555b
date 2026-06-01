@@ -40,12 +40,12 @@ const content: Record<Lang, Content> = {
   en: {
     back: "Back",
     title: "Account & Data Deletion",
-    lastUpdated: "Last Updated: April 25, 2026",
+    lastUpdated: "Last Updated: 01.06.2026",
     intro: (
       <>
-        This page explains how users of the <strong>Pixap</strong> mobile application (available on Google Play)
-        can request deletion of their account and associated personal data, in compliance with Google Play's
-        User Data policy.
+        This page explains how users of the <strong>Pixap</strong> mobile application (available on Google Play) can
+        request deletion of their account and associated personal data, in compliance with Google Play's User Data
+        policy.
       </>
     ),
     howToTitle: "How to Request Account Deletion",
@@ -54,22 +54,31 @@ const content: Record<Lang, Content> = {
     option1Title: "Option 1 — In-App Request",
     option1Steps: [
       <>Open the Pixap app and sign in to your account.</>,
-      <>Go to <strong>Profile</strong> from the bottom navigation bar.</>,
-      <>Tap <strong>Edit Profile</strong>.</>,
-      <>Scroll to the bottom and tap <strong>Delete Account</strong>.</>,
+      <>
+        Go to <strong>Profile</strong> from the bottom navigation bar.
+      </>,
+      <>
+        Tap <strong>Edit Profile</strong>.
+      </>,
+      <>
+        Scroll to the bottom and tap <strong>Delete Account</strong>.
+      </>,
       <>Confirm the action when prompted.</>,
     ],
     option2Title: "Option 2 — Email Request",
     option2Body: (
       <>
         Send an email to{" "}
-        <a href={`mailto:${SUPPORT}`} className="text-primary underline">{SUPPORT}</a>{" "}
-        from the email address registered with your Pixap account, with the subject{" "}
-        <em>"Account Deletion Request"</em>.
+        <a href={`mailto:${SUPPORT}`} className="text-primary underline">
+          {SUPPORT}
+        </a>{" "}
+        from the email address registered with your Pixap account, with the subject <em>"Account Deletion Request"</em>.
       </>
     ),
     option2Time: (
-      <>Our team will verify your identity and process the request within <strong>7 business days</strong>.</>
+      <>
+        Our team will verify your identity and process the request within <strong>7 business days</strong>.
+      </>
     ),
     deletedTitle: "Data That Will Be Deleted",
     deletedIntro:
@@ -85,35 +94,38 @@ const content: Record<Lang, Content> = {
     retainedTitle: "Data That May Be Retained",
     retainedBody: (
       <>
-        For legal, accounting, and fraud-prevention purposes, certain anonymized transactional records
-        (e.g., past bookings, payment receipts) may be retained as required by applicable law. This data is
-        dissociated from your personal identifiers.
+        For legal, accounting, and fraud-prevention purposes, certain anonymized transactional records (e.g., past
+        bookings, payment receipts) may be retained as required by applicable law. This data is dissociated from your
+        personal identifiers.
       </>
     ),
     storageTitle: "Storage & Retention Period",
     storageBody: (
       <>
-        After your deletion request is confirmed, your personal data is removed from active systems immediately
-        and fully purged from backups within <strong>90 days</strong>.
+        After your deletion request is confirmed, your personal data is removed from active systems immediately and
+        fully purged from backups within <strong>90 days</strong>.
       </>
     ),
     contactTitle: "Contact",
     contactBody: (
       <>
         For any questions regarding account deletion or your data, please contact us at{" "}
-        <a href={`mailto:${SUPPORT}`} className="text-primary underline">{SUPPORT}</a>.
+        <a href={`mailto:${SUPPORT}`} className="text-primary underline">
+          {SUPPORT}
+        </a>
+        .
       </>
     ),
   },
   ru: {
     back: "Назад",
     title: "Удаление аккаунта и данных",
-    lastUpdated: "Последнее обновление: 25 апреля 2026",
+    lastUpdated: "Последнее обновление: 01.06.2026",
     intro: (
       <>
         На этой странице описано, как пользователи мобильного приложения <strong>Pixap</strong> (доступно в Google Play)
-        могут запросить удаление своей учётной записи и связанных персональных данных в соответствии с политикой
-        Google Play о пользовательских данных.
+        могут запросить удаление своей учётной записи и связанных персональных данных в соответствии с политикой Google
+        Play о пользовательских данных.
       </>
     ),
     howToTitle: "Как запросить удаление аккаунта",
@@ -122,22 +134,32 @@ const content: Record<Lang, Content> = {
     option1Title: "Вариант 1 — Запрос в приложении",
     option1Steps: [
       <>Откройте приложение Pixap и войдите в свою учётную запись.</>,
-      <>Перейдите в раздел <strong>Профиль</strong> через нижнюю панель навигации.</>,
-      <>Нажмите <strong>Редактировать профиль</strong>.</>,
-      <>Прокрутите вниз и нажмите <strong>Удалить аккаунт</strong>.</>,
+      <>
+        Перейдите в раздел <strong>Профиль</strong> через нижнюю панель навигации.
+      </>,
+      <>
+        Нажмите <strong>Редактировать профиль</strong>.
+      </>,
+      <>
+        Прокрутите вниз и нажмите <strong>Удалить аккаунт</strong>.
+      </>,
       <>Подтвердите действие при появлении запроса.</>,
     ],
     option2Title: "Вариант 2 — Запрос по электронной почте",
     option2Body: (
       <>
         Отправьте письмо на адрес{" "}
-        <a href={`mailto:${SUPPORT}`} className="text-primary underline">{SUPPORT}</a>{" "}
+        <a href={`mailto:${SUPPORT}`} className="text-primary underline">
+          {SUPPORT}
+        </a>{" "}
         с того адреса электронной почты, который указан в вашей учётной записи Pixap, с темой{" "}
         <em>«Запрос на удаление аккаунта»</em>.
       </>
     ),
     option2Time: (
-      <>Наша команда подтвердит вашу личность и обработает запрос в течение <strong>7 рабочих дней</strong>.</>
+      <>
+        Наша команда подтвердит вашу личность и обработает запрос в течение <strong>7 рабочих дней</strong>.
+      </>
     ),
     deletedTitle: "Какие данные будут удалены",
     deletedIntro:
@@ -154,29 +176,32 @@ const content: Record<Lang, Content> = {
     retainedBody: (
       <>
         В целях соблюдения законодательства, бухгалтерского учёта и предотвращения мошенничества определённые
-        обезличенные транзакционные записи (например, прошлые бронирования, чеки об оплате) могут быть сохранены
-        в соответствии с применимым законодательством. Эти данные не связаны с вашими персональными идентификаторами.
+        обезличенные транзакционные записи (например, прошлые бронирования, чеки об оплате) могут быть сохранены в
+        соответствии с применимым законодательством. Эти данные не связаны с вашими персональными идентификаторами.
       </>
     ),
     storageTitle: "Срок хранения данных",
     storageBody: (
       <>
-        После подтверждения запроса на удаление ваши персональные данные удаляются из активных систем немедленно
-        и полностью стираются из резервных копий в течение <strong>90 дней</strong>.
+        После подтверждения запроса на удаление ваши персональные данные удаляются из активных систем немедленно и
+        полностью стираются из резервных копий в течение <strong>90 дней</strong>.
       </>
     ),
     contactTitle: "Контакты",
     contactBody: (
       <>
         По любым вопросам, связанным с удалением аккаунта или ваших данных, пишите нам на{" "}
-        <a href={`mailto:${SUPPORT}`} className="text-primary underline">{SUPPORT}</a>.
+        <a href={`mailto:${SUPPORT}`} className="text-primary underline">
+          {SUPPORT}
+        </a>
+        .
       </>
     ),
   },
   kk: {
     back: "Артқа",
     title: "Аккаунтты және деректерді жою",
-    lastUpdated: "Соңғы жаңарту: 2026 жылғы 25 сәуір",
+    lastUpdated: "Соңғы жаңарту: 01.06.2026",
     intro: (
       <>
         Бұл бетте <strong>Pixap</strong> мобильді қосымшасының (Google Play-де қолжетімді) пайдаланушылары Google Play
@@ -185,30 +210,38 @@ const content: Record<Lang, Content> = {
       </>
     ),
     howToTitle: "Аккаунтты жоюды қалай сұрау керек",
-    howToIntro:
-      "Pixap аккаунтыңыз бен жеке деректеріңізді жоюды төмендегі тәсілдердің бірімен сұрай аласыз:",
+    howToIntro: "Pixap аккаунтыңыз бен жеке деректеріңізді жоюды төмендегі тәсілдердің бірімен сұрай аласыз:",
     option1Title: "1-нұсқа — Қосымша арқылы сұрау",
     option1Steps: [
       <>Pixap қосымшасын ашып, аккаунтыңызға кіріңіз.</>,
-      <>Төменгі навигация панелі арқылы <strong>Профиль</strong> бөліміне өтіңіз.</>,
-      <><strong>Профильді өңдеу</strong> түймесін басыңыз.</>,
-      <>Беттің төменгі жағына жылжып, <strong>Аккаунтты жою</strong> түймесін басыңыз.</>,
+      <>
+        Төменгі навигация панелі арқылы <strong>Профиль</strong> бөліміне өтіңіз.
+      </>,
+      <>
+        <strong>Профильді өңдеу</strong> түймесін басыңыз.
+      </>,
+      <>
+        Беттің төменгі жағына жылжып, <strong>Аккаунтты жою</strong> түймесін басыңыз.
+      </>,
       <>Сұраныс пайда болғанда әрекетті растаңыз.</>,
     ],
     option2Title: "2-нұсқа — Электрондық пошта арқылы сұрау",
     option2Body: (
       <>
         Pixap аккаунтыңызда тіркелген электрондық пошта мекенжайынан{" "}
-        <a href={`mailto:${SUPPORT}`} className="text-primary underline">{SUPPORT}</a>{" "}
+        <a href={`mailto:${SUPPORT}`} className="text-primary underline">
+          {SUPPORT}
+        </a>{" "}
         мекенжайына <em>«Аккаунтты жою сұранысы»</em> деген тақырыппен хат жіберіңіз.
       </>
     ),
     option2Time: (
-      <>Біздің команда жеке басыңызды растап, сұранысты <strong>7 жұмыс күні</strong> ішінде өңдейді.</>
+      <>
+        Біздің команда жеке басыңызды растап, сұранысты <strong>7 жұмыс күні</strong> ішінде өңдейді.
+      </>
     ),
     deletedTitle: "Жойылатын деректер",
-    deletedIntro:
-      "Аккаунтты жоюды сұраған кезде келесі жеке деректер жүйелерімізден біржола жойылады:",
+    deletedIntro: "Аккаунтты жоюды сұраған кезде келесі жеке деректер жүйелерімізден біржола жойылады:",
     deletedList: [
       "Электрондық пошта мекенжайы",
       "Аты және тегі",
@@ -220,23 +253,26 @@ const content: Record<Lang, Content> = {
     retainedTitle: "Сақталуы мүмкін деректер",
     retainedBody: (
       <>
-        Заңдық, бухгалтерлік және алаяқтықтың алдын алу мақсатында қолданыстағы заңнамаға сәйкес кейбір
-        иесіздендірілген транзакциялық жазбалар (мысалы, бұрынғы брондаулар, төлем түбіртектері) сақталуы мүмкін.
-        Бұл деректер сіздің жеке идентификаторларыңызбен байланыссыз.
+        Заңдық, бухгалтерлік және алаяқтықтың алдын алу мақсатында қолданыстағы заңнамаға сәйкес кейбір иесіздендірілген
+        транзакциялық жазбалар (мысалы, бұрынғы брондаулар, төлем түбіртектері) сақталуы мүмкін. Бұл деректер сіздің
+        жеке идентификаторларыңызбен байланыссыз.
       </>
     ),
     storageTitle: "Сақтау мерзімі",
     storageBody: (
       <>
-        Жою сұранысыңыз расталғаннан кейін жеке деректеріңіз белсенді жүйелерден дереу жойылып,
-        сақтық көшірмелерден <strong>90 күн</strong> ішінде толығымен өшіріледі.
+        Жою сұранысыңыз расталғаннан кейін жеке деректеріңіз белсенді жүйелерден дереу жойылып, сақтық көшірмелерден{" "}
+        <strong>90 күн</strong> ішінде толығымен өшіріледі.
       </>
     ),
     contactTitle: "Байланыс",
     contactBody: (
       <>
         Аккаунтты жою немесе деректеріңіз туралы сұрақтар бойынша бізге{" "}
-        <a href={`mailto:${SUPPORT}`} className="text-primary underline">{SUPPORT}</a> мекенжайы арқылы хабарласыңыз.
+        <a href={`mailto:${SUPPORT}`} className="text-primary underline">
+          {SUPPORT}
+        </a>{" "}
+        мекенжайы арқылы хабарласыңыз.
       </>
     ),
   },
@@ -267,7 +303,7 @@ const DataDeletionPage = () => {
                   "px-3 py-1.5 rounded-md text-xs font-semibold transition",
                   lang === code
                     ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {languageLabels[code]}
