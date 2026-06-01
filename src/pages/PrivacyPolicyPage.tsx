@@ -22,8 +22,7 @@ By using the App, you confirm that you have read and accepted the terms of this 
 
 Pixap is a mobile platform for discovering venues, booking beauty, wellness, and leisure services, and for communication between users and business partners.
 
-Data controller: "VSEE.KZ" Limited Liability Partnership, Republic of Kazakhstan, Almaty, Bostandyk District, Miras Microdistrict 188/2,
-Apartment 29, ZIP Code 050013, 231240018841, support@pixapp.kz.
+Data controller: "VSEE.KZ" Limited Liability Partnership, Republic of Kazakhstan, Almaty, Bostandyk District, Miras Microdistrict 188/2, Apartment 29, ZIP Code 050013, 231240018841, support@pixapp.kz.
 
 ---
 
@@ -204,8 +203,7 @@ Response time: up to 30 days.
 
 Pixap — мобильная платформа для открытия заведений, бронирования услуг в сфере красоты, здоровья и досуга, а также для общения между пользователями и деловыми партнёрами.
 
-Оператор персональных данных: ["VSEE.KZ ТОО", Республика Казахстан, город Алматы, Бостандыкский район, мкрн Мирас 188./2,
-кв. 29, почтовый индекс 050013, 231240018841, support@pixapp.kz].
+Оператор персональных данных: "VSEE.KZ ТОО", Республика Казахстан, город Алматы, Бостандыкский район, мкрн Мирас 188/2, кв. 29, почтовый индекс 050013, 231240018841, support@pixapp.kz.
 
 ---
 
@@ -386,7 +384,7 @@ Pixap — мобильная платформа для открытия заве
 
 Pixap — сұлулық, денсаулық және демалыс саласындағы мекемелерді ашуға, қызметтерді брондауға, сондай-ақ пайдаланушылар мен іскерлік серіктестер арасындағы байланысқа арналған мобильді платформа.
 
-Жеке деректердің операторы: "VSEE.KZ" ТОО, Қазақстан Республикасы, Алматы қаласы, Бостандык ауданы, Мирас микрорайоны 188./2, 29-пәтер, пошта индексі 050013, 231240018841, support@pixapp.kz.
+Жеке деректердің операторы: "VSEE.KZ" ТОО, Қазақстан Республикасы, Алматы қаласы, Бостандык ауданы, Мирас микрорайоны 188/2, 29-пәтер, пошта индексі 050013, 231240018841, support@pixapp.kz.
 
 ---
 
