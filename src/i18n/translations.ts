@@ -43,6 +43,7 @@ type Dict = {
     terms: string;
     returns: string;
     dataDeletion: string;
+    community: string;
     rights: string;
     madeIn: string;
   };
@@ -168,7 +169,7 @@ const en: Dict = {
   footer: {
     tagline: "The AI booking concierge for everything you used to call about.",
     product: "Product", legal: "Legal", getApp: "Get the app",
-    privacy: "Privacy Policy", terms: "User Agreement", returns: "Return Policy", dataDeletion: "Data Deletion",
+    privacy: "Privacy Policy", terms: "User Agreement", returns: "Return Policy", dataDeletion: "Data Deletion", community: "Community Guidelines",
     rights: "All rights reserved.", madeIn: "Made with care in Almaty.",
   },
   cookies: {
@@ -293,7 +294,7 @@ const ru: Dict = {
   footer: {
     tagline: "AI-консьерж для всего, ради чего вы раньше звонили.",
     product: "Продукт", legal: "Правовая информация", getApp: "Скачать приложение",
-    privacy: "Политика конфиденциальности", terms: "Пользовательское соглашение", returns: "Политика возврата", dataDeletion: "Удаление данных",
+    privacy: "Политика конфиденциальности", terms: "Пользовательское соглашение", returns: "Политика возврата", dataDeletion: "Удаление данных", community: "Правила сообщества",
     rights: "Все права защищены.", madeIn: "Сделано с заботой в Алматы.",
   },
   cookies: {
@@ -418,7 +419,7 @@ const kk: Dict = {
   footer: {
     tagline: "Бұрын қоңырау шалатын барлық нәрсеге арналған AI брондау консьержі.",
     product: "Өнім", legal: "Құқықтық ақпарат", getApp: "Қолданбаны жүктеу",
-    privacy: "Құпиялылық саясаты", terms: "Пайдаланушы келісімі", returns: "Қайтару саясаты", dataDeletion: "Деректерді жою",
+    privacy: "Құпиялылық саясаты", terms: "Пайдаланушы келісімі", returns: "Қайтару саясаты", dataDeletion: "Деректерді жою", community: "Қоғамдастық ережелері",
     rights: "Барлық құқықтар қорғалған.", madeIn: "Алматыда мұқияттылықпен жасалған.",
   },
   cookies: {
