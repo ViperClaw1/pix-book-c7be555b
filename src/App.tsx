@@ -9,6 +9,7 @@ import LandingPage from "./pages/LandingPage";
 import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import DataDeletionPage from "./pages/DataDeletionPage";
 import UserAgreementPage from "./pages/UserAgreementPage";
+import CommunityGuidelinesPage from "./pages/CommunityGuidelinesPage";
 import CookieConsent from "./components/CookieConsent";
 import { I18nProvider } from "./i18n/I18nProvider";
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/returns" element={<ReturnPolicyPage />} />
           <Route path="/data-deletion" element={<DataDeletionPage />} />
           <Route path="/terms" element={<UserAgreementPage />} />
+          <Route path="/community-guidelines" element={<CommunityGuidelinesPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         </BrowserRouter>
