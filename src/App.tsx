@@ -17,24 +17,24 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <I18nProvider>
+    <I18nProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
         <BrowserRouter>
-        <CookieConsent />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/privacy" element={<PrivacyPolicyPage />} />
-          <Route path="/returns" element={<ReturnPolicyPage />} />
-          <Route path="/data-deletion" element={<DataDeletionPage />} />
-          <Route path="/terms" element={<UserAgreementPage />} />
-          <Route path="/community-guidelines" element={<CommunityGuidelinesPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+          <CookieConsent />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/returns" element={<ReturnPolicyPage />} />
+            <Route path="/data-deletion" element={<DataDeletionPage />} />
+            <Route path="/terms" element={<UserAgreementPage />} />
+            <Route path="/community-guidelines" element={<CommunityGuidelinesPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
-      </I18nProvider>
-    </TooltipProvider>
+      </TooltipProvider>
+    </I18nProvider>
   </QueryClientProvider>
 );
 
