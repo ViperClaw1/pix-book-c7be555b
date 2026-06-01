@@ -22,7 +22,8 @@ By using the App, you confirm that you have read and accepted the terms of this 
 
 Pixap is a mobile platform for discovering venues, booking beauty, wellness, and leisure services, and for communication between users and business partners.
 
-Data controller: [full legal name, registered address, tax ID, contact email].
+Data controller: "VSEE.KZ" Limited Liability Partnership, Republic of Kazakhstan, Almaty, Bostandyk District, Miras Microdistrict 188/2,
+Apartment 29, ZIP Code 050013, 231240018841, support@pixapp.kz.
 
 ---
 
@@ -102,7 +103,7 @@ We do not sell your personal data.
 
 Your data is stored on Supabase servers. Supabase uses cloud provider infrastructure. Data storage region: **[specify region — e.g., eu-central-1 / ap-southeast-1]**.
 
-Users from Kazakhstan: we make reasonable efforts to comply with the requirements of the Law of the Republic of Kazakhstan "On Personal Data and Its Protection". For questions about data storage, contact: [email].
+Users from Kazakhstan: we make reasonable efforts to comply with the requirements of the Law of the Republic of Kazakhstan "On Personal Data and Its Protection". For questions about data storage, contact: support@pixapp.kz.
 
 ---
 
@@ -132,7 +133,7 @@ Depending on applicable law, you have the following rights:
 
 To delete your account: Settings → Account → Delete Account. Data is deleted within 30 days.
 
-For other rights: [support email].
+For other rights: support@pixapp.kz.
 
 EU users have the right to lodge a complaint with their data protection supervisory authority.
 
@@ -154,7 +155,7 @@ Despite these measures, no method of data transmission over the internet is abso
 
 ## 10. Children
 
-The App is not intended for persons under 13 years of age (or 16 years in the EU and Australia). We do not knowingly collect data from children. If you become aware that a child has provided us with their data, please contact us at [email].
+The App is not intended for persons under 13 years of age (or 16 years in the EU and Australia). We do not knowingly collect data from children. If you become aware that a child has provided us with their data, please contact us at support@pixapp.kz.
 
 ---
 
@@ -180,17 +181,18 @@ For material changes to this Policy, we will notify you via push notification or
 
 For privacy and personal data inquiries:
 
-**Email:** [privacy@pixapp.kz]
-**Postal address:** [registered address]
-**Data Protection Officer (DPO):** [name, if appointed]
+**Email:** support@pixapp.kz
+**Postal address:** Republic of Kazakhstan, Almaty, Bostandyk District, Miras Microdistrict 188/2,
+Apartment 29, ZIP Code 050013
+**Data Protection Officer (DPO):** Atif Issayev
 
 Response time: up to 30 days.
 `,
   ru: `
 # Политика конфиденциальности Pixap
 
-**Дата вступления в силу:** [дата публикации]
-**Последнее обновление:** [дата обновления]
+**Дата вступления в силу:** 01.06.2026
+**Последнее обновление:** 01.06.2026
 
 Настоящая Политика конфиденциальности описывает, как ООО «Пиксап» / Pixap («мы», «нас», «наш») собирает, использует, хранит и передаёт ваши персональные данные при использовании мобильного приложения Pixap (далее — «Приложение»), а также связанных с ним сервисов.
 
@@ -202,7 +204,8 @@ Response time: up to 30 days.
 
 Pixap — мобильная платформа для открытия заведений, бронирования услуг в сфере красоты, здоровья и досуга, а также для общения между пользователями и деловыми партнёрами.
 
-Оператор персональных данных: [полное юридическое наименование, юридический адрес, БИН/ИНН, контактный email].
+Оператор персональных данных: ["VSEE.KZ ТОО", Республика Казахстан, город Алматы, Бостандыкский район, мкрн Мирас 188./2,
+кв. 29, почтовый индекс 050013, 231240018841, support@pixapp.kz].
 
 ---
 
@@ -282,7 +285,7 @@ Pixap — мобильная платформа для открытия заве
 
 Ваши данные хранятся на серверах Supabase. Supabase использует инфраструктуру облачных провайдеров. Регион хранения данных: **[указать регион — например, eu-central-1 / ap-southeast-1]**.
 
-Пользователи из Казахстана: мы прилагаем разумные усилия для соблюдения требований Закона Республики Казахстан «О персональных данных и их защите». При наличии вопросов о хранении данных обращайтесь: [email].
+Пользователи из Казахстана: мы прилагаем разумные усилия для соблюдения требований Закона Республики Казахстан «О персональных данных и их защите». При наличии вопросов о хранении данных обращайтесь: support@pixapp.kz.
 
 ---
 
@@ -312,7 +315,7 @@ Pixap — мобильная платформа для открытия заве
 
 Для удаления аккаунта: Настройки → Аккаунт → Удалить аккаунт. Данные удаляются в течение 30 дней.
 
-Для реализации иных прав: [email поддержки].
+Для реализации иных прав: support@pixapp.kz.
 
 Пользователи из ЕС имеют право на подачу жалобы в надзорный орган по защите данных.
 
@@ -334,7 +337,7 @@ Pixap — мобильная платформа для открытия заве
 
 ## 10. Дети
 
-Приложение не предназначено для лиц младше 13 лет (или 16 лет в ЕС и Австралии). Мы не собираем намеренно данные детей. Если вам стало известно, что ребёнок предоставил нам свои данные, обратитесь к нам по адресу [email].
+Приложение не предназначено для лиц младше 13 лет (или 16 лет в ЕС и Австралии). Мы не собираем намеренно данные детей. Если вам стало известно, что ребёнок предоставил нам свои данные, обратитесь к нам по адресу support@pixapp.kz.
 
 ---
 
@@ -360,17 +363,18 @@ Pixap — мобильная платформа для открытия заве
 
 По вопросам конфиденциальности и персональных данных:
 
-**Email:** [privacy@pixapp.kz]
-**Почтовый адрес:** [юридический адрес]
-**Ответственный за защиту данных (DPO):** [имя, если назначен]
+**Email:** support@pixapp.kz
+**Почтовый адрес:** Республика Казахстан, город Алматы, Бостандыкский район, мкрн Мирас 188./2,
+кв. 29, почтовый индекс 050013
+**Ответственный за защиту данных (DPO):** Атиф Исаев
 
 Срок ответа: до 30 дней.
 `,
   kk: `
 # Pixap Құпиялылық саясаты
 
-**Күшіне ену күні:** [жариялану күні]
-**Соңғы жаңарту:** [жаңарту күні]
+**Күшіне ену күні:** 01.06.2026
+**Соңғы жаңарту:** 01.06.2026
 
 Осы Құпиялылық саясаты Pixap ЖШС («біз», «бізді», «біздің») Pixap мобильді қосымшасын («Қосымша») және онымен байланысты қызметтерді пайдаланған кезде сіздің жеке деректеріңізді қалай жинайтынын, пайдаланатынын, сақтайтынын және беретінін сипаттайды.
 
@@ -382,7 +386,7 @@ Pixap — мобильная платформа для открытия заве
 
 Pixap — сұлулық, денсаулық және демалыс саласындағы мекемелерді ашуға, қызметтерді брондауға, сондай-ақ пайдаланушылар мен іскерлік серіктестер арасындағы байланысқа арналған мобильді платформа.
 
-Жеке деректердің операторы: [толық заңды атауы, заңды мекенжайы, БСН/ЖСН, байланыс электрондық поштасы].
+Жеке деректердің операторы: "VSEE.KZ" ТОО, Қазақстан Республикасы, Алматы қаласы, Бостандык ауданы, Мирас микрорайоны 188./2, 29-пәтер, пошта индексі 050013, 231240018841, support@pixapp.kz.
 
 ---
 
@@ -540,9 +544,9 @@ AI-мүмкіндіктерге берген келісімді «Парамет
 
 Құпиялылық және жеке деректер мәселелері бойынша:
 
-**Электрондық пошта:** [privacy@pixapp.kz]
-**Пошталық мекенжай:** [заңды мекенжай]
-**Деректерді қорғау жөніндегі офицер (DPO):** [аты, егер тағайындалса]
+**Электрондық пошта:** support@pixapp.kz
+**Пошталық мекенжай:** Қазақстан Республикасы, Алматы қаласы, Бостандык ауданы, Мирас микрорайоны 188./2, 29-пәтер, пошта индексі 050013
+**Деректерді қорғау жөніндегі офицер (DPO):** Атиф Исаев
 
 Жауап беру мерзімі: 30 күнге дейін.
 `,
@@ -564,7 +568,11 @@ const renderInline = (text: string) => {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={i} className="text-foreground font-semibold">{part.slice(2, -2)}</strong>;
+      return (
+        <strong key={i} className="text-foreground font-semibold">
+          {part.slice(2, -2)}
+        </strong>
+      );
     }
     return <span key={i}>{part}</span>;
   });
@@ -578,15 +586,21 @@ const renderPolicy = (markdown: string) => {
     const line = raw.trimEnd();
     if (line.startsWith("# ")) {
       elements.push(
-        <h1 key={i} className="text-3xl md:text-4xl font-bold text-foreground mb-4">{line.slice(2)}</h1>
+        <h1 key={i} className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          {line.slice(2)}
+        </h1>,
       );
     } else if (line.startsWith("## ")) {
       elements.push(
-        <h2 key={i} className="text-2xl font-semibold text-foreground mt-8 mb-3">{line.slice(3)}</h2>
+        <h2 key={i} className="text-2xl font-semibold text-foreground mt-8 mb-3">
+          {line.slice(3)}
+        </h2>,
       );
     } else if (line.startsWith("### ")) {
       elements.push(
-        <h3 key={i} className="text-lg font-semibold text-foreground mt-5 mb-2">{line.slice(4)}</h3>
+        <h3 key={i} className="text-lg font-semibold text-foreground mt-5 mb-2">
+          {line.slice(4)}
+        </h3>,
       );
     } else if (line.startsWith("---")) {
       elements.push(<hr key={i} className="my-6 border-border" />);
@@ -594,7 +608,7 @@ const renderPolicy = (markdown: string) => {
       elements.push(
         <p key={i} className="text-foreground/90 text-sm md:text-base ml-5 mb-1 leading-relaxed">
           • {renderInline(line.slice(2))}
-        </p>
+        </p>,
       );
     } else if (line.trim() === "") {
       return;
@@ -602,7 +616,7 @@ const renderPolicy = (markdown: string) => {
       elements.push(
         <p key={i} className="text-foreground/90 text-sm md:text-base mb-3 leading-relaxed">
           {renderInline(line)}
-        </p>
+        </p>,
       );
     }
   });
@@ -634,7 +648,7 @@ const PrivacyPolicyPage = () => {
                   "px-3 py-1.5 rounded-md text-xs font-semibold transition",
                   lang === code
                     ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {languageLabels[code]}
