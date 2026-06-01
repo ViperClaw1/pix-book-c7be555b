@@ -41,7 +41,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
 export function useI18n(): Ctx {
   const ctx = useContext(I18nCtx);
-  if (!ctx) throw new Error("useI18n must be used within I18nProvider");
+  if (!ctx) {
+    return { lang: "en", t: translations.en, setLang: () => {} };
+  }
   return ctx;
 }
 
