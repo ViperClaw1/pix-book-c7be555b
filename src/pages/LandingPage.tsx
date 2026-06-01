@@ -612,7 +612,8 @@ const LandingPage = () => {
               <li><a href="/privacy" className="hover:text-foreground transition-colors">{t.footer.privacy}</a></li>
               <li><a href="/terms" className="hover:text-foreground transition-colors">{t.footer.terms}</a></li>
               <li><a href="/returns" className="hover:text-foreground transition-colors">{t.footer.returns}</a></li>
-              <li><a href="/data-deletion" className="hover:text-foreground transition-colors">{t.footer.dataDeletion}</a></li>
+             <li><a href="/data-deletion" className="hover:text-foreground transition-colors">{t.footer.dataDeletion}</a></li>
+             <li><a href="/community-guidelines" className="hover:text-foreground transition-colors">{t.footer.community}</a></li>
             </ul>
           </div>
           <div className="space-y-3">
