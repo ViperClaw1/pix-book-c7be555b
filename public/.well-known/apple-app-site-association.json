@@ -4,7 +4,7 @@
     "details": [
       {
         "appID": "7HJ8NA3358.com.pixap.pixap",
-        "paths": [ "/~oauth/callback*", "/*" ]
+        "paths": ["/place/*", "/post/*", "/story/*"]
       }
     ]
   }
