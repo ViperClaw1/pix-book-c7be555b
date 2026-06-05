@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["7HJ8NA3358.com.pixap.pixap"],
+        "components": [{ "/": "/~oauth/callback*" }, { "/": "/place/*" }, { "/": "/post/*" }, { "/": "/story/*" }]
+      }
+    ]
+  }
+}
