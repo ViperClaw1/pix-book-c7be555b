@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "com.pixap.pixap",
       "sha256_cert_fingerprints": [
-        "CC:CA:D9:5B:0B:86:17:31:44:A7:6D:E3:55:6D:0B:80:3B:B5:87:16:DF:DF:1C:16:BB:FE:F2:82:E8:91:9F:EC"
+        "CC:CA:D9:5B:0B:86:17:31:44:A7:6D:E3:55:6D:0B:80:3B:B5:87:16:DF:DF:1C:16:BB:FE:F2:82:E8:91:9F:EC",
+        "25:91:00:0A:98:7C:7E:19:7A:07:EF:91:DD:F4:9A:23:36:0F:94:66:97:FF:6F:98:6D:A7:5A:0A:D4:8F"
       ]
     }
   }
