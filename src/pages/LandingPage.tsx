@@ -93,6 +93,7 @@ function FeatureRow({ f, index, progress }: { f: FeatureItem; index: number; pro
   const reverse = index % 2 === 1;
   const y = useTransform(progress, [0, 1], [40, -40]);
   const Icon = f.icon;
+  const [loaded, setLoaded] = useState(false);
   return (
     <div
       className={`grid lg:grid-cols-2 gap-10 lg:gap-20 items-center ${reverse ? "lg:[&>*:first-child]:order-2" : ""}`}
@@ -122,12 +123,21 @@ function FeatureRow({ f, index, progress }: { f: FeatureItem; index: number; pro
       >
         <motion.div style={{ y }} className="relative will-change-transform">
           <div className={`absolute -inset-10 bg-gradient-radial ${f.accent} blur-3xl opacity-80 pointer-events-none`} />
-          <div className="relative rounded-[2rem] overflow-hidden border border-border/50 shadow-[0_30px_80px_-20px_hsl(220_25%_12%/0.45)] bg-black">
+          <div
+            className="relative rounded-[2rem] overflow-hidden border border-border/50 shadow-[0_30px_80px_-20px_hsl(220_25%_12%/0.45)] bg-black"
+            style={{ aspectRatio: "3 / 4" }}
+          >
             <img
               src={f.image}
               alt={f.title}
-              className="w-full h-auto block"
+              width={960}
+              height={1280}
               loading="lazy"
+              decoding="async"
+              onLoad={() => setLoaded(true)}
+              className={`absolute inset-0 w-full h-full object-cover block transition-all duration-[1200ms] ease-out ${
+                loaded ? "opacity-100 scale-100 blur-0" : "opacity-0 scale-[1.04] blur-md"
+              }`}
             />
           </div>
         </motion.div>
