@@ -22,7 +22,7 @@ import { useI18n } from "@/i18n/I18nProvider";
 import type { Dict } from "@/i18n/translations";
 
 
-const APP_STORE_URL = "#";
+const APP_STORE_URL = "https://apps.apple.com/us/app/pixap/id6760616898";
 const GOOGLE_PLAY_URL = "#";
 
 const fadeUp: Variants = {
