@@ -6,7 +6,7 @@ import AuthCallbackPage from "@/pixap-web/pages/auth/AuthCallbackPage";
 import ForgotPasswordPage from "@/pixap-web/pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "@/pixap-web/pages/auth/ResetPasswordPage";
 import VerifyEmailPage from "@/pixap-web/pages/auth/VerifyEmailPage";
-import HomePlaceholder from "@/pixap-web/pages/home/HomePlaceholder";
+import HomePage from "@/pixap-web/pages/home/HomePage";
 import OnboardingPage from "@/pixap-web/pages/onboarding/OnboardingPage";
 import { RequireAuth } from "@/pixap-web/features/terms-acceptance/RequireAuth";
 
@@ -16,7 +16,7 @@ import { RequireAuth } from "@/pixap-web/features/terms-acceptance/RequireAuth";
 export function PixapRoutes() {
   return (
     <Routes>
-      <Route index element={<RequireAuth><HomePlaceholder /></RequireAuth>} />
+      <Route index element={<RequireAuth><HomePage /></RequireAuth>} />
       <Route path="auth" element={<AuthPage />} />
       <Route path="auth/email-sent" element={<EmailSentPage />} />
       <Route path="auth/callback" element={<AuthCallbackPage />} />
