@@ -75,3 +75,11 @@
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
   }
 }
+
+[data-pixap] .no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+[data-pixap] .no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
