@@ -94,7 +94,7 @@ export default function AuthPage() {
   };
 
   return (
-    <main className="pixap-shell px-4 py-6 flex flex-col gap-6">
+    <main className="pixap-shell px-4 py-6 flex flex-col gap-6 min-h-[100dvh] justify-center">
       <header className="flex flex-col gap-1">
         <h1 className="text-[28px] font-bold leading-[34px] text-[var(--pixap-text)]">
           Pixap
