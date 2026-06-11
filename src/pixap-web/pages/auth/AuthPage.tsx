@@ -71,25 +71,25 @@ export default function AuthPage() {
     }
   };
 
-  const handleGoogle = async () => {
+  const handleOAuth = async (provider: "google" | "apple") => {
     if (isSignup && !terms) {
       setTermsError("Please accept the Terms and Privacy Policy.");
       return;
     }
     setError(undefined);
-    setGoogleLoading(true);
+    const setBusy = provider === "google" ? setGoogleLoading : setAppleLoading;
+    setBusy(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
+      const result = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: `${window.location.origin}/pixap/auth/callback`,
       });
       if ((result as { error?: Error }).error) {
         setError(mapAuthError((result as { error?: Error }).error?.message));
-        setGoogleLoading(false);
+        setBusy(false);
       }
-      // On success the page is redirected by the OAuth provider.
     } catch (err) {
       setError(mapAuthError(err instanceof Error ? err.message : String(err)));
-      setGoogleLoading(false);
+      setBusy(false);
     }
   };
 
