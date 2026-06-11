@@ -7,7 +7,7 @@ import ForgotPasswordPage from "@/pixap-web/pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "@/pixap-web/pages/auth/ResetPasswordPage";
 import VerifyEmailPage from "@/pixap-web/pages/auth/VerifyEmailPage";
 import HomePlaceholder from "@/pixap-web/pages/home/HomePlaceholder";
-import OnboardingPlaceholder from "@/pixap-web/pages/onboarding/OnboardingPlaceholder";
+import OnboardingPage from "@/pixap-web/pages/onboarding/OnboardingPage";
 import { RequireAuth } from "@/pixap-web/features/terms-acceptance/RequireAuth";
 
 /**
@@ -25,7 +25,7 @@ export function PixapRoutes() {
       <Route path="verify-email" element={<VerifyEmailPage />} />
       <Route
         path="onboarding"
-        element={<RequireAuth><OnboardingPlaceholder /></RequireAuth>}
+        element={<RequireAuth><OnboardingPage /></RequireAuth>}
       />
       <Route path="foundation" element={<FoundationPreview />} />
       <Route path="*" element={<Navigate to="/pixap" replace />} />
