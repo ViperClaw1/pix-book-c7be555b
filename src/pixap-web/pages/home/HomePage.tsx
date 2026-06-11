@@ -1,0 +1,33 @@
+import { useState } from "react";
+import { usePixapAuth } from "@/pixap-web/app/providers/AuthProvider";
+import { HomeHeader } from "@/pixap-web/widgets/home/HomeHeader";
+import { CategoriesScroll } from "@/pixap-web/widgets/home/CategoriesScroll";
+import { FeaturedSection } from "@/pixap-web/widgets/home/FeaturedSection";
+import { TonightForYou } from "@/pixap-web/widgets/home/TonightForYou";
+import { RecommendedList } from "@/pixap-web/widgets/home/RecommendedList";
+
+const CITIES = ["Almaty", "Astana", "Shymkent", "Yerevan"];
+
+export default function HomePage() {
+  const { user } = usePixapAuth();
+  const savedCity =
+    (user?.user_metadata?.pixap_prefs as { city?: string } | undefined)?.city;
+  const [city, setCity] = useState<string>(savedCity || "Almaty");
+  const [categoryId, setCategoryId] = useState<string | undefined>();
+
+  const onChangeCity = () => {
+    const idx = CITIES.indexOf(city);
+    const next = CITIES[(idx + 1) % CITIES.length];
+    setCity(next);
+  };
+
+  return (
+    <main className="pixap-shell pb-12">
+      <HomeHeader city={city} onChangeCity={onChangeCity} />
+      <CategoriesScroll selectedId={categoryId} onSelect={setCategoryId} />
+      <FeaturedSection city={city} categoryId={categoryId} />
+      <TonightForYou city={city} categoryId={categoryId} />
+      <RecommendedList city={city} categoryId={categoryId} />
+    </main>
+  );
+}
