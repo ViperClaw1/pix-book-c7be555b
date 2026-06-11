@@ -22,6 +22,7 @@ export default function AuthPage() {
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
 
   const isSignup = tab === "signup";
 
@@ -70,30 +71,30 @@ export default function AuthPage() {
     }
   };
 
-  const handleGoogle = async () => {
+  const handleOAuth = async (provider: "google" | "apple") => {
     if (isSignup && !terms) {
       setTermsError("Please accept the Terms and Privacy Policy.");
       return;
     }
     setError(undefined);
-    setGoogleLoading(true);
+    const setBusy = provider === "google" ? setGoogleLoading : setAppleLoading;
+    setBusy(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
+      const result = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: `${window.location.origin}/pixap/auth/callback`,
       });
       if ((result as { error?: Error }).error) {
         setError(mapAuthError((result as { error?: Error }).error?.message));
-        setGoogleLoading(false);
+        setBusy(false);
       }
-      // On success the page is redirected by the OAuth provider.
     } catch (err) {
       setError(mapAuthError(err instanceof Error ? err.message : String(err)));
-      setGoogleLoading(false);
+      setBusy(false);
     }
   };
 
   return (
-    <main className="pixap-shell px-4 py-6 flex flex-col gap-6">
+    <main className="pixap-shell px-4 py-6 flex flex-col gap-6 min-h-[100dvh] justify-center">
       <header className="flex flex-col gap-1">
         <h1 className="text-[28px] font-bold leading-[34px] text-[var(--pixap-text)]">
           Pixap
@@ -186,17 +187,31 @@ export default function AuthPage() {
         <div className="flex-1 h-px bg-[var(--pixap-border)]" />
       </div>
 
-      <AppButton
-        type="button"
-        variant="secondary"
-        size="lg"
-        fullWidth
-        loading={googleLoading}
-        onClick={handleGoogle}
-      >
-        <GoogleGlyph />
-        Continue with Google
-      </AppButton>
+      <div className="flex flex-col gap-2">
+        <AppButton
+          type="button"
+          variant="secondary"
+          size="lg"
+          fullWidth
+          loading={googleLoading}
+          onClick={() => handleOAuth("google")}
+        >
+          <GoogleGlyph />
+          Continue with Google
+        </AppButton>
+
+        <AppButton
+          type="button"
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={appleLoading}
+          onClick={() => handleOAuth("apple")}
+        >
+          <AppleGlyph />
+          Continue with Apple
+        </AppButton>
+      </div>
     </main>
   );
 }
@@ -220,6 +235,14 @@ function GoogleGlyph() {
         fill="#EA4335"
         d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.95 4.95l3.02 2.33C4.68 5.16 6.66 3.58 9 3.58Z"
       />
+    </svg>
+  );
+}
+
+function AppleGlyph() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden fill="currentColor">
+      <path d="M16.365 1.43c0 1.14-.42 2.22-1.26 3.06-.84.84-1.86 1.32-2.94 1.26-.06-1.08.42-2.16 1.26-3 .84-.84 1.92-1.32 2.94-1.32zM20.4 17.34c-.54 1.26-1.2 2.46-1.98 3.6-.84 1.2-1.86 2.4-3.18 2.4-1.32.06-1.74-.78-3.24-.78-1.5 0-1.98.78-3.24.84-1.32.06-2.34-1.32-3.18-2.46-1.74-2.4-3.06-6.78-1.26-9.78.84-1.5 2.4-2.46 4.08-2.46 1.32-.06 2.52.84 3.24.84.78 0 2.28-1.08 3.84-.9.66 0 2.52.24 3.72 1.98-.12.06-2.22 1.32-2.16 3.84.06 3.06 2.7 4.08 2.76 4.08z"/>
     </svg>
   );
 }
