@@ -187,17 +187,31 @@ export default function AuthPage() {
         <div className="flex-1 h-px bg-[var(--pixap-border)]" />
       </div>
 
-      <AppButton
-        type="button"
-        variant="secondary"
-        size="lg"
-        fullWidth
-        loading={googleLoading}
-        onClick={handleGoogle}
-      >
-        <GoogleGlyph />
-        Continue with Google
-      </AppButton>
+      <div className="flex flex-col gap-2">
+        <AppButton
+          type="button"
+          variant="secondary"
+          size="lg"
+          fullWidth
+          loading={googleLoading}
+          onClick={() => handleOAuth("google")}
+        >
+          <GoogleGlyph />
+          Continue with Google
+        </AppButton>
+
+        <AppButton
+          type="button"
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={appleLoading}
+          onClick={() => handleOAuth("apple")}
+        >
+          <AppleGlyph />
+          Continue with Apple
+        </AppButton>
+      </div>
     </main>
   );
 }
