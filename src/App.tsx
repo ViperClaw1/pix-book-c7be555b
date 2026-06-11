@@ -12,6 +12,7 @@ import UserAgreementPage from "./pages/UserAgreementPage";
 import CommunityGuidelinesPage from "./pages/CommunityGuidelinesPage";
 import CookieConsent from "./components/CookieConsent";
 import { I18nProvider } from "./i18n/I18nProvider";
+import PixapApp from "./pixap-web/app/PixapApp";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/data-deletion" element={<DataDeletionPage />} />
             <Route path="/terms" element={<UserAgreementPage />} />
             <Route path="/community-guidelines" element={<CommunityGuidelinesPage />} />
+            <Route path="/pixap/*" element={<PixapApp />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
