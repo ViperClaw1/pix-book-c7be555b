@@ -23,7 +23,7 @@ import type { Dict } from "@/i18n/translations";
 
 
 const APP_STORE_URL = "https://apps.apple.com/us/app/pixap/id6760616898";
-const GOOGLE_PLAY_URL = "#";
+const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.pixap.pixap";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
