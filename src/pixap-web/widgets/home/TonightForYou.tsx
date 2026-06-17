@@ -86,7 +86,7 @@ function TonightCard({
     <Link
       to={`/pixap/place/${card.id}`}
       className={
-        "relative block rounded-[var(--pixap-radius-hero)] overflow-hidden bg-[var(--pixap-tag-muted)] " +
+        "group relative block rounded-[var(--pixap-radius-hero)] overflow-hidden bg-[var(--pixap-tag-muted)] transition-[filter] duration-200 hover:brightness-105 " +
         className
       }
     >
@@ -95,7 +95,7 @@ function TonightCard({
           src={card.image}
           alt={card.name}
           loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
       ) : null}
       <div
@@ -125,6 +125,12 @@ function TonightCard({
             {card.address}
           </p>
         ) : null}
+        <span
+          className="hidden md:inline-flex mt-3 items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-semibold opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200"
+          style={{ background: "var(--pixap-gradient-cta)" }}
+        >
+          See details →
+        </span>
       </div>
     </Link>
   );
