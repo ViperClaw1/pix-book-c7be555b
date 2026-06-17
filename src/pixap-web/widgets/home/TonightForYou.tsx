@@ -60,8 +60,8 @@ function StackCycle({ cards }: { cards: BusinessCard[] }) {
 
   return (
     <div
-      className="pixap-stack mx-auto w-full max-w-[920px] h-[380px] lg:h-[460px]"
-      style={{ ["--pixap-stack-duration" as any]: `${duration}s` }}
+      className="pixap-stack mx-auto w-full max-w-[720px] h-[380px] lg:h-[440px]"
+      style={{ ["--pixap-stack-duration" as never]: `${duration}s` }}
     >
       {cards.map((card, i) => (
         <div
