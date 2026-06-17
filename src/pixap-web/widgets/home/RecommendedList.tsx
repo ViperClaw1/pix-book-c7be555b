@@ -45,7 +45,7 @@ export function RecommendedList({ city, categoryId }: Props) {
   return (
     <section className="pt-3 pb-8">
       <SectionTitle>Recommended</SectionTitle>
-      <div className="px-4 md:px-6 grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="px-4 md:px-6 xl:px-10 grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {isLoading
           ? Array.from({ length: 6 }).map((_, i) => (
               <Skeleton
