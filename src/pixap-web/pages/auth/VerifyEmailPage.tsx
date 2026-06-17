@@ -53,55 +53,57 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <main className="pixap-shell px-4 py-6 flex flex-col gap-5">
-      <header>
-        <h1 className="text-[22px] font-bold text-[var(--pixap-text)]">
-          Verify your email
-        </h1>
-        <p className="text-[14px] text-[var(--pixap-text-muted)] mt-1">
-          Enter the 6-digit code we sent you.
-        </p>
-      </header>
-      <form onSubmit={submit} className="flex flex-col gap-4">
-        <AppInput
-          label="Email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[13px] font-medium text-[var(--pixap-text)]">
-            Verification code
-          </span>
-          <OtpInput value={code} onChange={setCode} error={error} />
-        </div>
-        <AppButton type="submit" variant="accent" size="lg" fullWidth loading={loading}>
-          Verify
-        </AppButton>
-        <div className="flex items-center justify-between">
-          <AppButton
-            type="button"
-            variant="ghost"
-            size="sm"
-            loading={resending}
-            onClick={resend}
-            disabled={!email}
-          >
-            Resend code
-          </AppButton>
-          <Link to="/pixap/auth" className="text-[13px] text-[var(--pixap-link)]">
-            Back to sign in
-          </Link>
-        </div>
-        {resent === "ok" ? (
-          <p className="text-[12px] text-[var(--pixap-text-muted)]">Code resent.</p>
-        ) : resent === "err" ? (
-          <p className="text-[12px] text-[var(--pixap-danger)]">
-            Could not resend. Try again shortly.
+    <main className="min-h-[100dvh] w-full flex items-stretch md:items-center justify-center bg-[var(--pixap-background)] md:px-6 md:py-10">
+      <div className="flex w-full flex-col gap-5 px-4 py-6 min-h-[100dvh] justify-center md:min-h-0 md:max-w-[440px] md:justify-start md:rounded-2xl md:border md:border-[var(--pixap-border)] md:bg-[var(--pixap-surface)] md:px-7 md:py-8 md:shadow-[0_8px_40px_rgba(0,0,0,0.15)]">
+        <header>
+          <h1 className="text-[22px] font-bold text-[var(--pixap-text)]">
+            Verify your email
+          </h1>
+          <p className="text-[14px] text-[var(--pixap-text-muted)] mt-1">
+            Enter the 6-digit code we sent you.
           </p>
-        ) : null}
-      </form>
+        </header>
+        <form onSubmit={submit} className="flex flex-col gap-4">
+          <AppInput
+            label="Email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[13px] font-medium text-[var(--pixap-text)]">
+              Verification code
+            </span>
+            <OtpInput value={code} onChange={setCode} error={error} />
+          </div>
+          <AppButton type="submit" variant="accent" size="lg" fullWidth loading={loading}>
+            Verify
+          </AppButton>
+          <div className="flex items-center justify-between">
+            <AppButton
+              type="button"
+              variant="ghost"
+              size="sm"
+              loading={resending}
+              onClick={resend}
+              disabled={!email}
+            >
+              Resend code
+            </AppButton>
+            <Link to="/pixap/auth" className="text-[13px] text-[var(--pixap-link)]">
+              Back to sign in
+            </Link>
+          </div>
+          {resent === "ok" ? (
+            <p className="text-[12px] text-[var(--pixap-text-muted)]">Code resent.</p>
+          ) : resent === "err" ? (
+            <p className="text-[12px] text-[var(--pixap-danger)]">
+              Could not resend. Try again shortly.
+            </p>
+          ) : null}
+        </form>
+      </div>
     </main>
   );
 }
