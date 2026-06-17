@@ -11,7 +11,7 @@ export function CategoriesScroll({ selectedId, onSelect }: Props) {
 
   if (isLoading) {
     return (
-      <div className="px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar">
+      <div className="px-4 md:px-6 xl:px-10 pb-2 flex gap-2 overflow-x-auto md:overflow-visible md:flex-wrap no-scrollbar">
         {Array.from({ length: 5 }).map((_, i) => (
           <Skeleton key={i} className="h-9 w-24 shrink-0 rounded-full" />
         ))}
@@ -20,7 +20,7 @@ export function CategoriesScroll({ selectedId, onSelect }: Props) {
   }
 
   return (
-    <div className="px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar">
+    <div className="px-4 md:px-6 xl:px-10 pb-2 flex gap-2 overflow-x-auto md:overflow-visible md:flex-wrap no-scrollbar">
       <Chip active={!selectedId} onClick={() => onSelect(undefined)}>
         All
       </Chip>

@@ -94,123 +94,132 @@ export default function AuthPage() {
   };
 
   return (
-    <main className="pixap-shell px-4 py-6 flex flex-col gap-6 min-h-[100dvh] justify-center">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-[28px] font-bold leading-[34px] text-[var(--pixap-text)]">
-          Pixap
-        </h1>
-        <p className="text-[14px] text-[var(--pixap-text-muted)]">
-          {isSignup
-            ? "Create your account to get started."
-            : "Welcome back. Sign in to continue."}
-        </p>
-      </header>
-
+    <main className="min-h-[100dvh] w-full flex items-stretch md:items-center justify-center bg-[var(--pixap-background)] md:px-6 md:py-10">
       <div
-        role="tablist"
-        aria-label="Auth mode"
-        className="grid grid-cols-2 p-1 rounded-[var(--pixap-radius-pill)] bg-[var(--pixap-tag-muted)]"
+        className="
+          flex w-full flex-col gap-6 px-4 py-6 min-h-[100dvh] justify-center
+          md:min-h-0 md:max-w-[440px] md:justify-start
+          md:rounded-2xl md:border md:border-[var(--pixap-border)]
+          md:bg-[var(--pixap-surface)] md:px-7 md:py-8 md:shadow-[0_8px_40px_rgba(0,0,0,0.15)]
+        "
       >
-        {(["signin", "signup"] as Tab[]).map((t) => (
-          <button
-            key={t}
-            role="tab"
-            aria-selected={tab === t}
-            onClick={() => setTab(t)}
-            className={
-              "h-9 text-[13px] font-semibold rounded-[var(--pixap-radius-pill)] transition-colors " +
-              (tab === t
-                ? "bg-[var(--pixap-surface)] text-[var(--pixap-text)] shadow-sm"
-                : "text-[var(--pixap-text-muted)]")
-            }
-          >
-            {t === "signin" ? "Sign in" : "Sign up"}
-          </button>
-        ))}
-      </div>
+        <header className="flex flex-col gap-1">
+          <h1 className="text-[28px] font-bold leading-[34px] text-[var(--pixap-text)]">
+            Pixap
+          </h1>
+          <p className="text-[14px] text-[var(--pixap-text-muted)]">
+            {isSignup
+              ? "Create your account to get started."
+              : "Welcome back. Sign in to continue."}
+          </p>
+        </header>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <AppInput
-          label="Email"
-          type="email"
-          autoComplete="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-        />
-        <AppInput
-          label="Password"
-          type="password"
-          autoComplete={isSignup ? "new-password" : "current-password"}
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="At least 8 characters"
-        />
-
-        {!isSignup ? (
-          <div className="flex justify-end">
-            <Link
-              to="/pixap/auth/forgot-password"
-              className="text-[13px] text-[var(--pixap-link)]"
+        <div
+          role="tablist"
+          aria-label="Auth mode"
+          className="grid grid-cols-2 p-1 rounded-[var(--pixap-radius-pill)] bg-[var(--pixap-tag-muted)]"
+        >
+          {(["signin", "signup"] as Tab[]).map((t) => (
+            <button
+              key={t}
+              role="tab"
+              aria-selected={tab === t}
+              onClick={() => setTab(t)}
+              className={
+                "h-9 text-[13px] font-semibold rounded-[var(--pixap-radius-pill)] transition-colors " +
+                (tab === t
+                  ? "bg-[var(--pixap-surface)] text-[var(--pixap-text)] shadow-sm"
+                  : "text-[var(--pixap-text-muted)]")
+              }
             >
-              Forgot password?
-            </Link>
-          </div>
-        ) : (
-          <TermsAcceptance
-            checked={terms}
-            onChange={setTerms}
-            error={termsError}
+              {t === "signin" ? "Sign in" : "Sign up"}
+            </button>
+          ))}
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <AppInput
+            label="Email"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
           />
-        )}
+          <AppInput
+            label="Password"
+            type="password"
+            autoComplete={isSignup ? "new-password" : "current-password"}
+            required
+            minLength={8}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="At least 8 characters"
+          />
 
-        {error ? (
-          <div
-            role="alert"
-            className="text-[13px] text-[var(--pixap-danger)] bg-[var(--pixap-danger-surface)] px-3 py-2 rounded-[var(--pixap-radius-button)]"
+          {!isSignup ? (
+            <div className="flex justify-end">
+              <Link
+                to="/pixap/auth/forgot-password"
+                className="text-[13px] text-[var(--pixap-link)]"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          ) : (
+            <TermsAcceptance
+              checked={terms}
+              onChange={setTerms}
+              error={termsError}
+            />
+          )}
+
+          {error ? (
+            <div
+              role="alert"
+              className="text-[13px] text-[var(--pixap-danger)] bg-[var(--pixap-danger-surface)] px-3 py-2 rounded-[var(--pixap-radius-button)]"
+            >
+              {error}
+            </div>
+          ) : null}
+
+          <AppButton type="submit" variant="accent" size="lg" fullWidth loading={loading}>
+            {isSignup ? "Create account" : "Sign in"}
+          </AppButton>
+        </form>
+
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-[var(--pixap-border)]" />
+          <span className="text-[12px] text-[var(--pixap-text-muted)]">or continue with</span>
+          <div className="flex-1 h-px bg-[var(--pixap-border)]" />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <AppButton
+            type="button"
+            variant="secondary"
+            size="lg"
+            fullWidth
+            loading={googleLoading}
+            onClick={() => handleOAuth("google")}
           >
-            {error}
-          </div>
-        ) : null}
+            <GoogleGlyph />
+            Continue with Google
+          </AppButton>
 
-        <AppButton type="submit" variant="accent" size="lg" fullWidth loading={loading}>
-          {isSignup ? "Create account" : "Sign in"}
-        </AppButton>
-      </form>
-
-      <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-[var(--pixap-border)]" />
-        <span className="text-[12px] text-[var(--pixap-text-muted)]">or continue with</span>
-        <div className="flex-1 h-px bg-[var(--pixap-border)]" />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <AppButton
-          type="button"
-          variant="secondary"
-          size="lg"
-          fullWidth
-          loading={googleLoading}
-          onClick={() => handleOAuth("google")}
-        >
-          <GoogleGlyph />
-          Continue with Google
-        </AppButton>
-
-        <AppButton
-          type="button"
-          variant="primary"
-          size="lg"
-          fullWidth
-          loading={appleLoading}
-          onClick={() => handleOAuth("apple")}
-        >
-          <AppleGlyph />
-          Continue with Apple
-        </AppButton>
+          <AppButton
+            type="button"
+            variant="secondary"
+            size="lg"
+            fullWidth
+            loading={appleLoading}
+            onClick={() => handleOAuth("apple")}
+          >
+            <AppleGlyph />
+            Continue with Apple
+          </AppButton>
+        </div>
       </div>
     </main>
   );

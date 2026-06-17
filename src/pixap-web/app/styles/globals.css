@@ -63,6 +63,7 @@
 
 /* Mobile-first container; widens at md/lg breakpoints. */
 [data-pixap] .pixap-shell {
+  position: relative;
   min-height: 100dvh;
   max-width: 480px;
   margin-inline: auto;

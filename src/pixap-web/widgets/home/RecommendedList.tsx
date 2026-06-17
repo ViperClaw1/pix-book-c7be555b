@@ -25,13 +25,16 @@ export function RecommendedList({ city, categoryId }: Props) {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
+    const isMd =
+      typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 768px)").matches;
     const obs = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
           void fetchNextPage();
         }
       },
-      { rootMargin: "200px" },
+      { rootMargin: isMd ? "50px" : "200px" },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -42,7 +45,7 @@ export function RecommendedList({ city, categoryId }: Props) {
   return (
     <section className="pt-3 pb-8">
       <SectionTitle>Recommended</SectionTitle>
-      <div className="px-4 md:px-6 grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="px-4 md:px-6 xl:px-10 grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {isLoading
           ? Array.from({ length: 6 }).map((_, i) => (
               <Skeleton
@@ -90,7 +93,7 @@ function CardRow({ card }: { card: BusinessCard }) {
   return (
     <Link
       to={`/pixap/place/${card.id}`}
-      className="relative flex gap-3 p-2 rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)]"
+      className="relative flex gap-3 p-2 rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-colors hover:bg-[var(--pixap-tag-muted)]"
     >
       <div className="w-[80px] h-[80px] rounded-[var(--pixap-radius-thumb)] overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0">
         {card.image ? (
@@ -133,7 +136,7 @@ function CardTile({ card }: { card: BusinessCard }) {
   return (
     <Link
       to={`/pixap/place/${card.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-shadow hover:shadow-lg"
+      className="group relative flex flex-col overflow-hidden rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-shadow hover:shadow-lg min-h-[260px]"
     >
       <div className="relative aspect-[16/10] bg-[var(--pixap-tag-muted)] overflow-hidden">
         {card.image ? (

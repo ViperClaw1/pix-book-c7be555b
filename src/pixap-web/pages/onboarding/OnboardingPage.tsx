@@ -136,17 +136,19 @@ export default function OnboardingPage() {
           <p className="mt-3 text-[13px] text-[var(--pixap-danger)]">{error}</p>
         ) : null}
 
-        <div className="mt-6 flex flex-col gap-2">
-          <AppButton
-            variant="accent"
-            size="lg"
-            fullWidth
-            loading={saving}
-            disabled={!canProceed}
-            onClick={next}
-          >
-            {step === TOTAL - 1 ? "Finish" : "Continue"}
-          </AppButton>
+        <div className="mt-6 flex flex-col gap-2 md:items-center">
+          <div className="w-full md:max-w-[320px]">
+            <AppButton
+              variant="accent"
+              size="lg"
+              fullWidth
+              loading={saving}
+              disabled={!canProceed}
+              onClick={next}
+            >
+              {step === TOTAL - 1 ? "Finish" : "Continue"}
+            </AppButton>
+          </div>
         </div>
       </div>
     </main>

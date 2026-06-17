@@ -71,69 +71,80 @@ export default function ResetPasswordPage() {
     navigate("/pixap/auth?reset=ok", { replace: true });
   };
 
+  const cardClass =
+    "flex w-full flex-col gap-4 px-4 py-6 min-h-[100dvh] justify-center md:min-h-0 md:max-w-[440px] md:justify-start md:rounded-2xl md:border md:border-[var(--pixap-border)] md:bg-[var(--pixap-surface)] md:px-7 md:py-8 md:shadow-[0_8px_40px_rgba(0,0,0,0.15)]";
+  const shellClass =
+    "min-h-[100dvh] w-full flex items-stretch md:items-center justify-center bg-[var(--pixap-background)] md:px-6 md:py-10";
+
   if (tokenError) {
     return (
-      <main className="pixap-shell px-4 py-10 flex flex-col gap-3 text-center items-center">
-        <p className="text-[15px] text-[var(--pixap-danger)]">{tokenError}</p>
-        <a href="/pixap/auth/forgot-password" className="text-[var(--pixap-link)] text-[14px]">
-          Request a new link
-        </a>
+      <main className={shellClass}>
+        <div className={cardClass + " text-center items-center"}>
+          <p className="text-[15px] text-[var(--pixap-danger)]">{tokenError}</p>
+          <a href="/pixap/auth/forgot-password" className="text-[var(--pixap-link)] text-[14px]">
+            Request a new link
+          </a>
+        </div>
       </main>
     );
   }
 
   if (!ready) {
     return (
-      <main className="pixap-shell px-4 py-16 flex flex-col items-center gap-3">
-        <AppSpinner size={26} />
-        <p className="text-[13px] text-[var(--pixap-text-muted)]">
-          Validating reset link…
-        </p>
+      <main className={shellClass}>
+        <div className={cardClass + " items-center"}>
+          <AppSpinner size={26} />
+          <p className="text-[13px] text-[var(--pixap-text-muted)]">
+            Validating reset link…
+          </p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="pixap-shell px-4 py-6 flex flex-col gap-5">
-      <header>
-        <h1 className="text-[22px] font-bold text-[var(--pixap-text)]">
-          Set a new password
-        </h1>
-        <p className="text-[14px] text-[var(--pixap-text-muted)] mt-1">
-          Choose a password of at least 8 characters.
-        </p>
-      </header>
-      <form onSubmit={submit} className="flex flex-col gap-3">
-        <AppInput
-          label="New password"
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <AppInput
-          label="Confirm password"
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
-        />
-        {error ? (
-          <div
-            role="alert"
-            className="text-[13px] text-[var(--pixap-danger)] bg-[var(--pixap-danger-surface)] px-3 py-2 rounded-[var(--pixap-radius-button)]"
-          >
-            {error}
-          </div>
-        ) : null}
-        <AppButton type="submit" variant="accent" size="lg" fullWidth loading={loading}>
-          Update password
-        </AppButton>
-      </form>
+    <main className={shellClass}>
+      <div className={cardClass}>
+        <header>
+          <h1 className="text-[22px] font-bold text-[var(--pixap-text)]">
+            Set a new password
+          </h1>
+          <p className="text-[14px] text-[var(--pixap-text-muted)] mt-1">
+            Choose a password of at least 8 characters.
+          </p>
+        </header>
+        <form onSubmit={submit} className="flex flex-col gap-3">
+          <AppInput
+            label="New password"
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <AppInput
+            label="Confirm password"
+            type="password"
+            autoComplete="new-password"
+            required
+            minLength={8}
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+          />
+          {error ? (
+            <div
+              role="alert"
+              className="text-[13px] text-[var(--pixap-danger)] bg-[var(--pixap-danger-surface)] px-3 py-2 rounded-[var(--pixap-radius-button)]"
+            >
+              {error}
+            </div>
+          ) : null}
+          <AppButton type="submit" variant="accent" size="lg" fullWidth loading={loading}>
+            Update password
+          </AppButton>
+        </form>
+      </div>
     </main>
   );
 }
