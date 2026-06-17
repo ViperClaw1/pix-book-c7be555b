@@ -136,7 +136,7 @@ function CardTile({ card }: { card: BusinessCard }) {
   return (
     <Link
       to={`/pixap/place/${card.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-shadow hover:shadow-lg"
+      className="group relative flex flex-col overflow-hidden rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-shadow hover:shadow-lg min-h-[260px]"
     >
       <div className="relative aspect-[16/10] bg-[var(--pixap-tag-muted)] overflow-hidden">
         {card.image ? (
