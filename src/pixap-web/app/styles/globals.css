@@ -61,7 +61,7 @@
   --pixap-gradient-book: linear-gradient(135deg, #ff7a59 0%, #ea580c 50%, #be185d 100%);
 }
 
-/* Mobile-first container: max 480px, centered on desktop with subtle shadow. */
+/* Mobile-first container; widens at md/lg breakpoints. */
 [data-pixap] .pixap-shell {
   min-height: 100dvh;
   max-width: 480px;
@@ -72,7 +72,14 @@
 
 @media (min-width: 768px) {
   [data-pixap] .pixap-shell {
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+    max-width: 900px;
+    box-shadow: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  [data-pixap] .pixap-shell {
+    max-width: 1240px;
   }
 }
 
@@ -83,3 +90,56 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ============ Image Stack Cycle (tablet/desktop hero carousel) ============ */
+[data-pixap] .pixap-stack {
+  position: relative;
+}
+[data-pixap] .pixap-stack > * {
+  position: absolute;
+  inset: 0;
+  transform-origin: center;
+  animation-name: pixap-stack-cycle;
+  animation-duration: var(--pixap-stack-duration, 20s);
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform, opacity;
+}
+
+@keyframes pixap-stack-cycle {
+  0%, 18% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    z-index: 5;
+  }
+  20% {
+    transform: translateX(-6%) scale(0.98);
+    opacity: 0;
+    z-index: 5;
+  }
+  21% {
+    transform: translateX(8%) scale(0.9);
+    opacity: 0;
+    z-index: 1;
+  }
+  24%, 76% {
+    transform: translateX(6%) scale(0.92);
+    opacity: 0.55;
+    z-index: 1;
+  }
+  82%, 100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    z-index: 5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pixap] .pixap-stack > * {
+    animation: none;
+  }
+  [data-pixap] .pixap-stack > *:not(:first-child) {
+    opacity: 0;
+  }
+}
+
