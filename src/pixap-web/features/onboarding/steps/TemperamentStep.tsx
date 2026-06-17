@@ -13,7 +13,7 @@ export function TemperamentStep({ value, onChange }: Props) {
       title="How do you like to socialize?"
       subtitle="Helps us match the energy of places."
     >
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         {TEMPERAMENTS.map((t) => {
           const selected = value === t.value;
           return (
