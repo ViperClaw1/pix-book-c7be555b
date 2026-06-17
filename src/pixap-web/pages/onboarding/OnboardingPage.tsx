@@ -69,75 +69,85 @@ export default function OnboardingPage() {
   };
 
   return (
-    <main className="pixap-shell flex min-h-[100dvh] flex-col px-4 pb-6 pt-5">
-      <div className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={back}
-          disabled={step === 0}
-          className="text-[14px] text-[var(--pixap-text-muted)] disabled:opacity-30"
-        >
-          ← Back
-        </button>
-        <ProgressDots total={TOTAL} current={step} />
-        <span className="text-[12px] text-[var(--pixap-text-muted)]">
-          {step + 1}/{TOTAL}
-        </span>
-      </div>
+    <main className="flex min-h-[100dvh] w-full items-stretch justify-center bg-[var(--pixap-background)] md:items-center md:px-6 md:py-10">
+      <div
+        className="
+          flex w-full flex-col px-4 pb-6 pt-5
+          min-h-[100dvh]
+          md:min-h-0 md:max-w-[640px] md:rounded-2xl md:border md:border-[var(--pixap-border)]
+          md:bg-[var(--pixap-surface)] md:px-8 md:py-8 md:shadow-[0_8px_40px_rgba(0,0,0,0.15)]
+          lg:max-w-[760px]
+        "
+      >
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={back}
+            disabled={step === 0}
+            className="text-[14px] text-[var(--pixap-text-muted)] disabled:opacity-30"
+          >
+            ← Back
+          </button>
+          <ProgressDots total={TOTAL} current={step} />
+          <span className="text-[12px] text-[var(--pixap-text-muted)]">
+            {step + 1}/{TOTAL}
+          </span>
+        </div>
 
-      <section className="mt-6 flex-1">
-        {step === 0 && (
-          <CityStep value={prefs.city} onChange={(c) => update("city", c)} />
-        )}
-        {step === 1 && (
-          <CategoriesStep
-            value={prefs.categoryIds}
-            onToggle={(id) => toggleInArray("categoryIds", id)}
-          />
-        )}
-        {step === 2 && (
-          <VibesStep
-            value={prefs.vibes}
-            onToggle={(v) => toggleInArray("vibes", v)}
-          />
-        )}
-        {step === 3 && (
-          <HabitsStep
-            frequency={prefs.frequency}
-            onFrequency={(f) => update("frequency", f as never)}
-            times={prefs.times}
-            onToggleTime={(t) => toggleInArray("times", t)}
-          />
-        )}
-        {step === 4 && (
-          <MusicStep
-            value={prefs.music}
-            onToggle={(v) => toggleInArray("music", v)}
-          />
-        )}
-        {step === 5 && (
-          <TemperamentStep
-            value={prefs.temperament}
-            onChange={(v) => update("temperament", v as never)}
-          />
-        )}
-      </section>
+        <section className="mt-6 flex-1 md:flex-none">
+          {step === 0 && (
+            <CityStep value={prefs.city} onChange={(c) => update("city", c)} />
+          )}
+          {step === 1 && (
+            <CategoriesStep
+              value={prefs.categoryIds}
+              onToggle={(id) => toggleInArray("categoryIds", id)}
+            />
+          )}
+          {step === 2 && (
+            <VibesStep
+              value={prefs.vibes}
+              onToggle={(v) => toggleInArray("vibes", v)}
+            />
+          )}
+          {step === 3 && (
+            <HabitsStep
+              frequency={prefs.frequency}
+              onFrequency={(f) => update("frequency", f as never)}
+              times={prefs.times}
+              onToggleTime={(t) => toggleInArray("times", t)}
+            />
+          )}
+          {step === 4 && (
+            <MusicStep
+              value={prefs.music}
+              onToggle={(v) => toggleInArray("music", v)}
+            />
+          )}
+          {step === 5 && (
+            <TemperamentStep
+              value={prefs.temperament}
+              onChange={(v) => update("temperament", v as never)}
+            />
+          )}
+        </section>
 
-      {error ? (
-        <p className="mt-3 text-[13px] text-[var(--pixap-danger)]">{error}</p>
-      ) : null}
+        {error ? (
+          <p className="mt-3 text-[13px] text-[var(--pixap-danger)]">{error}</p>
+        ) : null}
 
-      <div className="mt-6 flex flex-col gap-2">
-        <AppButton
-          variant="accent"
-          size="lg"
-          fullWidth
-          loading={saving}
-          disabled={!canProceed}
-          onClick={next}
-        >
-          {step === TOTAL - 1 ? "Finish" : "Continue"}
-        </AppButton>
+        <div className="mt-6 flex flex-col gap-2">
+          <AppButton
+            variant="accent"
+            size="lg"
+            fullWidth
+            loading={saving}
+            disabled={!canProceed}
+            onClick={next}
+          >
+            {step === TOTAL - 1 ? "Finish" : "Continue"}
+          </AppButton>
+        </div>
       </div>
     </main>
   );
