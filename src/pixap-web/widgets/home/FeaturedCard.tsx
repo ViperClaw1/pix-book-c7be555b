@@ -2,11 +2,14 @@ import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { BusinessCard } from "@/pixap-web/entities/business-card/types";
 
-export function FeaturedCard({ card }: { card: BusinessCard }) {
+export function FeaturedCard({ card, fluid = false }: { card: BusinessCard; fluid?: boolean }) {
   return (
     <Link
       to={`/pixap/place/${card.id}`}
-      className="relative shrink-0 w-[280px] h-[180px] rounded-[var(--pixap-radius-hero)] overflow-hidden bg-[var(--pixap-tag-muted)]"
+      className={
+        "relative overflow-hidden bg-[var(--pixap-tag-muted)] rounded-[var(--pixap-radius-hero)] transition-[filter] duration-200 hover:brightness-110 " +
+        (fluid ? "block w-full aspect-[16/10]" : "shrink-0 w-[280px] h-[180px]")
+      }
     >
       {card.image ? (
         <img
