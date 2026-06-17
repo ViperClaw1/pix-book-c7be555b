@@ -16,4 +16,7 @@ export const queryKeys = {
   categories: {
     list: ["categories"] as const,
   },
+  favorites: {
+    mine: ["favorites", "mine"] as const,
+  },
 } as const;

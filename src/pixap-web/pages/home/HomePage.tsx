@@ -25,8 +25,8 @@ export default function HomePage() {
     <main className="pixap-shell pb-12">
       <HomeHeader city={city} onChangeCity={onChangeCity} />
       <CategoriesScroll selectedId={categoryId} onSelect={setCategoryId} />
-      <FeaturedSection city={city} categoryId={categoryId} />
       <TonightForYou city={city} categoryId={categoryId} />
+      <FeaturedSection city={city} categoryId={categoryId} />
       <RecommendedList city={city} categoryId={categoryId} />
     </main>
   );
