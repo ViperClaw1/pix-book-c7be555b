@@ -93,7 +93,7 @@ function CardRow({ card }: { card: BusinessCard }) {
   return (
     <Link
       to={`/pixap/place/${card.id}`}
-      className="relative flex gap-3 p-2 rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)]"
+      className="relative flex gap-3 p-2 rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-colors hover:bg-[var(--pixap-tag-muted)]"
     >
       <div className="w-[80px] h-[80px] rounded-[var(--pixap-radius-thumb)] overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0">
         {card.image ? (
