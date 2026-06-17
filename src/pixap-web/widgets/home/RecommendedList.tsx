@@ -25,13 +25,16 @@ export function RecommendedList({ city, categoryId }: Props) {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
+    const isMd =
+      typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 768px)").matches;
     const obs = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
           void fetchNextPage();
         }
       },
-      { rootMargin: "200px" },
+      { rootMargin: isMd ? "50px" : "200px" },
     );
     obs.observe(el);
     return () => obs.disconnect();
