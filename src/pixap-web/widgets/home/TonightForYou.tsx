@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Sparkles, Star } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
 import { useBusinessCards } from "@/pixap-web/entities/business-card/useBusinessCards";
 import { Skeleton } from "@/pixap-web/shared/ui/Skeleton";
 import { SectionTitle, EmptyHint } from "./FeaturedSection";
@@ -13,10 +14,11 @@ interface Props {
 /**
  * Daily picks.
  * - Mobile: snap-scroll card carousel.
- * - Tablet/desktop: CSS "image stack cycle" — cards stack and auto-rotate.
+ * - Tablet/desktop: peek carousel showing 1/2 + 1 + 1/2 cards per slide,
+ *   navigable via mouse drag/swipe.
  */
 export function TonightForYou({ city, categoryId }: Props) {
-  const { data, isLoading } = useBusinessCards({ city, categoryId }, 5);
+  const { data, isLoading } = useBusinessCards({ city, categoryId }, 8);
   const cards = data ?? [];
 
   return (
@@ -40,37 +42,44 @@ export function TonightForYou({ city, categoryId }: Props) {
         ) : null}
       </div>
 
-      {/* Tablet/desktop stack-cycle */}
-      <div className="hidden md:block px-6">
+      {/* Tablet/desktop peek carousel */}
+      <div className="hidden md:block">
         {isLoading ? (
-          <Skeleton className="w-full h-[380px] lg:h-[460px] rounded-[var(--pixap-radius-hero)]" />
+          <div className="px-6">
+            <Skeleton className="w-full h-[380px] lg:h-[440px] rounded-[var(--pixap-radius-hero)]" />
+          </div>
         ) : cards.length === 0 ? (
-          <EmptyHint>No picks for tonight yet.</EmptyHint>
+          <div className="px-6">
+            <EmptyHint>No picks for tonight yet.</EmptyHint>
+          </div>
         ) : (
-          <StackCycle cards={cards.slice(0, 5)} />
+          <PeekCarousel cards={cards} />
         )}
       </div>
     </section>
   );
 }
 
-function StackCycle({ cards }: { cards: BusinessCard[] }) {
-  const n = cards.length;
-  const duration = n * 4; // 4s per card
+function PeekCarousel({ cards }: { cards: BusinessCard[] }) {
+  const [emblaRef] = useEmblaCarousel({
+    align: "center",
+    loop: cards.length > 2,
+    dragFree: false,
+    containScroll: cards.length > 2 ? false : "trimSnaps",
+  });
 
   return (
-    <div
-      className="pixap-stack mx-auto w-full max-w-[720px] h-[380px] lg:h-[440px]"
-      style={{ ["--pixap-stack-duration" as never]: `${duration}s` }}
-    >
-      {cards.map((card, i) => (
-        <div
-          key={card.id}
-          style={{ animationDelay: `${-(i * duration) / n}s` }}
-        >
-          <TonightCard card={card} className="w-full h-full" />
-        </div>
-      ))}
+    <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+      <div className="flex">
+        {cards.map((card) => (
+          <div
+            key={card.id}
+            className="shrink-0 grow-0 basis-2/3 px-2 first:pl-6 last:pr-6"
+          >
+            <TonightCard card={card} className="w-full h-[380px] lg:h-[440px]" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -85,8 +94,16 @@ function TonightCard({
   return (
     <Link
       to={`/pixap/place/${card.id}`}
+      onClick={(e) => {
+        // Prevent click after a drag from navigating.
+        const target = e.currentTarget as HTMLAnchorElement;
+        if (target.dataset.dragging === "true") {
+          e.preventDefault();
+        }
+      }}
+      draggable={false}
       className={
-        "group relative block rounded-[var(--pixap-radius-hero)] overflow-hidden bg-[var(--pixap-tag-muted)] transition-[filter] duration-200 hover:brightness-105 " +
+        "group relative block rounded-[var(--pixap-radius-hero)] overflow-hidden bg-[var(--pixap-tag-muted)] transition-[filter] duration-200 hover:brightness-105 select-none " +
         className
       }
     >
@@ -95,7 +112,8 @@ function TonightCard({
           src={card.image}
           alt={card.name}
           loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          draggable={false}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03] pointer-events-none"
         />
       ) : null}
       <div

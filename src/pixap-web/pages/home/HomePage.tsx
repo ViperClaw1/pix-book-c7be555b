@@ -2,7 +2,6 @@ import { useState } from "react";
 import { usePixapAuth } from "@/pixap-web/app/providers/AuthProvider";
 import { HomeHeader } from "@/pixap-web/widgets/home/HomeHeader";
 import { CategoriesScroll } from "@/pixap-web/widgets/home/CategoriesScroll";
-import { FeaturedSection } from "@/pixap-web/widgets/home/FeaturedSection";
 import { TonightForYou } from "@/pixap-web/widgets/home/TonightForYou";
 import { RecommendedList } from "@/pixap-web/widgets/home/RecommendedList";
 
@@ -26,7 +25,6 @@ export default function HomePage() {
       <HomeHeader city={city} onChangeCity={onChangeCity} />
       <CategoriesScroll selectedId={categoryId} onSelect={setCategoryId} />
       <TonightForYou city={city} categoryId={categoryId} />
-      <FeaturedSection city={city} categoryId={categoryId} />
       <RecommendedList city={city} categoryId={categoryId} />
     </main>
   );

@@ -48,7 +48,6 @@ export function useRecommendedInfinite(city?: string, categoryId?: string, pageS
       let q = supabase
         .from("business_cards")
         .select(SELECT_COLS)
-        .eq("type", "recommended")
         .order("rating", { ascending: false })
         .range(from, to);
       if (city) q = q.ilike("address", `%${city}%`);
