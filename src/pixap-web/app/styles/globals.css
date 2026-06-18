@@ -92,6 +92,61 @@
   scrollbar-width: none;
 }
 
+/* ============ Shimmer skeleton ============ */
+[data-pixap] .pixap-shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--pixap-tag-muted);
+}
+[data-pixap] .pixap-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.04) 75%,
+    transparent 100%
+  );
+  animation: pixap-shimmer 1.6s ease-in-out infinite;
+}
+[data-pixap][data-theme="dark"] .pixap-shimmer::after {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 75%,
+    transparent 100%
+  );
+}
+@keyframes pixap-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ============ Blur-up image preview ============ */
+[data-pixap] .pixap-blur-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(18px);
+  transform: scale(1.1);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pixap] .pixap-shimmer::after {
+    animation: none;
+  }
+}
+
 /* ============ Image Stack Cycle (tablet/desktop hero carousel) ============ */
 [data-pixap] .pixap-stack {
   position: relative;

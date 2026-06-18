@@ -11,6 +11,7 @@ import { usePixapAuth } from "@/pixap-web/app/providers/AuthProvider";
 import { Skeleton } from "@/pixap-web/shared/ui/Skeleton";
 import { SectionTitle, EmptyHint } from "./FeaturedSection";
 import { cn } from "@/pixap-web/shared/lib/cn";
+import { BlurImage } from "@/pixap-web/shared/ui/BlurImage";
 import type { BusinessCard } from "@/pixap-web/entities/business-card/types";
 
 interface Props {
@@ -65,11 +66,18 @@ export function RecommendedList({ city, categoryId }: Props) {
                   <EmptyHint>No recommendations yet.</EmptyHint>
                 </div>
               )
-            : items.map((card, i) => (
-                <RevealWrapper key={card.id} index={i}>
-                  <RecommendedCard card={card} wide={(i + 1) % 7 === 0} />
-                </RevealWrapper>
-              ))}
+            : items.map((card, i) => {
+                const wide = (i + 1) % 7 === 0;
+                return (
+                  <RevealWrapper
+                    key={card.id}
+                    index={i}
+                    className={cn("h-full", wide && "lg:col-span-2")}
+                  >
+                    <RecommendedCard card={card} wide={wide} />
+                  </RevealWrapper>
+                );
+              })}
         {isFetchingNextPage
           ? Array.from({ length: 3 }).map((_, i) => (
               <Skeleton
@@ -141,11 +149,11 @@ function RecommendedCard({
   return (
     <>
       {/* Mobile horizontal row */}
-      <div className="md:hidden">
+      <div className="md:hidden h-full">
         <CardRow card={card} />
       </div>
       {/* Tablet/desktop tile (wide spans 2 cols on lg+) */}
-      <div className={cn("hidden md:block", wide && "lg:col-span-2")}>
+      <div className="hidden md:block h-full">
         <CardTile card={card} wide={wide} />
       </div>
     </>
@@ -158,14 +166,9 @@ function CardRow({ card }: { card: BusinessCard }) {
       to={`/pixap/place/${card.id}`}
       className="relative flex gap-3 p-2 rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-colors hover:bg-[var(--pixap-tag-muted)]"
     >
-      <div className="w-[80px] h-[80px] rounded-[var(--pixap-radius-thumb)] overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0">
+      <div className="relative w-[80px] h-[80px] rounded-[var(--pixap-radius-thumb)] overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0">
         {card.image ? (
-          <img
-            src={card.image}
-            alt={card.name}
-            loading="lazy"
-            className="w-full h-full object-cover"
-          />
+          <BlurImage src={card.image} alt={card.name} loading="lazy" />
         ) : null}
       </div>
       <div className="flex-1 min-w-0 py-1 flex flex-col">
@@ -200,7 +203,7 @@ function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
     <Link
       to={`/pixap/place/${card.id}`}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-[var(--pixap-radius-card)]",
+        "group relative flex flex-col h-full overflow-hidden rounded-[var(--pixap-radius-card)]",
         "bg-[var(--pixap-card)] border border-[var(--pixap-border)]",
         "transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5",
         "min-h-[260px]",
@@ -208,27 +211,27 @@ function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
     >
       <div
         className={cn(
-          "relative overflow-hidden bg-[var(--pixap-tag-muted)]",
+          "relative overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0",
           wide ? "aspect-[16/7]" : "aspect-[16/10]",
         )}
       >
         {card.image ? (
-          <img
+          <BlurImage
             src={card.image}
             alt={card.name}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06] group-hover:brightness-[1.05]"
+            className="transition-transform duration-500 group-hover:scale-[1.06] group-hover:brightness-[1.05]"
           />
         ) : null}
         {card.rating != null && card.rating > 0 ? (
-          <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 backdrop-blur text-white text-[11px] font-semibold">
+          <div className="absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 backdrop-blur text-white text-[11px] font-semibold">
             <Star size={11} fill="currentColor" aria-hidden />
             {card.rating.toFixed(1)}
           </div>
         ) : null}
-        <FavoriteButton cardId={card.id} className="absolute top-2 right-2" />
+        <FavoriteButton cardId={card.id} className="z-10 absolute top-2 right-2" />
       </div>
-      <div className="p-3 flex flex-col gap-1.5">
+      <div className="p-3 flex-1 flex flex-col gap-1.5">
         <h3
           className={cn(
             "font-semibold leading-[20px] text-[var(--pixap-text)] line-clamp-1",
@@ -260,7 +263,7 @@ function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
           </p>
         ) : null}
         {card.booking_price != null && Number(card.booking_price) > 0 ? (
-          <p className="mt-1 text-[12px] text-[var(--pixap-text-muted)]">
+          <p className="mt-auto pt-1 text-[12px] text-[var(--pixap-text-muted)]">
             from {Number(card.booking_price).toFixed(0)} ₸
           </p>
         ) : null}
