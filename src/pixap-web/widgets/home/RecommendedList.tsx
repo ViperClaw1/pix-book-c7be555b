@@ -9,7 +9,7 @@ import {
 } from "@/pixap-web/entities/favorite/useFavorites";
 import { usePixapAuth } from "@/pixap-web/app/providers/AuthProvider";
 import { Skeleton } from "@/pixap-web/shared/ui/Skeleton";
-import { SectionTitle, EmptyHint } from "./FeaturedSection";
+import { EmptyHint } from "./FeaturedSection";
 import { cn } from "@/pixap-web/shared/lib/cn";
 import { BlurImage } from "@/pixap-web/shared/ui/BlurImage";
 import type { BusinessCard } from "@/pixap-web/entities/business-card/types";
@@ -51,7 +51,6 @@ export function RecommendedList({ city, categoryId }: Props) {
 
   return (
     <section className="pt-3 pb-8">
-      <SectionTitle>Recommended</SectionTitle>
       <div className="px-4 md:px-6 xl:px-10 grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {isLoading
           ? Array.from({ length: 6 }).map((_, i) => (
