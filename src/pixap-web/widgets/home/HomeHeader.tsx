@@ -59,7 +59,7 @@ export function HomeHeader({
               sideOffset={8}
               className={cn(
                 "z-50 min-w-[180px] p-1.5 rounded-2xl",
-                "bg-[var(--pixap-surface)] border border-[var(--pixap-border)]",
+                "bg-[var(--pixap-card)] border border-[var(--pixap-border)]",
                 "shadow-xl animate-scale-in",
               )}
             >
