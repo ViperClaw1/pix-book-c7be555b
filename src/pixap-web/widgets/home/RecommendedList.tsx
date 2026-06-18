@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Heart, Star } from "lucide-react";
+import { motion } from "framer-motion";
 import { useRecommendedInfinite } from "@/pixap-web/entities/business-card/useBusinessCards";
 import {
   useFavoriteIds,
@@ -9,6 +10,7 @@ import {
 import { usePixapAuth } from "@/pixap-web/app/providers/AuthProvider";
 import { Skeleton } from "@/pixap-web/shared/ui/Skeleton";
 import { SectionTitle, EmptyHint } from "./FeaturedSection";
+import { cn } from "@/pixap-web/shared/lib/cn";
 import type { BusinessCard } from "@/pixap-web/entities/business-card/types";
 
 interface Props {
@@ -25,16 +27,20 @@ export function RecommendedList({ city, categoryId }: Props) {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
-    const isMd =
+    // Mobile only — use button on desktop.
+    if (
       typeof window !== "undefined" &&
-      window.matchMedia("(min-width: 768px)").matches;
+      window.matchMedia("(min-width: 768px)").matches
+    ) {
+      return;
+    }
     const obs = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
           void fetchNextPage();
         }
       },
-      { rootMargin: isMd ? "50px" : "200px" },
+      { rootMargin: "200px" },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -50,7 +56,7 @@ export function RecommendedList({ city, categoryId }: Props) {
           ? Array.from({ length: 6 }).map((_, i) => (
               <Skeleton
                 key={i}
-                className="h-[96px] md:h-[220px] rounded-[var(--pixap-radius-card)]"
+                className="h-[96px] md:h-[260px] rounded-[var(--pixap-radius-card)]"
               />
             ))
           : items.length === 0
@@ -59,31 +65,88 @@ export function RecommendedList({ city, categoryId }: Props) {
                   <EmptyHint>No recommendations yet.</EmptyHint>
                 </div>
               )
-            : items.map((card) => <RecommendedCard key={card.id} card={card} />)}
+            : items.map((card, i) => (
+                <RevealWrapper key={card.id} index={i}>
+                  <RecommendedCard card={card} wide={(i + 1) % 7 === 0} />
+                </RevealWrapper>
+              ))}
         {isFetchingNextPage
           ? Array.from({ length: 3 }).map((_, i) => (
               <Skeleton
                 key={`skel-${i}`}
-                className="h-[96px] md:h-[220px] rounded-[var(--pixap-radius-card)]"
+                className="h-[96px] md:h-[260px] rounded-[var(--pixap-radius-card)]"
               />
             ))
           : null}
       </div>
-      <div ref={sentinelRef} className="h-6" aria-hidden />
+
+      {/* Mobile: infinite scroll sentinel */}
+      <div ref={sentinelRef} className="h-6 md:hidden" aria-hidden />
+
+      {/* Desktop: explicit "Show more" button */}
+      {!isLoading && hasNextPage ? (
+        <div className="hidden md:flex justify-center pt-6">
+          <button
+            type="button"
+            onClick={() => void fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className={cn(
+              "h-10 px-6 rounded-full border border-[var(--pixap-border)]",
+              "text-[13px] font-semibold text-[var(--pixap-text)]",
+              "hover:bg-[var(--pixap-tag-muted)] transition-colors",
+              "disabled:opacity-50",
+            )}
+          >
+            {isFetchingNextPage ? "Loading…" : "Show more places"}
+          </button>
+        </div>
+      ) : null}
     </section>
   );
 }
 
-function RecommendedCard({ card }: { card: BusinessCard }) {
+function RevealWrapper({
+  children,
+  index,
+  className = "",
+}: {
+  children: React.ReactNode;
+  index: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{
+        delay: (index % 6) * 0.05,
+        duration: 0.4,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function RecommendedCard({
+  card,
+  wide,
+}: {
+  card: BusinessCard;
+  wide?: boolean;
+}) {
   return (
     <>
       {/* Mobile horizontal row */}
       <div className="md:hidden">
         <CardRow card={card} />
       </div>
-      {/* Tablet/desktop tile */}
-      <div className="hidden md:block">
-        <CardTile card={card} />
+      {/* Tablet/desktop tile (wide spans 2 cols on lg+) */}
+      <div className={cn("hidden md:block", wide && "lg:col-span-2")}>
+        <CardTile card={card} wide={wide} />
       </div>
     </>
   );
@@ -131,24 +194,34 @@ function CardRow({ card }: { card: BusinessCard }) {
   );
 }
 
-function CardTile({ card }: { card: BusinessCard }) {
-  const tags = (card.tags ?? []).filter(Boolean).slice(0, 3);
+function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
+  const tags = (card.tags ?? []).filter(Boolean).slice(0, wide ? 4 : 3);
   return (
     <Link
       to={`/pixap/place/${card.id}`}
-      className="group relative flex flex-col overflow-hidden rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-shadow hover:shadow-lg min-h-[260px]"
+      className={cn(
+        "group relative flex flex-col overflow-hidden rounded-[var(--pixap-radius-card)]",
+        "bg-[var(--pixap-card)] border border-[var(--pixap-border)]",
+        "transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5",
+        "min-h-[260px]",
+      )}
     >
-      <div className="relative aspect-[16/10] bg-[var(--pixap-tag-muted)] overflow-hidden">
+      <div
+        className={cn(
+          "relative overflow-hidden bg-[var(--pixap-tag-muted)]",
+          wide ? "aspect-[16/7]" : "aspect-[16/10]",
+        )}
+      >
         {card.image ? (
           <img
             src={card.image}
             alt={card.name}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06] group-hover:brightness-[1.05]"
           />
         ) : null}
         {card.rating != null && card.rating > 0 ? (
-          <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 text-white text-[11px] font-semibold">
+          <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 backdrop-blur text-white text-[11px] font-semibold">
             <Star size={11} fill="currentColor" aria-hidden />
             {card.rating.toFixed(1)}
           </div>
@@ -156,7 +229,12 @@ function CardTile({ card }: { card: BusinessCard }) {
         <FavoriteButton cardId={card.id} className="absolute top-2 right-2" />
       </div>
       <div className="p-3 flex flex-col gap-1.5">
-        <h3 className="text-[15px] font-semibold leading-[20px] text-[var(--pixap-text)] line-clamp-1">
+        <h3
+          className={cn(
+            "font-semibold leading-[20px] text-[var(--pixap-text)] line-clamp-1",
+            wide ? "text-[17px]" : "text-[15px]",
+          )}
+        >
           {card.name}
         </h3>
         {card.address ? (
@@ -175,6 +253,11 @@ function CardTile({ card }: { card: BusinessCard }) {
               </span>
             ))}
           </div>
+        ) : null}
+        {wide && card.description ? (
+          <p className="text-[12px] text-[var(--pixap-text-muted)] line-clamp-2 pt-0.5">
+            {card.description}
+          </p>
         ) : null}
         {card.booking_price != null && Number(card.booking_price) > 0 ? (
           <p className="mt-1 text-[12px] text-[var(--pixap-text-muted)]">
@@ -210,15 +293,17 @@ function FavoriteButton({
   };
 
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
       aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
       aria-pressed={isFavorite}
-      className={
-        "h-8 w-8 rounded-full flex items-center justify-center bg-black/55 backdrop-blur text-white transition-transform active:scale-90 " +
-        className
-      }
+      whileTap={{ scale: 1.35 }}
+      transition={{ type: "spring", stiffness: 500, damping: 14 }}
+      className={cn(
+        "h-8 w-8 rounded-full flex items-center justify-center bg-black/55 backdrop-blur text-white",
+        className,
+      )}
     >
       <Heart
         size={15}
@@ -226,6 +311,6 @@ function FavoriteButton({
         fill={isFavorite ? "currentColor" : "none"}
         className={isFavorite ? "text-[var(--pixap-accent)]" : "text-white"}
       />
-    </button>
+    </motion.button>
   );
 }
