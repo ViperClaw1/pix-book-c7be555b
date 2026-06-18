@@ -159,14 +159,9 @@ function CardRow({ card }: { card: BusinessCard }) {
       to={`/pixap/place/${card.id}`}
       className="relative flex gap-3 p-2 rounded-[var(--pixap-radius-card)] bg-[var(--pixap-card)] border border-[var(--pixap-border)] transition-colors hover:bg-[var(--pixap-tag-muted)]"
     >
-      <div className="w-[80px] h-[80px] rounded-[var(--pixap-radius-thumb)] overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0">
+      <div className="relative w-[80px] h-[80px] rounded-[var(--pixap-radius-thumb)] overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0">
         {card.image ? (
-          <img
-            src={card.image}
-            alt={card.name}
-            loading="lazy"
-            className="w-full h-full object-cover"
-          />
+          <BlurImage src={card.image} alt={card.name} loading="lazy" />
         ) : null}
       </div>
       <div className="flex-1 min-w-0 py-1 flex flex-col">
