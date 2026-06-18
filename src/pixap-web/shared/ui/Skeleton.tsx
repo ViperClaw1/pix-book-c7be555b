@@ -5,7 +5,7 @@ export function Skeleton({ className, ...rest }: HTMLAttributes<HTMLDivElement>)
   return (
     <div
       className={cn(
-        "animate-pulse rounded-[var(--pixap-radius-card-sm)] bg-[var(--pixap-tag-muted)]",
+        "pixap-shimmer rounded-[var(--pixap-radius-card-sm)]",
         className,
       )}
       {...rest}
