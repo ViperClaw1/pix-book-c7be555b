@@ -201,13 +201,6 @@ function HeroSlide({ card }: { card: BusinessCard }) {
 
       <div className="absolute inset-x-0 bottom-0 p-6 lg:p-8 text-white">
         <div className="flex items-center gap-2 mb-3">
-          <span
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
-            style={{ background: "var(--pixap-gradient-cta)" }}
-          >
-            <Sparkles size={11} aria-hidden />
-            Tonight's pick
-          </span>
           {card.rating != null && card.rating > 0 ? (
             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-black/55 backdrop-blur text-[11px] font-semibold">
               <Star size={11} fill="currentColor" aria-hidden />
