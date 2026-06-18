@@ -6,7 +6,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { useBusinessCards } from "@/pixap-web/entities/business-card/useBusinessCards";
 import { Skeleton } from "@/pixap-web/shared/ui/Skeleton";
-import { SectionTitle, EmptyHint } from "./FeaturedSection";
+import { EmptyHint } from "./FeaturedSection";
 import { cn } from "@/pixap-web/shared/lib/cn";
 import type { BusinessCard } from "@/pixap-web/entities/business-card/types";
 
@@ -21,7 +21,6 @@ export function TonightForYou({ city, categoryId }: Props) {
 
   return (
     <section className="pt-3 pb-1">
-      <SectionTitle>Tonight for you</SectionTitle>
 
       {/* Mobile: snap-scroll carousel */}
       <div className="md:hidden px-4 flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar">
@@ -192,22 +191,23 @@ function HeroSlide({ card }: { card: BusinessCard }) {
         aria-hidden
       />
 
+      <div
+        className="absolute top-4 left-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-white text-[12px] font-semibold shadow-lg"
+        style={{ background: "var(--pixap-gradient-cta)" }}
+      >
+        <Sparkles size={12} aria-hidden />
+        Tonight for you
+      </div>
+
       <div className="absolute inset-x-0 bottom-0 p-6 lg:p-8 text-white">
-        <div className="flex items-center gap-2 mb-3">
-          <span
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
-            style={{ background: "var(--pixap-gradient-cta)" }}
-          >
-            <Sparkles size={11} aria-hidden />
-            Tonight's pick
-          </span>
-          {card.rating != null && card.rating > 0 ? (
+        {card.rating != null && card.rating > 0 ? (
+          <div className="flex items-center gap-2 mb-3">
             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-black/55 backdrop-blur text-[11px] font-semibold">
               <Star size={11} fill="currentColor" aria-hidden />
               {card.rating.toFixed(1)}
             </span>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
         <h3 className="text-[26px] lg:text-[34px] font-bold leading-tight line-clamp-1">
           {card.name}
         </h3>
@@ -258,11 +258,11 @@ function TonightCard({
         aria-hidden
       />
       <div
-        className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-white text-[11px] font-semibold"
+        className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2.5 py-1 rounded-full text-white text-[11px] font-semibold shadow-lg"
         style={{ background: "var(--pixap-gradient-cta)" }}
       >
         <Sparkles size={11} aria-hidden />
-        For you
+        Tonight for you
       </div>
       {card.rating != null && card.rating > 0 ? (
         <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-black/55 text-white text-[11px] font-semibold">
