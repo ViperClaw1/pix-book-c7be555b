@@ -66,11 +66,18 @@ export function RecommendedList({ city, categoryId }: Props) {
                   <EmptyHint>No recommendations yet.</EmptyHint>
                 </div>
               )
-            : items.map((card, i) => (
-                <RevealWrapper key={card.id} index={i}>
-                  <RecommendedCard card={card} wide={(i + 1) % 7 === 0} />
-                </RevealWrapper>
-              ))}
+            : items.map((card, i) => {
+                const wide = (i + 1) % 7 === 0;
+                return (
+                  <RevealWrapper
+                    key={card.id}
+                    index={i}
+                    className={cn("h-full", wide && "lg:col-span-2")}
+                  >
+                    <RecommendedCard card={card} wide={wide} />
+                  </RevealWrapper>
+                );
+              })}
         {isFetchingNextPage
           ? Array.from({ length: 3 }).map((_, i) => (
               <Skeleton
