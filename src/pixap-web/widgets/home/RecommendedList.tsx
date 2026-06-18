@@ -11,6 +11,7 @@ import { usePixapAuth } from "@/pixap-web/app/providers/AuthProvider";
 import { Skeleton } from "@/pixap-web/shared/ui/Skeleton";
 import { SectionTitle, EmptyHint } from "./FeaturedSection";
 import { cn } from "@/pixap-web/shared/lib/cn";
+import { BlurImage } from "@/pixap-web/shared/ui/BlurImage";
 import type { BusinessCard } from "@/pixap-web/entities/business-card/types";
 
 interface Props {
