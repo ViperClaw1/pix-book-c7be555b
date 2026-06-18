@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Star } from "lucide-react";
+import { Heart, MapPin, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRecommendedInfinite } from "@/pixap-web/entities/business-card/useBusinessCards";
 import {
@@ -71,7 +71,7 @@ export function RecommendedList({ city, categoryId }: Props) {
                   <RevealWrapper
                     key={card.id}
                     index={i}
-                    className={cn("h-full", wide && "lg:col-span-2")}
+                    className={cn("h-full", wide && "md:col-span-2 lg:col-span-2")}
                   >
                     <RecommendedCard card={card} wide={wide} />
                   </RevealWrapper>
@@ -168,7 +168,12 @@ function CardRow({ card }: { card: BusinessCard }) {
       <div className="relative w-[80px] h-[80px] rounded-[var(--pixap-radius-thumb)] overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0">
         {card.image ? (
           <BlurImage src={card.image} alt={card.name} loading="lazy" />
-        ) : null}
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <MapPin size={24} className="text-[var(--pixap-border)]" aria-hidden />
+          </div>
+        )}
+
       </div>
       <div className="flex-1 min-w-0 py-1 flex flex-col">
         <h3 className="text-[15px] font-semibold leading-[20px] text-[var(--pixap-text)] line-clamp-1 pr-8">
@@ -211,7 +216,7 @@ function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
       <div
         className={cn(
           "relative overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0",
-          wide ? "aspect-[16/7]" : "aspect-[16/10]",
+          wide ? "h-[280px]" : "aspect-[16/10]",
         )}
       >
         {card.image ? (
@@ -221,8 +226,13 @@ function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
             loading="lazy"
             className="transition-transform duration-500 group-hover:scale-[1.06] group-hover:brightness-[1.05]"
           />
-        ) : null}
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <MapPin size={32} className="text-[var(--pixap-border)]" aria-hidden />
+          </div>
+        )}
         {card.rating != null && card.rating > 0 ? (
+
           <div className="absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 backdrop-blur text-white text-[11px] font-semibold">
             <Star size={11} fill="currentColor" aria-hidden />
             {card.rating.toFixed(1)}
