@@ -149,11 +149,11 @@ function RecommendedCard({
   return (
     <>
       {/* Mobile horizontal row */}
-      <div className="md:hidden">
+      <div className="md:hidden h-full">
         <CardRow card={card} />
       </div>
       {/* Tablet/desktop tile (wide spans 2 cols on lg+) */}
-      <div className={cn("hidden md:block", wide && "lg:col-span-2")}>
+      <div className="hidden md:block h-full">
         <CardTile card={card} wide={wide} />
       </div>
     </>
