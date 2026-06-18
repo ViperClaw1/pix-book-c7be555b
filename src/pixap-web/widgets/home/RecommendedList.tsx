@@ -196,7 +196,7 @@ function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
     <Link
       to={`/pixap/place/${card.id}`}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-[var(--pixap-radius-card)]",
+        "group relative flex flex-col h-full overflow-hidden rounded-[var(--pixap-radius-card)]",
         "bg-[var(--pixap-card)] border border-[var(--pixap-border)]",
         "transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5",
         "min-h-[260px]",
@@ -204,27 +204,27 @@ function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
     >
       <div
         className={cn(
-          "relative overflow-hidden bg-[var(--pixap-tag-muted)]",
+          "relative overflow-hidden bg-[var(--pixap-tag-muted)] shrink-0",
           wide ? "aspect-[16/7]" : "aspect-[16/10]",
         )}
       >
         {card.image ? (
-          <img
+          <BlurImage
             src={card.image}
             alt={card.name}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06] group-hover:brightness-[1.05]"
+            className="transition-transform duration-500 group-hover:scale-[1.06] group-hover:brightness-[1.05]"
           />
         ) : null}
         {card.rating != null && card.rating > 0 ? (
-          <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 backdrop-blur text-white text-[11px] font-semibold">
+          <div className="absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 backdrop-blur text-white text-[11px] font-semibold">
             <Star size={11} fill="currentColor" aria-hidden />
             {card.rating.toFixed(1)}
           </div>
         ) : null}
-        <FavoriteButton cardId={card.id} className="absolute top-2 right-2" />
+        <FavoriteButton cardId={card.id} className="z-10 absolute top-2 right-2" />
       </div>
-      <div className="p-3 flex flex-col gap-1.5">
+      <div className="p-3 flex-1 flex flex-col gap-1.5">
         <h3
           className={cn(
             "font-semibold leading-[20px] text-[var(--pixap-text)] line-clamp-1",
