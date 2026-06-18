@@ -256,7 +256,7 @@ function CardTile({ card, wide }: { card: BusinessCard; wide?: boolean }) {
           </p>
         ) : null}
         {card.booking_price != null && Number(card.booking_price) > 0 ? (
-          <p className="mt-1 text-[12px] text-[var(--pixap-text-muted)]">
+          <p className="mt-auto pt-1 text-[12px] text-[var(--pixap-text-muted)]">
             from {Number(card.booking_price).toFixed(0)} ₸
           </p>
         ) : null}
