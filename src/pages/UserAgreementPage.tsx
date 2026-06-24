@@ -304,6 +304,10 @@ AI-ассистент Pixap предоставляет рекомендации 
 
 В случае претензий к качеству услуг обращайтесь непосредственно к заведению. Pixap может выступить посредником в урегулировании спора, однако не несёт финансовой ответственности за действия партнёров.
 
+### 4.5 Venue Communications
+
+When a User submits a booking request, Pixap (or its automated systems, including AI voice calls and SMS) will contact the venue's registered phone number to confirm availability, pricing, and booking details on the User's behalf. By registering as a partner venue on Pixap and providing a contact phone number, the venue agrees to receive these transactional calls and SMS messages related to booking requests. These messages are operational in nature and are not used for marketing purposes. Venues may reply STOP to a text message to decline a specific booking request, or contact support@pixapp.kz to be removed from automated outreach entirely.
+
 ---
 
 ## 5. Подписки и платежи
@@ -502,6 +506,10 @@ Pixap AI-ассистенті ақпараттық мақсаттарда ұсы
 ### 4.4 Мекемелермен даулар
 
 Қызметтердің сапасына қатысты шағымдар бойынша тікелей мекемеге хабарласыңыз. Pixap дауды реттеуде делдал ретінде қатыса алады, бірақ серіктестердің іс-қимылдары үшін қаржылық жауапкершілік көтермейді.
+
+### 4.5 Мекемелермен байланыс
+
+Пайдаланушы брондау сұрауын жасағанда, Pixap (соның ішінде автоматтандырылған жүйелер арқылы, AI дауыстық қоңыраулар мен SMS қоса алғанда) пайдаланушының атынан қолжетімділікті, құнын және брондау мәліметтерін растау үшін мекеменің тіркелген телефон нөміріне хабарласады. Pixap-та серіктес мекеме ретінде тіркеле отырып және байланыс телефон нөмірін көрсете отырып, мекеме брондау сұрауларына қатысты осындай транзакциялық қоңыраулар мен SMS-хабарламаларды алуға келіседі. Бұл хабарламалар операциялық сипатта болады және жарнамалық мақсатта пайдаланылмайды. Мекеме нақты брондау сұрауынан бас тарту үшін SMS-хабарламаға STOP деп жауап бере алады немесе автоматтандырылған хабарландырулардан толықтай бас тарту үшін support@pixapp.kz мекенжайына хабарласа алады.
 
 ---
 
