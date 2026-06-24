@@ -105,6 +105,10 @@ The Pixap AI assistant provides recommendations for informational purposes. Fina
 
 For complaints about service quality, contact the venue directly. Pixap may act as a mediator in dispute resolution but bears no financial responsibility for the actions of partners.
 
+### 4.5 Venue Communications
+
+When a User submits a booking request, Pixap (or its automated systems, including AI voice calls and SMS) will contact the venue's registered phone number to confirm availability, pricing, and booking details on the User's behalf. By registering as a partner venue on Pixap and providing a contact phone number, the venue agrees to receive these transactional calls and SMS messages related to booking requests. These messages are operational in nature and are not used for marketing purposes. Venues may reply STOP to a text message to decline a specific booking request, or contact support@pixapp.kz to be removed from automated outreach entirely.
+
 ---
 
 ## 5. Subscriptions and Payments
@@ -304,9 +308,9 @@ AI-ассистент Pixap предоставляет рекомендации 
 
 В случае претензий к качеству услуг обращайтесь непосредственно к заведению. Pixap может выступить посредником в урегулировании спора, однако не несёт финансовой ответственности за действия партнёров.
 
-### 4.5 Venue Communications
+### 4.5 Коммуникация с заведениями
 
-When a User submits a booking request, Pixap (or its automated systems, including AI voice calls and SMS) will contact the venue's registered phone number to confirm availability, pricing, and booking details on the User's behalf. By registering as a partner venue on Pixap and providing a contact phone number, the venue agrees to receive these transactional calls and SMS messages related to booking requests. These messages are operational in nature and are not used for marketing purposes. Venues may reply STOP to a text message to decline a specific booking request, or contact support@pixapp.kz to be removed from automated outreach entirely.
+При оформлении пользователем запроса на бронирование Pixap (в том числе через автоматизированные системы, включая AI-голосовые звонки и SMS) связывается с зарегистрированным номером телефона заведения для подтверждения доступности, стоимости и деталей бронирования от имени пользователя. Регистрируясь как заведение-партнёр Pixap и указывая контактный номер телефона, заведение соглашается получать данные транзакционные звонки и SMS-сообщения, связанные с запросами на бронирование. Эти сообщения носят операционный характер и не используются для маркетинговых целей. Заведение может ответить STOP на SMS-сообщение, чтобы отклонить конкретный запрос на бронирование, либо обратиться по адресу support@pixapp.kz для полного отказа от автоматизированных уведомлений.
 
 ---
 
