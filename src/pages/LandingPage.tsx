@@ -635,7 +635,7 @@ const LandingPage = () => {
           </div>
         </div>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 mt-10 pt-6 border-t border-border/60 text-xs text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© {new Date().getFullYear()} Pixap. {t.footer.rights}</p>
+          <p>© {new Date().getFullYear()} Pixap — operated by &quot;Vsee.kz&quot; Limited Liability Partnership. {t.footer.rights}</p>
           <p>{t.footer.madeIn}</p>
         </div>
       </footer>
